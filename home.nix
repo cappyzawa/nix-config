@@ -10,6 +10,10 @@
   # Let Home Manager manage itself
   programs.home-manager.enable = true;
 
+  # Disable manpages to avoid builtins.toFile warning with Determinate Nix
+  # See: https://github.com/nix-community/home-manager/issues/7935
+  manual.manpages.enable = false;
+
   # Packages
   home.packages = with pkgs; [
     # Core utilities
