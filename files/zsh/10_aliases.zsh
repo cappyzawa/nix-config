@@ -37,11 +37,6 @@ if command -v git &>/dev/null; then
     alias gst='git status'
 fi
 
-# 1Password integration for aqua
-if command -v op &>/dev/null; then
-    alias aqua='GITHUB_TOKEN=$(op read -f "op://Private/GitHub Personal Access Token/token") aqua'
-fi
-
 # Development tools
 if command -v kubectl &>/dev/null; then
     alias k='kubectl'

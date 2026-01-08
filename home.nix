@@ -125,7 +125,6 @@
       [[ -d "''${HOME}/.nix-profile/bin" ]] && path=("''${HOME}/.nix-profile/bin" $path)
       [[ -d /opt/homebrew/opt/gnu-sed/libexec/gnubin ]] && path=(/opt/homebrew/opt/gnu-sed/libexec/gnubin $path)
       [[ -d "''${HOME}/bin" ]] && path=("''${HOME}/bin" $path)
-      [[ -d "''${HOME}/.local/share/aquaproj-aqua/bin" ]] && path=("''${HOME}/.local/share/aquaproj-aqua/bin" $path)
       [[ -d "''${CARGO_HOME}/bin" ]] && path=("''${CARGO_HOME}/bin" $path)
       [[ -d "''${HOME}/.local/bin" ]] && path+=("''${HOME}/.local/bin")
       [[ -d "''${HOME}/.krew/bin" ]] && path+=("''${HOME}/.krew/bin")
