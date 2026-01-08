@@ -180,7 +180,8 @@
       executable = true;
     };
 
-    # Starship for Claude statusline
+    # Starship
+    "starship/starship.toml".source = ./files/starship/starship.toml;
     "starship/starship-claude.toml".source = ./files/starship/starship-claude.toml;
 
     # Zsh config files
