@@ -1,8 +1,8 @@
-{ config, pkgs, ... }:
+{ config, pkgs, username, ... }:
 
 {
-  home.username = "cappyzawa";
-  home.homeDirectory = "/Users/cappyzawa";
+  home.username = username;
+  home.homeDirectory = "/Users/${username}";
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   home.stateVersion = "24.11";

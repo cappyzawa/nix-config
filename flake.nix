@@ -13,11 +13,16 @@
     let
       system = "aarch64-darwin";
       pkgs = nixpkgs.legacyPackages.${system};
-    in
-    {
-      homeConfigurations."cappyzawa" = home-manager.lib.homeManagerConfiguration {
+
+      mkHome = username: home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
+        extraSpecialArgs = { inherit username; };
         modules = [ ./home.nix ];
       };
+    in
+    {
+      homeConfigurations."cappyzawa" = mkHome "cappyzawa";
+      # Add more users as needed:
+      # homeConfigurations."work-user" = mkHome "work-user";
     };
 }
