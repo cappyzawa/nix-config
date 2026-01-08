@@ -1,0 +1,45 @@
+# Starship config for Claude Code statusline
+# Single-line format (no line_break, no character)
+"$schema" = 'https://starship.rs/config-schema.json'
+
+add_newline = false
+
+format = """
+$directory\
+$git_branch\
+$git_status\
+│ \
+$custom\
+"""
+
+[directory]
+truncation_length = 2
+read_only = '󱧵 '
+style = 'fg:cyan'
+format = '[$path]($style)[$read_only]($read_only_style) '
+
+[git_branch]
+symbol = ' '
+style = 'fg:purple'
+format = '[$symbol$branch]($style)'
+
+[git_status]
+style = 'fg:yellow'
+format = '[$all_status$ahead_behind]($style) '
+conflicted = '='
+up_to_date = ''
+untracked = '?${count}'
+stashed = '\$${count}'
+modified = '!${count}'
+staged = '+${count}'
+renamed = '»'
+deleted = '✘'
+ahead = '⇡${count}'
+diverged = '⇕⇡${ahead_count}⇣${behind_count}'
+behind = '⇣${count}'
+
+[custom.claude]
+command = 'printf "%s %s %s" "$CLAUDE_MODEL" "$CLAUDE_GAUGE" "$CLAUDE_PCT%"'
+when = 'true'
+format = '[󰧑 $output]($style)'
+style = 'fg:bright-purple'

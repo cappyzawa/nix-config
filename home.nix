@@ -10,6 +10,11 @@
   # Let Home Manager manage itself
   programs.home-manager.enable = true;
 
+  # Packages
+  home.packages = with pkgs; [
+    jq # Used by Claude statusline
+  ];
+
   # GitHub CLI
   programs.gh = {
     enable = true;
@@ -22,5 +27,24 @@
         cd = "ghq-cd";
       };
     };
+  };
+
+  # Starship prompt
+  programs.starship = {
+    enable = true;
+  };
+
+  # Config files
+  xdg.configFile = {
+    # Claude Code
+    "claude/settings.json".source = ./files/claude/settings.json;
+    "claude/CLAUDE.md".source = ./files/claude/CLAUDE.md;
+    "claude/statusline.sh" = {
+      source = ./files/claude/statusline.sh;
+      executable = true;
+    };
+
+    # Starship for Claude statusline
+    "starship/starship-claude.toml".source = ./files/starship/starship-claude.toml;
   };
 }
