@@ -12,13 +12,20 @@
 
   # Packages
   home.packages = with pkgs; [
-    jq      # JSON processor (used by Claude statusline)
-    fd      # Better find
-    bat     # Better cat
-    eza     # Better ls
-    fzf     # Fuzzy finder
-    ghq     # Repository manager
-    lazygit # Git TUI
+    # Core utilities
+    jq        # JSON processor (used by Claude statusline)
+    fd        # Better find
+    bat       # Better cat
+    eza       # Better ls
+    fzf       # Fuzzy finder
+    ripgrep   # Better grep
+    gnused    # GNU sed
+    wget      # HTTP client
+
+    # Development tools
+    ghq       # Repository manager
+    lazygit   # Git TUI
+    helix     # Modal editor
   ];
 
   # GitHub CLI
@@ -44,6 +51,11 @@
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;
+  };
+
+  # Tmux
+  programs.tmux = {
+    enable = true;
   };
 
   # Zsh
@@ -124,7 +136,6 @@
         # PATH management (must be first for nix-managed tools)
         typeset -U path
         [[ -d "''${HOME}/.nix-profile/bin" ]] && path=("''${HOME}/.nix-profile/bin" $path)
-        [[ -d /opt/homebrew/opt/gnu-sed/libexec/gnubin ]] && path=(/opt/homebrew/opt/gnu-sed/libexec/gnubin $path)
         [[ -d "''${HOME}/bin" ]] && path=("''${HOME}/bin" $path)
         [[ -d "''${CARGO_HOME}/bin" ]] && path=("''${CARGO_HOME}/bin" $path)
         [[ -d "''${HOME}/.local/bin" ]] && path+=("''${HOME}/.local/bin")
@@ -164,9 +175,14 @@
       ''
     ];
 
-    # Zsh options
+    # Zsh options and environment variables
     sessionVariables = {
       KEYTIMEOUT = "20";
+      EDITOR = "hx";
+      VISUAL = "hx";
+      CVSEDITOR = "hx";
+      SVN_EDITOR = "hx";
+      GIT_EDITOR = "hx";
     };
   };
 
@@ -178,6 +194,14 @@
     "claude/statusline.sh" = {
       source = ./files/claude/statusline.sh;
       executable = true;
+    };
+
+    # Helix
+    "helix/config.toml".source = ./files/helix/config.toml;
+    "helix/languages.toml".source = ./files/helix/languages.toml;
+    "helix/themes" = {
+      source = ./files/helix/themes;
+      recursive = true;
     };
 
     # Starship
