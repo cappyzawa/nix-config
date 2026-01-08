@@ -1,4 +1,4 @@
-{ config, pkgs, username, ... }:
+{ config, pkgs, lib, username, ... }:
 
 {
   home.username = username;
@@ -119,49 +119,50 @@
       }
     ];
 
-    initExtraFirst = ''
-      # PATH management (must be first for nix-managed tools)
-      typeset -U path
-      [[ -d "''${HOME}/.nix-profile/bin" ]] && path=("''${HOME}/.nix-profile/bin" $path)
-      [[ -d /opt/homebrew/opt/gnu-sed/libexec/gnubin ]] && path=(/opt/homebrew/opt/gnu-sed/libexec/gnubin $path)
-      [[ -d "''${HOME}/bin" ]] && path=("''${HOME}/bin" $path)
-      [[ -d "''${CARGO_HOME}/bin" ]] && path=("''${CARGO_HOME}/bin" $path)
-      [[ -d "''${HOME}/.local/bin" ]] && path+=("''${HOME}/.local/bin")
-      [[ -d "''${HOME}/.krew/bin" ]] && path+=("''${HOME}/.krew/bin")
-    '';
+    initContent = lib.mkMerge [
+      (lib.mkBefore ''
+        # PATH management (must be first for nix-managed tools)
+        typeset -U path
+        [[ -d "''${HOME}/.nix-profile/bin" ]] && path=("''${HOME}/.nix-profile/bin" $path)
+        [[ -d /opt/homebrew/opt/gnu-sed/libexec/gnubin ]] && path=(/opt/homebrew/opt/gnu-sed/libexec/gnubin $path)
+        [[ -d "''${HOME}/bin" ]] && path=("''${HOME}/bin" $path)
+        [[ -d "''${CARGO_HOME}/bin" ]] && path=("''${CARGO_HOME}/bin" $path)
+        [[ -d "''${HOME}/.local/bin" ]] && path+=("''${HOME}/.local/bin")
+        [[ -d "''${HOME}/.krew/bin" ]] && path+=("''${HOME}/.krew/bin")
+      '')
+      ''
+        # Starship (cached daily for performance)
+        export STARSHIP_CONFIG="''${XDG_CONFIG_HOME:-$HOME/.config}/starship/starship.toml"
+        () {
+          local cache="''${HOME}/.cache/zsh/starship-init-$(date +%Y%m%d).zsh"
+          if [[ ! -f "$cache" ]]; then
+            mkdir -p "''${cache:h}"
+            starship init zsh > "$cache"
+          fi
+          source "$cache"
+        }
 
-    initExtra = ''
-      # Starship (cached daily for performance)
-      export STARSHIP_CONFIG="''${XDG_CONFIG_HOME:-$HOME/.config}/starship/starship.toml"
-      () {
-        local cache="''${HOME}/.cache/zsh/starship-init-$(date +%Y%m%d).zsh"
-        if [[ ! -f "$cache" ]]; then
-          mkdir -p "''${cache:h}"
-          starship init zsh > "$cache"
-        fi
-        source "$cache"
-      }
+        # Direnv (deferred)
+        zsh-defer eval "$(direnv hook zsh)"
 
-      # Direnv (deferred)
-      zsh-defer eval "$(direnv hook zsh)"
+        # fzf-history-search settings
+        export ZSH_FZF_HISTORY_SEARCH_REMOVE_DUPLICATES=1
+        export ZSH_FZF_HISTORY_SEARCH_DATES_IN_SEARCH=1
 
-      # fzf-history-search settings
-      export ZSH_FZF_HISTORY_SEARCH_REMOVE_DUPLICATES=1
-      export ZSH_FZF_HISTORY_SEARCH_DATES_IN_SEARCH=1
+        # Source local config files
+        for config_file ("''${XDG_CONFIG_HOME:-$HOME/.config}"/zsh/*.zsh(N)); do
+          source "$config_file"
+        done
 
-      # Source local config files
-      for config_file ("''${XDG_CONFIG_HOME:-$HOME/.config}"/zsh/*.zsh(N)); do
-        source "$config_file"
-      done
+        # Deferred config files
+        for config_file ("''${XDG_CONFIG_HOME:-$HOME/.config}"/zsh/*.defer.zsh(N)); do
+          zsh-defer source "$config_file"
+        done
 
-      # Deferred config files
-      for config_file ("''${XDG_CONFIG_HOME:-$HOME/.config}"/zsh/*.defer.zsh(N)); do
-        zsh-defer source "$config_file"
-      done
-
-      # Load local configuration (machine-specific, secrets)
-      [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
-    '';
+        # Load local configuration (machine-specific, secrets)
+        [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
+      ''
+    ];
 
     # Zsh options
     sessionVariables = {
