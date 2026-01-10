@@ -166,6 +166,27 @@
   # Lazygit
   programs.lazygit = {
     enable = true;
+    settings = {
+      gui = {
+        theme = {
+          activeBorderColor = [ "#E26A3B" "bold" ];
+          inactiveBorderColor = [ "#262F3B" ];
+          searchingActiveBorderColor = [ "#D4A05A" "bold" ];
+          optionsTextColor = [ "#5A6F82" ];
+          selectedLineBgColor = [ "#2D2925" ];
+          inactiveViewSelectedLineBgColor = [ "#302121" ];
+          cherryPickedCommitFgColor = [ "#E26A3B" ];
+          cherryPickedCommitBgColor = [ "#1B222B" ];
+          markedBaseCommitFgColor = [ "#5A6F82" ];
+          markedBaseCommitBgColor = [ "#D4A05A" ];
+          unstagedChangesColor = [ "#D25046" ];
+          defaultFgColor = [ "#E6DED3" ];
+        };
+        authorColors = {
+          "*" = "#8E7BA0";
+        };
+      };
+    };
   };
 
   # Tmux
@@ -487,6 +508,36 @@
 
     # Karabiner-Elements
     "karabiner/karabiner.json".source = ./files/karabiner/karabiner.json;
+
+    # SketchyBar
+    "sketchybar/sketchybarrc" = {
+      source = ./files/sketchybar/sketchybarrc;
+      executable = true;
+    };
+    "sketchybar/plugins/front_app.sh" = {
+      source = ./files/sketchybar/plugins/front_app.sh;
+      executable = true;
+    };
+    "sketchybar/plugins/clock.sh" = {
+      source = ./files/sketchybar/plugins/clock.sh;
+      executable = true;
+    };
+    "sketchybar/plugins/battery.sh" = {
+      source = ./files/sketchybar/plugins/battery.sh;
+      executable = true;
+    };
+    "sketchybar/plugins/volume.sh" = {
+      source = ./files/sketchybar/plugins/volume.sh;
+      executable = true;
+    };
+    "sketchybar/plugins/network.sh" = {
+      source = ./files/sketchybar/plugins/network.sh;
+      executable = true;
+    };
+    "sketchybar/plugins/keyboard.sh" = {
+      source = ./files/sketchybar/plugins/keyboard.sh;
+      executable = true;
+    };
 
     # TPM (Tmux Plugin Manager)
     "tmux/plugins/tpm" = {
