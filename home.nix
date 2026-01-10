@@ -166,27 +166,6 @@
   # Lazygit
   programs.lazygit = {
     enable = true;
-    settings = {
-      gui = {
-        theme = {
-          activeBorderColor = [ "#E26A3B" "bold" ];
-          inactiveBorderColor = [ "#262F3B" ];
-          searchingActiveBorderColor = [ "#D4A05A" "bold" ];
-          optionsTextColor = [ "#5A6F82" ];
-          selectedLineBgColor = [ "#2D2925" ];
-          inactiveViewSelectedLineBgColor = [ "#302121" ];
-          cherryPickedCommitFgColor = [ "#E26A3B" ];
-          cherryPickedCommitBgColor = [ "#1B222B" ];
-          markedBaseCommitFgColor = [ "#5A6F82" ];
-          markedBaseCommitBgColor = [ "#D4A05A" ];
-          unstagedChangesColor = [ "#D25046" ];
-          defaultFgColor = [ "#E6DED3" ];
-        };
-        authorColors = {
-          "*" = "#8E7BA0";
-        };
-      };
-    };
   };
 
   # Tmux
@@ -203,6 +182,9 @@
     extraConfig = ''
       # Set PATH first for tpm and plugins (include nix paths)
       set-environment -g PATH "/etc/profiles/per-user/''${USER}/bin:/run/current-system/sw/bin:/opt/homebrew/bin:/usr/local/bin:/bin:/usr/bin"
+
+      # Remove HM session var flag so new windows get fresh environment
+      set-environment -gr __HM_ZSH_SESS_VARS_SOURCED
 
       setenv LANG en_US.UTF-8
 
@@ -446,13 +428,15 @@
 
     # Zsh options and environment variables
     sessionVariables = {
+      XDG_CONFIG_HOME = "$HOME/.config";
       KEYTIMEOUT = "20";
       EDITOR = "hx";
       VISUAL = "hx";
       CVSEDITOR = "hx";
       SVN_EDITOR = "hx";
       GIT_EDITOR = "hx";
-      CLAUDE_CONFIG_DIR = "\${XDG_CONFIG_HOME:-$HOME/.config}/claude";
+      CLAUDE_CONFIG_DIR = "$HOME/.config/claude";
+      LG_CONFIG_FILE = "$HOME/.config/lazygit/themes/akari-night.yml";
     };
   };
 
