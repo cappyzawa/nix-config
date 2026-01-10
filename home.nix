@@ -1,4 +1,4 @@
-{ config, pkgs, lib, username, akari-fzf, akari-zsh, ... }:
+{ config, pkgs, lib, username, akari-fzf, akari-zsh, tpm, ... }:
 
 {
   home.username = username;
@@ -487,5 +487,11 @@
 
     # Karabiner-Elements
     "karabiner/karabiner.json".source = ./files/karabiner/karabiner.json;
+
+    # TPM (Tmux Plugin Manager)
+    "tmux/plugins/tpm" = {
+      source = tpm;
+      recursive = true;
+    };
   };
 }

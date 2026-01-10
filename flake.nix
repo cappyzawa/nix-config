@@ -19,9 +19,13 @@
       url = "github:cappyzawa/akari-zsh";
       flake = false;
     };
+    tpm = {
+      url = "github:tmux-plugins/tpm";
+      flake = false;
+    };
   };
 
-  outputs = { self, nixpkgs, nix-darwin, home-manager, akari-fzf, akari-zsh, ... }:
+  outputs = { self, nixpkgs, nix-darwin, home-manager, akari-fzf, akari-zsh, tpm, ... }:
     let
       system = "aarch64-darwin";
       username = "cappyzawa";
@@ -37,7 +41,7 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.backupFileExtension = "backup";
-            home-manager.extraSpecialArgs = { inherit username akari-fzf akari-zsh; };
+            home-manager.extraSpecialArgs = { inherit username akari-fzf akari-zsh tpm; };
             home-manager.users.${username} = import ./home.nix;
           }
         ];
