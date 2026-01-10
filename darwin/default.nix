@@ -33,10 +33,15 @@
 
     taps = [
       "nikitabobko/tap"
+      "FelixKratz/formulae"
     ];
 
     brews = [
       "docker"
+      {
+        name = "FelixKratz/formulae/borders";
+        start_service = true;
+      }
     ];
 
     casks = [

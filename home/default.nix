@@ -448,6 +448,12 @@
     # AeroSpace
     "aerospace/aerospace.toml".source = ../config/aerospace/aerospace.toml;
 
+    # JankyBorders
+    "borders/bordersrc" = {
+      source = ../config/borders/bordersrc;
+      executable = true;
+    };
+
     # Alacritty
     "alacritty" = {
       source = ../config/alacritty;
