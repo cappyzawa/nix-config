@@ -31,13 +31,10 @@
       cleanup = "zap";  # Remove unlisted casks/formulas
     };
 
-    taps = [
-      "FelixKratz/formulae"
-    ];
+    taps = [];
 
     brews = [
       "docker"
-      "felixkratz/formulae/sketchybar"
     ];
 
     casks = [
@@ -90,22 +87,9 @@
       AppleShowAllExtensions = true;
       InitialKeyRepeat = 15;
       KeyRepeat = 2;
-      _HIHideMenuBar = true;  # Hide menu bar (using SketchyBar instead)
     };
   };
 
   # Enable Touch ID for sudo
   security.pam.services.sudo_local.touchIdAuth = true;
-
-  # SketchyBar service
-  launchd.user.agents.sketchybar = {
-    serviceConfig = {
-      ProgramArguments = [ "/opt/homebrew/bin/sketchybar" ];
-      EnvironmentVariables = {
-        PATH = "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin";
-      };
-      RunAtLoad = true;
-      KeepAlive = true;
-    };
-  };
 }
