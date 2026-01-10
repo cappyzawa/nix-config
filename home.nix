@@ -19,7 +19,6 @@
     # Core utilities
     jq        # JSON processor (used by Claude statusline)
     fd        # Better find
-    bat       # Better cat
     eza       # Better ls
     fzf       # Fuzzy finder
     ripgrep   # Better grep
@@ -28,8 +27,8 @@
 
     # Development tools
     ghq       # Repository manager
-    lazygit   # Git TUI
     helix     # Modal editor
+    gh-dash   # GitHub dashboard
   ];
 
   # GitHub CLI
@@ -55,6 +54,29 @@
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;
+  };
+
+  # Git
+  programs.git = {
+    enable = true;
+    ignores = [
+      "**/.claude/settings.local.json"
+      "**/CLAUDE.local.md"
+    ];
+  };
+
+  # Bat
+  programs.bat = {
+    enable = true;
+    config = {
+      theme = "akari-night";
+      color = "always";
+    };
+  };
+
+  # Lazygit
+  programs.lazygit = {
+    enable = true;
   };
 
   # Tmux
@@ -366,5 +388,20 @@
     "zsh/30_fzf.zsh".source = ./files/zsh/30_fzf.zsh;
     "zsh/40_integrations.zsh".source = ./files/zsh/40_integrations.zsh;
     "zsh/60_gh-extensions.defer.zsh".source = ./files/zsh/60_gh-extensions.defer.zsh;
+
+    # Bat theme
+    "bat/themes" = {
+      source = ./files/bat/themes;
+      recursive = true;
+    };
+
+    # Lazygit themes
+    "lazygit/themes" = {
+      source = ./files/lazygit/themes;
+      recursive = true;
+    };
+
+    # gh-dash
+    "gh-dash/config.yml".source = ./files/gh-dash/config.yml;
   };
 }

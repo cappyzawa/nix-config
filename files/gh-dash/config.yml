@@ -1,0 +1,82 @@
+prSections:
+- title: My Pull Requests
+  filters: is:open author:@me
+- title: Ready to Merge
+  filters: is:open author:@me review:approved
+- title: Needs My Review
+  filters: is:open review-requested:@me updated:>2025-10-01
+- title: Involved
+  filters: is:open involves:@me -author:@me updated:>2025-10-01
+issuesSections:
+- title: My Issues
+  filters: is:open author:@me
+- title: Assigned
+  filters: is:open assignee:@me
+- title: Involved
+  filters: is:open involves:@me -author:@me updated:>2025-10-01
+defaults:
+  preview:
+    open: true
+    width: 50
+  prsLimit: 20
+  issuesLimit: 20
+  view: prs
+  layout:
+    prs:
+      updatedAt:
+        width: 7
+      repo:
+        width: 15
+      author:
+        width: 15
+      assignees:
+        width: 20
+        hidden: true
+      base:
+        width: 15
+        hidden: true
+      lines:
+        width: 16
+    issues:
+      updatedAt:
+        width: 7
+      repo:
+        width: 15
+      creator:
+        width: 10
+      assignees:
+        width: 20
+        hidden: true
+  refetchIntervalMinutes: 30
+keybindings:
+  issues: []
+  prs: []
+repoPaths: {}
+theme:
+  colors:
+    text:
+      primary: "#E6DED3"
+      secondary: "#465676"
+      inverted: "#10141C"
+      faint: "#7E93A6"
+      warning: "#E26A3B"
+      success: "#7FAF6A"
+      error: "#D25046"
+    background:
+      selected: "#2D2925"
+    border:
+      primary: "#262F3B"
+      secondary: "#1B222B"
+      faint: "#1B222B"
+    icon:
+      newContributor: "#7FAF6A"
+      contributor: "#5A6F82"
+      collaborator: "#D4A05A"
+      member: "#D4A05A"
+      owner: "#E26A3B"
+      unknownRole: "#8E7BA0"
+  ui:
+    table:
+      showSeparator: true
+pager:
+  diff: ""
