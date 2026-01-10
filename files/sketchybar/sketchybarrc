@@ -1,0 +1,59 @@
+#!/bin/bash
+
+PLUGIN_DIR="$CONFIG_DIR/plugins"
+
+# Bar appearance
+sketchybar --bar \
+  height=32 \
+  blur_radius=30 \
+  position=top \
+  sticky=off \
+  padding_left=10 \
+  padding_right=10 \
+  color=0xa024273a
+
+# Default item settings
+sketchybar --default \
+  icon.font="SF Pro:Semibold:14.0" \
+  icon.color=0xffffffff \
+  label.font="SF Pro:Semibold:14.0" \
+  label.color=0xffffffff \
+  padding_left=5 \
+  padding_right=5
+
+# Left side: spaces
+sketchybar --add item space_separator left \
+  --set space_separator \
+    icon="/" \
+    icon.color=0xff6e738d \
+    label.drawing=off \
+    padding_left=10 \
+    padding_right=10
+
+# Center: front app
+sketchybar --add item front_app center \
+  --set front_app \
+    icon.drawing=off \
+    script="$PLUGIN_DIR/front_app.sh" \
+  --subscribe front_app front_app_switched
+
+# Right side items
+sketchybar --add item clock right \
+  --set clock \
+    update_freq=10 \
+    icon="" \
+    script="$PLUGIN_DIR/clock.sh"
+
+sketchybar --add item battery right \
+  --set battery \
+    update_freq=120 \
+    script="$PLUGIN_DIR/battery.sh" \
+  --subscribe battery system_woke power_source_change
+
+sketchybar --add item volume right \
+  --set volume \
+    script="$PLUGIN_DIR/volume.sh" \
+  --subscribe volume volume_change
+
+# Force all scripts to run
+sketchybar --update
