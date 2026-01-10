@@ -39,7 +39,7 @@ sudo darwin-rebuild switch --flake '.#cappyzawa'
 
 ### CLI tools (Nix packages)
 
-Edit `home.nix` and add packages to `home.packages`:
+Edit `home/default.nix` and add packages to `home.packages`:
 
 ```nix
 home.packages = with pkgs; [
@@ -56,7 +56,7 @@ Search for packages at [search.nixos.org](https://search.nixos.org/packages).
 
 ### GUI applications (Homebrew casks)
 
-Edit `darwin.nix` and add to `homebrew.casks`:
+Edit `darwin/default.nix` and add to `homebrew.casks`:
 
 ```nix
 homebrew.casks = [
@@ -70,7 +70,7 @@ homebrew.casks = [
 
 ### CLI tools via Homebrew
 
-Edit `darwin.nix` and add to `homebrew.brews`:
+Edit `darwin/default.nix` and add to `homebrew.brews`:
 
 ```nix
 homebrew.brews = [
@@ -82,22 +82,22 @@ homebrew.brews = [
 
 ### Configuration files
 
-Edit `home.nix` and add to `xdg.configFile`:
+Edit `home/default.nix` and add to `xdg.configFile`:
 
 ```nix
 xdg.configFile = {
   # Single file
-  "myapp/config.toml".source = ./files/myapp/config.toml;
+  "myapp/config.toml".source = ../config/myapp/config.toml;
 
   # Directory (recursive)
   "myapp" = {
-    source = ./files/myapp;
+    source = ../config/myapp;
     recursive = true;
   };
 
   # Executable file
   "myapp/script.sh" = {
-    source = ./files/myapp/script.sh;
+    source = ../config/myapp/script.sh;
     executable = true;
   };
 };
@@ -155,11 +155,13 @@ sudo darwin-rebuild switch --rollback
 ├── Makefile        # Build commands
 ├── flake.nix       # Flake entry point
 ├── flake.lock      # Locked dependencies
-├── darwin.nix      # macOS system configuration
-├── home.nix        # Home Manager configuration
-└── files/          # Configuration files
+├── darwin/         # nix-darwin configuration
+│   └── default.nix # macOS system configuration
+├── home/           # Home Manager configuration
+│   └── default.nix # User environment configuration
+└── config/         # Static configuration files
+    ├── aerospace/
     ├── alacritty/
-    ├── claude/
     ├── helix/
     ├── starship/
     └── zsh/

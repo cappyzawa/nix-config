@@ -446,58 +446,58 @@
   # Config files
   xdg.configFile = {
     # AeroSpace
-    "aerospace/aerospace.toml".source = ./files/aerospace/aerospace.toml;
+    "aerospace/aerospace.toml".source = ../config/aerospace/aerospace.toml;
 
     # Alacritty
     "alacritty" = {
-      source = ./files/alacritty;
+      source = ../config/alacritty;
       recursive = true;
     };
 
     # Claude Code
-    "claude/settings.json".source = ./files/claude/settings.json;
-    "claude/CLAUDE.md".source = ./files/claude/CLAUDE.md;
+    "claude/settings.json".source = ../config/claude/settings.json;
+    "claude/CLAUDE.md".source = ../config/claude/CLAUDE.md;
     "claude/statusline.sh" = {
-      source = ./files/claude/statusline.sh;
+      source = ../config/claude/statusline.sh;
       executable = true;
     };
 
     # Helix
-    "helix/config.toml".source = ./files/helix/config.toml;
-    "helix/languages.toml".source = ./files/helix/languages.toml;
+    "helix/config.toml".source = ../config/helix/config.toml;
+    "helix/languages.toml".source = ../config/helix/languages.toml;
     "helix/themes" = {
-      source = ./files/helix/themes;
+      source = ../config/helix/themes;
       recursive = true;
     };
 
     # Starship
-    "starship/starship.toml".source = ./files/starship/starship.toml;
-    "starship/starship-claude.toml".source = ./files/starship/starship-claude.toml;
+    "starship/starship.toml".source = ../config/starship/starship.toml;
+    "starship/starship-claude.toml".source = ../config/starship/starship-claude.toml;
 
     # Zsh config files
-    "zsh/10_aliases.zsh".source = ./files/zsh/10_aliases.zsh;
-    "zsh/20_keybinds.zsh".source = ./files/zsh/20_keybinds.zsh;
-    "zsh/30_fzf.zsh".source = ./files/zsh/30_fzf.zsh;
-    "zsh/40_integrations.zsh".source = ./files/zsh/40_integrations.zsh;
-    "zsh/60_gh-extensions.defer.zsh".source = ./files/zsh/60_gh-extensions.defer.zsh;
+    "zsh/10_aliases.zsh".source = ../config/zsh/10_aliases.zsh;
+    "zsh/20_keybinds.zsh".source = ../config/zsh/20_keybinds.zsh;
+    "zsh/30_fzf.zsh".source = ../config/zsh/30_fzf.zsh;
+    "zsh/40_integrations.zsh".source = ../config/zsh/40_integrations.zsh;
+    "zsh/60_gh-extensions.defer.zsh".source = ../config/zsh/60_gh-extensions.defer.zsh;
 
     # Bat theme
     "bat/themes" = {
-      source = ./files/bat/themes;
+      source = ../config/bat/themes;
       recursive = true;
     };
 
     # Lazygit themes
     "lazygit/themes" = {
-      source = ./files/lazygit/themes;
+      source = ../config/lazygit/themes;
       recursive = true;
     };
 
     # gh-dash
-    "gh-dash/config.yml".source = ./files/gh-dash/config.yml;
+    "gh-dash/config.yml".source = ../config/gh-dash/config.yml;
 
     # Karabiner-Elements
-    "karabiner/karabiner.json".source = ./files/karabiner/karabiner.json;
+    "karabiner/karabiner.json".source = ../config/karabiner/karabiner.json;
 
     # TPM (Tmux Plugin Manager)
     "tmux/plugins/tpm" = {

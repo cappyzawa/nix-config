@@ -35,14 +35,14 @@
         inherit system;
         specialArgs = { inherit username; };
         modules = [
-          ./darwin.nix
+          ./darwin
           home-manager.darwinModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.backupFileExtension = "backup";
             home-manager.extraSpecialArgs = { inherit username akari-fzf akari-zsh tpm; };
-            home-manager.users.${username} = import ./home.nix;
+            home-manager.users.${username} = import ./home;
           }
         ];
       };
