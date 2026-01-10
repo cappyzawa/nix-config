@@ -493,36 +493,6 @@
     # Karabiner-Elements
     "karabiner/karabiner.json".source = ./files/karabiner/karabiner.json;
 
-    # SketchyBar
-    "sketchybar/sketchybarrc" = {
-      source = ./files/sketchybar/sketchybarrc;
-      executable = true;
-    };
-    "sketchybar/plugins/front_app.sh" = {
-      source = ./files/sketchybar/plugins/front_app.sh;
-      executable = true;
-    };
-    "sketchybar/plugins/clock.sh" = {
-      source = ./files/sketchybar/plugins/clock.sh;
-      executable = true;
-    };
-    "sketchybar/plugins/battery.sh" = {
-      source = ./files/sketchybar/plugins/battery.sh;
-      executable = true;
-    };
-    "sketchybar/plugins/volume.sh" = {
-      source = ./files/sketchybar/plugins/volume.sh;
-      executable = true;
-    };
-    "sketchybar/plugins/network.sh" = {
-      source = ./files/sketchybar/plugins/network.sh;
-      executable = true;
-    };
-    "sketchybar/plugins/keyboard.sh" = {
-      source = ./files/sketchybar/plugins/keyboard.sh;
-      executable = true;
-    };
-
     # TPM (Tmux Plugin Manager)
     "tmux/plugins/tpm" = {
       source = tpm;
