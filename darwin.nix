@@ -51,7 +51,7 @@
       "obsidian"
       "dropbox"
       "appcleaner"
-      "logi-options-plus"
+      "logi-options+"
       "claude-code"
     ];
   };
