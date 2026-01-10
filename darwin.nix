@@ -79,6 +79,9 @@
       TrackpadRightClick = true;
     };
 
+    # Mouse
+    ".GlobalPreferences"."com.apple.mouse.scaling" = 1.5;
+
     # Global settings
     NSGlobalDomain = {
       AppleShowAllExtensions = true;
