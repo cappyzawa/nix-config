@@ -129,17 +129,13 @@ See [Home Manager options](https://nix-community.github.io/home-manager/options.
 After making changes, apply them with:
 
 ```bash
-sudo darwin-rebuild switch --flake '.#cappyzawa'
+make switch
 ```
 
 ### Update dependencies
 
 ```bash
-# Update flake.lock
-nix flake update
-
-# Apply updates
-sudo darwin-rebuild switch --flake '.#cappyzawa'
+make update
 ```
 
 ### Rollback
@@ -156,6 +152,7 @@ sudo darwin-rebuild switch --rollback
 
 ```
 .
+├── Makefile        # Build commands
 ├── flake.nix       # Flake entry point
 ├── flake.lock      # Locked dependencies
 ├── darwin.nix      # macOS system configuration

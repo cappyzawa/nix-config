@@ -60,6 +60,145 @@
   # Tmux
   programs.tmux = {
     enable = true;
+    prefix = "C-t";
+    keyMode = "vi";
+    escapeTime = 0;
+    baseIndex = 1;
+    mouse = true;
+    terminal = "screen-256color";
+    historyLimit = 2000;
+
+    extraConfig = ''
+      # Set PATH first for tpm and plugins (include nix paths)
+      set-environment -g PATH "/etc/profiles/per-user/''${USER}/bin:/run/current-system/sw/bin:/opt/homebrew/bin:/usr/local/bin:/bin:/usr/bin"
+
+      setenv LANG en_US.UTF-8
+
+      # Nested tmux (F12 to toggle local tmux on/off)
+      bind -T root F12 \
+        set prefix None \; set key-table off \; refresh-client -S
+      bind -T off F12 \
+        set -u prefix \; set -u key-table \; refresh-client -S
+
+      set-option -g default-shell /bin/zsh
+      set-option -g default-command "exec arch -arch arm64 /bin/zsh --login"
+      set-option -g focus-events on
+
+      # Split window from current path
+      bind-key \\ split-window -hf -c '#{pane_current_path}'
+      bind-key | split-window -hfb -c '#{pane_current_path}'
+
+      # Vertical split window from current path
+      bind-key - split-window -v -c '#{pane_current_path}'
+      bind-key _ split-window -vb -l 40% -c '#{pane_current_path}'
+
+      # Rebalance pane layout
+      bind-key = select-layout -E
+
+      # New Window
+      bind-key c new-window -c '#{pane_current_path}'
+
+      # Swap & Select window in order
+      bind-key ] swap-window -t +1\; select-window -t +1
+      bind-key [ swap-window -t -1\; select-window -t -1
+
+      # Move window in order
+      bind-key C-l select-window -t +1
+      bind-key C-h select-window -t -1
+
+      # Custom mouse settings
+      unbind-key -T root MouseDown1Pane
+      unbind-key -T root MouseDown3Pane
+
+      # Allow applications to use OSC 52 to access clipboard
+      set -g set-clipboard on
+      set -g allow-passthrough on
+
+      # Window settings
+      set-option -g renumber-windows on
+      set-window-option -g pane-base-index 1
+
+      # Pane selection timeout (for prefix + q)
+      set -g display-panes-time 3000
+
+      # Pane Title
+      set-option -g pane-border-status top
+      bind-key C-t run-shell 'status=$(tmux show-window-option -v pane-border-status); if [ "$status" = "top" ]; then tmux setw pane-border-status off; else tmux setw pane-border-status top; fi'
+      bind-key : command-prompt -p "(rename-pane)" "select-pane -T %%"
+
+      # Resize pane
+      bind-key -r H resize-pane -L 5
+      bind-key -r J resize-pane -D 5
+      bind-key -r K resize-pane -U 5
+      bind-key -r L resize-pane -R 5
+
+      # Change active pane
+      bind-key h select-pane -L
+      bind-key j select-pane -D
+      bind-key k select-pane -U
+      bind-key l select-pane -R
+
+      # Reload config file
+      bind-key r source-file ~/.config/tmux/tmux.conf\; display-message "[tmux] config reloaded!"
+
+      # sync
+      bind a setw synchronize-panes \; display "synchronize-panes #{?pane_synchronized,on,off}"
+
+      # Look up in a man-page
+      bind-key m command-prompt -p "Man:" "split-window 'man %%'"
+
+      # terminal overrides
+      set-option -ga terminal-overrides ",xterm-256color:Tc"
+
+      # status bar
+      set-option -g status-position top
+
+      # vi mode
+      set -g status-keys vi
+
+      bind-key v copy-mode \; display "Copy mode!"
+
+      bind-key p run-shell -b "~/.config/tmux/plugins/tmux-fzf/scripts/clipboard.sh buffer"
+
+      bind-key -T edit-mode-vi Up send-keys -X history-up
+      bind-key -T edit-mode-vi Down send-keys -X history-down
+      unbind-key -T copy-mode-vi Space
+
+      bind-key -T copy-mode-vi v send-keys -X begin-selection
+      bind-key -T copy-mode-vi V send-keys -X select-line
+      bind-key -T copy-mode-vi C-v send-keys -X rectangle-toggle
+      bind-key -T copy-mode-vi c send-keys -X clear-selection
+      bind-key -T copy-mode-vi H send-keys -X start-of-line
+      bind-key -T copy-mode-vi L send-keys -X end-of-line
+      bind-key -T copy-mode-vi Enter send-keys -X copy-pipe-and-cancel "pbcopy"
+      bind-key -T copy-mode-vi y send-keys -X copy-pipe-and-cancel "pbcopy"
+      bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel "pbcopy"
+
+      TMUX_FZF_SED="/usr/local/opt/gnu-sed/libexec/gnubin/sed"
+
+      # List of plugins
+      set -g @plugin 'tmux-plugins/tpm'
+      set -g @plugin 'tmux-plugins/tmux-open'
+      set -g @plugin 'sainnhe/tmux-fzf'
+      set -g @plugin 'tmux-plugins/tmux-resurrect'
+      set -g @resurrect-capture-pane-contents 'on'
+      set -g @plugin 'tmux-plugins/tmux-continuum'
+      set -g @continuum-restore 'on'
+      set -g @continuum-save-interval '10'
+      set -g @plugin 'cappyzawa/akari-tmux'
+      set -g @akari_variant 'night'
+      set -g @akari_icon_normal '󱥸'
+      set -g @akari_icon_prefix '''
+      set -g @plugin 'cappyzawa/tmux-popups'
+      set -g @popup_g 'lazygit'
+      set -g @popup_l 'gh cd -p 1'
+      set -g @popup_c 'gh cd -p 1 -c claude'
+      set -g @popup_d 'gh dash'
+      set -g @popup_f 'hx .'
+
+      # Initialize TMUX plugin manager (keep this line at the very bottom)
+      run -b '~/.config/tmux/plugins/tpm/tpm'
+    '';
   };
 
   # Zsh
