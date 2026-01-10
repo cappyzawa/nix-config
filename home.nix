@@ -370,7 +370,7 @@
           owner = "cappyzawa";
           repo = "akari-fzf";
           rev = "main";
-          sha256 = "sha256-/T+Lv4O8I0dxsrPM/Hqgp7OPVVMJWrzq83ili0XkCjw=";
+          sha256 = "sha256-McXGljmosRPelguvxkjldKAgssFYbF+H58owqh6R4wc=";
         };
       }
       # Akari zsh-syntax-highlighting theme
@@ -381,7 +381,7 @@
           owner = "cappyzawa";
           repo = "akari-zsh";
           rev = "main";
-          sha256 = "sha256-Ce6y+ORBT3EPPq0ftXHrwxJVKHcwryRh3etktfIWV9o=";
+          sha256 = "sha256-kE4k+NPewGLl/ghNOxOsPxpj/Ywfim4oPJ6aPtD1CPI=";
         };
       }
     ];
@@ -441,6 +441,7 @@
       CVSEDITOR = "hx";
       SVN_EDITOR = "hx";
       GIT_EDITOR = "hx";
+      CLAUDE_CONFIG_DIR = "\${XDG_CONFIG_HOME:-$HOME/.config}/claude";
     };
   };
 
