@@ -32,6 +32,41 @@
 
     # Nix tools
     nix-prefetch-github  # Get sha256 for fetchFromGitHub
+
+    # Languages (for Helix)
+    go
+    deno
+    zig
+
+    # Language servers (for Helix)
+    gopls                            # Go
+    rust-analyzer                    # Rust
+    yaml-language-server             # YAML
+    taplo                            # TOML
+    marksman                         # Markdown
+    nodePackages.bash-language-server      # Bash
+    nodePackages.typescript-language-server  # TypeScript/JavaScript
+    vscode-langservers-extracted     # JSON, HTML, CSS
+    lua-language-server              # Lua
+    terraform-ls                     # Terraform
+    zls                              # Zig
+
+    # Formatters and linters (for Helix)
+    gotools        # goimports
+    shfmt          # Shell
+    shellcheck     # Shell linter
+    yamlfmt        # YAML
+    nodePackages.prettier  # Multi-format (JSON, Markdown, CSS, HTML)
+    terraform      # HCL formatter
+
+    # Additional development tools
+    colima         # Container runtime
+    nodejs         # Node.js
+    hyperfine      # Benchmarking tool
+    yq-go          # YAML processor
+    golangci-lint  # Go linter
+    goreleaser     # Go release tool
+    glow           # Markdown renderer
   ];
 
   # GitHub CLI
@@ -63,9 +98,60 @@
   programs.git = {
     enable = true;
     ignores = [
-      "**/.claude/settings.local.json"
-      "**/CLAUDE.local.md"
+      ".idea/*"
+      ".envrc"
+      ".go-version"
+      ".node-version"
+      ".DS_Store"
+      ".claude/"
+      "CLAUDE.md"
+      "CLAUDE.local.md"
+      ".serena/"
     ];
+    settings = {
+      alias = {
+        cm = "checkout main";
+        graph = "log --graph --date-order -C -M --pretty=format:\"<%h> %ad [%an] %Cgreen%d%Creset %s\" --all --date=short";
+        undo = "reset --soft HEAD^";
+      };
+      ghq.root = "~/ghq/src";
+      merge.conflictstyle = "diff3";
+      pull.rebase = true;
+      init.defaultBranch = "main";
+      core.ignorecase = false;
+      credential.helper = "cache --timeout=3600";
+      include.path = "~/.gitconfig.local";
+    };
+  };
+
+  # Delta (git pager)
+  programs.delta = {
+    enable = true;
+    enableGitIntegration = true;
+    options = {
+      features = "tokyonight";
+      tokyonight = {
+        commit-decoration-style = "bold box ul";
+        dark = true;
+        file-decoration-style = "none";
+        file-style = "omit";
+        hunk-header-decoration-style = "#2ac3de box ul";
+        hunk-header-file-style = "#c0caf5";
+        hunk-header-line-number-style = "bold #c0caf5";
+        hunk-header-style = "file line-number syntax";
+        line-numbers = true;
+        line-numbers-left-style = "#2ac3de";
+        line-numbers-minus-style = "#823c41";
+        line-numbers-plus-style = "#164846";
+        line-numbers-right-style = "#2ac3de";
+        line-numbers-zero-style = "#999999";
+        minus-emph-style = "normal #823c41";
+        minus-style = "normal #823c41";
+        plus-emph-style = "syntax #164846";
+        plus-style = "syntax #164846";
+        syntax-theme = "Nord";
+      };
+    };
   };
 
   # Bat

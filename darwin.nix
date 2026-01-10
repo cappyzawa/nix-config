@@ -35,7 +35,6 @@
 
     brews = [
       "docker"
-      "colima"
     ];
 
     casks = [
