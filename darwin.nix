@@ -31,13 +31,16 @@
       cleanup = "zap";  # Remove unlisted casks/formulas
     };
 
-    taps = [];
+    taps = [
+      "nikitabobko/tap"
+    ];
 
     brews = [
       "docker"
     ];
 
     casks = [
+      "nikitabobko/tap/aerospace"
       "alacritty"
       "arc"
       "1password"

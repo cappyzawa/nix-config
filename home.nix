@@ -442,6 +442,9 @@
 
   # Config files
   xdg.configFile = {
+    # AeroSpace
+    "aerospace/aerospace.toml".source = ./files/aerospace/aerospace.toml;
+
     # Alacritty
     "alacritty" = {
       source = ./files/alacritty;
