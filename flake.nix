@@ -23,12 +23,57 @@
       url = "github:tmux-plugins/tpm";
       flake = false;
     };
+    sbarlua = {
+      url = "github:FelixKratz/SbarLua";
+      flake = false;
+    };
   };
 
-  outputs = { self, nixpkgs, nix-darwin, home-manager, akari-fzf, akari-zsh, tpm, ... }:
+  outputs = { self, nixpkgs, nix-darwin, home-manager, akari-fzf, akari-zsh, tpm, sbarlua, ... }:
     let
       system = "aarch64-darwin";
       username = "cappyzawa";
+      pkgs = nixpkgs.legacyPackages.${system};
+
+      # SbarLua derivation
+      sbarluaPkg = pkgs.stdenv.mkDerivation {
+        pname = "sbarlua";
+        version = "unstable";
+        src = sbarlua;
+
+        nativeBuildInputs = with pkgs; [
+          clang
+          gnumake
+          readline
+        ];
+
+        buildInputs = [
+          pkgs.apple-sdk_15
+        ];
+
+        buildPhase = ''
+          # Build Lua first
+          cd lua-5.4.7
+          make macosx CC=clang
+          cd ..
+
+          # Build SbarLua
+          mkdir -p bin
+          mv lua-5.4.7/src/liblua.a bin/
+
+          clang -std=c99 -O3 -g -shared -fPIC \
+            -arch arm64 \
+            src/*.c \
+            -Ilua-5.4.7/src -Lbin -llua \
+            -framework CoreFoundation \
+            -o bin/sketchybar.so
+        '';
+
+        installPhase = ''
+          mkdir -p $out/lib/sketchybar_lua
+          cp bin/sketchybar.so $out/lib/sketchybar_lua/
+        '';
+      };
     in
     {
       darwinConfigurations.${username} = nix-darwin.lib.darwinSystem {
@@ -41,7 +86,7 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.backupFileExtension = "backup";
-            home-manager.extraSpecialArgs = { inherit username akari-fzf akari-zsh tpm; };
+            home-manager.extraSpecialArgs = { inherit username akari-fzf akari-zsh tpm sbarluaPkg; };
             home-manager.users.${username} = import ./home;
           }
         ];

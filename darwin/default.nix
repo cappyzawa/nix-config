@@ -38,10 +38,11 @@
 
     brews = [
       "docker"
-      {
-        name = "FelixKratz/formulae/borders";
-        start_service = true;
-      }
+      "lua"
+      "switchaudio-osx"
+      "nowplaying-cli"
+      "FelixKratz/formulae/borders"
+      "FelixKratz/formulae/sketchybar"
     ];
 
     casks = [
@@ -53,6 +54,9 @@
       "google-japanese-ime"
       "karabiner-elements"
       "font-moralerspace"
+      "sf-symbols"
+      "font-sf-mono"
+      "font-sf-pro"
       "drawio"
       "excalidrawz"
       "obsidian"
@@ -99,6 +103,7 @@
       AppleShowAllExtensions = true;
       InitialKeyRepeat = 15;
       KeyRepeat = 2;
+      _HIHideMenuBar = true;  # Hide menu bar for sketchybar
     };
   };
 

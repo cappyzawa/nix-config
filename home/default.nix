@@ -1,4 +1,4 @@
-{ config, pkgs, lib, username, akari-fzf, akari-zsh, tpm, ... }:
+{ config, pkgs, lib, username, akari-fzf, akari-zsh, tpm, sbarluaPkg, ... }:
 
 {
   home.username = username;
@@ -454,6 +454,31 @@
       executable = true;
     };
 
+    # SketchyBar
+    "sketchybar/sketchybarrc" = {
+      source = ../config/sketchybar/sketchybarrc;
+      executable = true;
+    };
+    "sketchybar/init.lua".source = ../config/sketchybar/init.lua;
+    "sketchybar/bar.lua".source = ../config/sketchybar/bar.lua;
+    "sketchybar/colors.lua".source = ../config/sketchybar/colors.lua;
+    "sketchybar/default.lua".source = ../config/sketchybar/default.lua;
+    "sketchybar/icons.lua".source = ../config/sketchybar/icons.lua;
+    "sketchybar/settings.lua".source = ../config/sketchybar/settings.lua;
+    "sketchybar/helpers/init.lua".source = ../config/sketchybar/helpers/init.lua;
+    "sketchybar/helpers/default_font.lua".source = ../config/sketchybar/helpers/default_font.lua;
+    "sketchybar/items/init.lua".source = ../config/sketchybar/items/init.lua;
+    "sketchybar/items/spaces.lua".source = ../config/sketchybar/items/spaces.lua;
+    "sketchybar/items/front_app.lua".source = ../config/sketchybar/items/front_app.lua;
+    "sketchybar/items/calendar.lua".source = ../config/sketchybar/items/calendar.lua;
+    "sketchybar/items/media.lua".source = ../config/sketchybar/items/media.lua;
+    "sketchybar/items/widgets/init.lua".source = ../config/sketchybar/items/widgets/init.lua;
+    "sketchybar/items/widgets/battery.lua".source = ../config/sketchybar/items/widgets/battery.lua;
+    "sketchybar/items/widgets/volume.lua".source = ../config/sketchybar/items/widgets/volume.lua;
+    "sketchybar/items/widgets/cpu.lua".source = ../config/sketchybar/items/widgets/cpu.lua;
+    "sketchybar/items/widgets/memory.lua".source = ../config/sketchybar/items/widgets/memory.lua;
+    "sketchybar/items/widgets/wifi.lua".source = ../config/sketchybar/items/widgets/wifi.lua;
+
     # Alacritty
     "alacritty" = {
       source = ../config/alacritty;
@@ -511,4 +536,10 @@
       recursive = true;
     };
   };
+
+  # SbarLua installation (symlink to expected location)
+  home.activation.sbarluaSetup = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    mkdir -p $HOME/.local/share/sketchybar_lua
+    ln -sf ${sbarluaPkg}/lib/sketchybar_lua/sketchybar.so $HOME/.local/share/sketchybar_lua/sketchybar.so
+  '';
 }
