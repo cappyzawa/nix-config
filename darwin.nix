@@ -42,7 +42,6 @@
     casks = [
       "nikitabobko/tap/aerospace"
       "alacritty"
-      "arc"
       "1password"
       "raycast"
       "google-chrome"
