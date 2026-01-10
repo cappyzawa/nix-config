@@ -318,6 +318,7 @@
   # Zsh
   programs.zsh = {
     enable = true;
+    dotDir = "${config.xdg.configHome}/zsh";
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
     defaultKeymap = "viins";  # Start in vi insert mode
@@ -428,7 +429,6 @@
 
     # Zsh options and environment variables
     sessionVariables = {
-      XDG_CONFIG_HOME = "$HOME/.config";
       KEYTIMEOUT = "20";
       EDITOR = "hx";
       VISUAL = "hx";
@@ -439,6 +439,9 @@
       LG_CONFIG_FILE = "$HOME/.config/lazygit/themes/akari-night.yml";
     };
   };
+
+  # XDG Base Directory
+  xdg.enable = true;
 
   # Config files
   xdg.configFile = {
