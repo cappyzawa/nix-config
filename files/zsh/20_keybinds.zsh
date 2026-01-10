@@ -1,7 +1,5 @@
 # Vi mode keybindings
-
-# Enable vi mode
-bindkey -v
+# Note: vi mode is enabled via programs.zsh.defaultKeymap = "viins"
 
 # jj to escape to normal mode
 bindkey -M viins 'jj' vi-cmd-mode
@@ -27,3 +25,7 @@ bindkey -M viins '^B' backward-char
 # History navigation
 bindkey -M viins '^N' down-history
 bindkey -M viins '^P' up-history
+
+# fzf history search (re-bind after vi mode)
+bindkey -M viins '^R' fzf_history_search
+bindkey -M vicmd '^R' fzf_history_search

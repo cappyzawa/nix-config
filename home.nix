@@ -228,6 +228,7 @@
     enable = true;
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
+    defaultKeymap = "viins";  # Start in vi insert mode
 
     history = {
       size = 50000;
@@ -305,7 +306,7 @@
         # Standalone home-manager uses .nix-profile
         [[ -d "''${HOME}/.nix-profile/bin" ]] && path=("''${HOME}/.nix-profile/bin" $path)
         [[ -d "''${HOME}/bin" ]] && path=("''${HOME}/bin" $path)
-        [[ -d "''${CARGO_HOME}/bin" ]] && path=("''${CARGO_HOME}/bin" $path)
+        [[ -d "''${CARGO_HOME:-$HOME/.cargo}/bin" ]] && path=("''${CARGO_HOME:-$HOME/.cargo}/bin" $path)
         [[ -d "''${HOME}/.local/bin" ]] && path+=("''${HOME}/.local/bin")
         [[ -d "''${HOME}/.krew/bin" ]] && path+=("''${HOME}/.krew/bin")
       '')
