@@ -21,4 +21,11 @@
     "automerge": false,
   },
   "prConcurrentLimit": 5,
+  "packageRules": [
+    {
+      "description": "Group akari theme updates",
+      "matchPackagePatterns": ["^cappyzawa/akari-"],
+      "groupName": "akari-theme",
+    },
+  ],
 }

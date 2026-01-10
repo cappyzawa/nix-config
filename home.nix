@@ -1,4 +1,4 @@
-{ config, pkgs, lib, username, ... }:
+{ config, pkgs, lib, username, akari-fzf, akari-zsh, ... }:
 
 {
   home.username = username;
@@ -366,23 +366,13 @@
       {
         name = "akari-fzf";
         file = "akari-night.sh";
-        src = pkgs.fetchFromGitHub {
-          owner = "cappyzawa";
-          repo = "akari-fzf";
-          rev = "main";
-          sha256 = "sha256-McXGljmosRPelguvxkjldKAgssFYbF+H58owqh6R4wc=";
-        };
+        src = akari-fzf;
       }
       # Akari zsh-syntax-highlighting theme
       {
         name = "akari-zsh";
         file = "akari-night.zsh";
-        src = pkgs.fetchFromGitHub {
-          owner = "cappyzawa";
-          repo = "akari-zsh";
-          rev = "main";
-          sha256 = "sha256-kE4k+NPewGLl/ghNOxOsPxpj/Ywfim4oPJ6aPtD1CPI=";
-        };
+        src = akari-zsh;
       }
     ];
 

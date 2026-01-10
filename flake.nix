@@ -11,9 +11,17 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    akari-fzf = {
+      url = "github:cappyzawa/akari-fzf";
+      flake = false;
+    };
+    akari-zsh = {
+      url = "github:cappyzawa/akari-zsh";
+      flake = false;
+    };
   };
 
-  outputs = { self, nixpkgs, nix-darwin, home-manager, ... }:
+  outputs = { self, nixpkgs, nix-darwin, home-manager, akari-fzf, akari-zsh, ... }:
     let
       system = "aarch64-darwin";
       username = "cappyzawa";
@@ -29,7 +37,7 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.backupFileExtension = "backup";
-            home-manager.extraSpecialArgs = { inherit username; };
+            home-manager.extraSpecialArgs = { inherit username akari-fzf akari-zsh; };
             home-manager.users.${username} = import ./home.nix;
           }
         ];
