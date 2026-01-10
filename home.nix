@@ -29,6 +29,9 @@
     ghq       # Repository manager
     helix     # Modal editor
     gh-dash   # GitHub dashboard
+
+    # Nix tools
+    nix-prefetch-github  # Get sha256 for fetchFromGitHub
   ];
 
   # GitHub CLI
@@ -281,7 +284,7 @@
           owner = "cappyzawa";
           repo = "akari-fzf";
           rev = "main";
-          sha256 = "sha256-Csc14RVdesSDNQOw5KOEj3FpYPIh0jci+E+A6P3n72g=";
+          sha256 = "sha256-/T+Lv4O8I0dxsrPM/Hqgp7OPVVMJWrzq83ili0XkCjw=";
         };
       }
       # Akari zsh-syntax-highlighting theme
@@ -292,7 +295,7 @@
           owner = "cappyzawa";
           repo = "akari-zsh";
           rev = "main";
-          sha256 = "sha256-oXm3C6ChfSp2lqFn99wd/YHrGNtyYE/EPQPjiQm6ePM=";
+          sha256 = "sha256-Ce6y+ORBT3EPPq0ftXHrwxJVKHcwryRh3etktfIWV9o=";
         };
       }
     ];
