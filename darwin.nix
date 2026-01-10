@@ -63,8 +63,14 @@
     # Dock
     dock = {
       autohide = true;
+      minimize-to-application = true;
+      mineffect = "scale";
       show-recents = false;
       tilesize = 48;
+      persistent-apps = [
+        "/Applications/Alacritty.app"
+        "/Applications/Google Chrome.app"
+      ];
     };
 
     # Finder
