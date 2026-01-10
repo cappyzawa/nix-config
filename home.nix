@@ -139,6 +139,9 @@
       (lib.mkBefore ''
         # PATH management (must be first for nix-managed tools)
         typeset -U path
+        # nix-darwin + home-manager uses per-user profile
+        [[ -d "/etc/profiles/per-user/''${USER}/bin" ]] && path=("/etc/profiles/per-user/''${USER}/bin" $path)
+        # Standalone home-manager uses .nix-profile
         [[ -d "''${HOME}/.nix-profile/bin" ]] && path=("''${HOME}/.nix-profile/bin" $path)
         [[ -d "''${HOME}/bin" ]] && path=("''${HOME}/bin" $path)
         [[ -d "''${CARGO_HOME}/bin" ]] && path=("''${CARGO_HOME}/bin" $path)
@@ -192,6 +195,12 @@
 
   # Config files
   xdg.configFile = {
+    # Alacritty
+    "alacritty" = {
+      source = ./files/alacritty;
+      recursive = true;
+    };
+
     # Claude Code
     "claude/settings.json".source = ./files/claude/settings.json;
     "claude/CLAUDE.md".source = ./files/claude/CLAUDE.md;

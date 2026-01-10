@@ -1,0 +1,43 @@
+[env]
+TERM = "xterm-256color"
+
+[font]
+builtin_box_drawing = true
+size = 22.0
+
+[font.bold]
+family = "Moralerspace Argon"
+style = "Bold"
+
+[font.italic]
+family = "Moralerspace Argon"
+style = "Italic"
+
+[font.normal]
+family = "Moralerspace Argon"
+style = "Regular"
+
+[terminal.shell]
+program = "/bin/zsh"
+args = ["-l", "-c", "tmux new-session -AD -s zzz"]
+
+[window]
+decorations = "none"
+dynamic_padding = true
+option_as_alt = "Both"
+# startup_mode = "Fullscreen"
+
+[window.padding]
+x = 5
+y = 5
+
+[general]
+import = ["themes/akari-night.toml"]
+
+[cursor]
+style = { shape = "Block", blinking = "Off" }
+
+[terminal]
+
+[keyboard]
+bindings = []
