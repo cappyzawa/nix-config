@@ -110,4 +110,9 @@
 
   # Enable Touch ID for sudo
   security.pam.services.sudo_local.touchIdAuth = true;
+
+  # Set desktop wallpaper to akari-night background color
+  system.activationScripts.extraActivation.text = ''
+    sudo -u ${username} /usr/bin/python3 /Users/${username}/.config/scripts/set-wallpaper.py || true
+  '';
 }

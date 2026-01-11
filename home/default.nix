@@ -536,6 +536,12 @@
       source = tpm;
       recursive = true;
     };
+
+    # Scripts
+    "scripts/set-wallpaper.py" = {
+      source = ../config/scripts/set-wallpaper.py;
+      executable = true;
+    };
   };
 
   # SbarLua installation (symlink to expected location)
