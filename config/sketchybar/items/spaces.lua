@@ -1,3 +1,11 @@
+-- AeroSpace workspace integration for SketchyBar
+--
+-- NOTE: sbar.add("space", ...) is for macOS Mission Control, NOT AeroSpace.
+-- Use sbar.add("item", ...) instead for AeroSpace workspaces.
+--
+-- NOTE: sbar.exec() is async and callbacks can get complex.
+-- Use io.popen() for synchronous command execution when needed.
+
 local colors = require("colors")
 local icons = require("icons")
 local settings = require("settings")
@@ -5,6 +13,9 @@ local app_icons = require("helpers.icon_map")
 
 local spaces = {}
 local space_brackets = {}
+
+-- Custom event triggered by aerospace via exec-on-workspace-change
+sbar.add("event", "aerospace_workspace_change")
 
 -- Workspace colors using akari-night palette
 local colors_spaces = {
@@ -40,9 +51,69 @@ local apple = sbar.add("item", "apple", {
 	padding_right = 4,
 })
 
+-- Helper function to run command synchronously
+local function run_cmd(cmd)
+	local handle = io.popen(cmd)
+	local result = handle:read("*a")
+	handle:close()
+	return result
+end
+
+-- Function to update workspace visibility and apps
+local function update_spaces()
+	local focused = run_cmd("aerospace list-workspaces --focused"):gsub("%s+", "")
+	local windows_output = run_cmd("aerospace list-windows --all --format '%{workspace}|%{app-name}'")
+
+	-- Parse windows per workspace
+	local workspace_apps = {}
+	for line in windows_output:gmatch("[^\n]+") do
+		local ws, app = line:match("([^|]+)|(.+)")
+		if ws and app then
+			ws = ws:gsub("%s+", "")
+			if not workspace_apps[ws] then
+				workspace_apps[ws] = {}
+			end
+			table.insert(workspace_apps[ws], app)
+		end
+	end
+
+	-- Update each space
+	for i = 1, 9 do
+		local ws_str = tostring(i)
+		local has_apps = workspace_apps[ws_str] ~= nil
+		local is_focused = focused == ws_str
+
+		spaces[i]:set({
+			drawing = has_apps,
+			icon = { highlight = is_focused },
+			label = { highlight = is_focused },
+			background = {
+				color = is_focused and colors_spaces[i] or colors.transparent,
+			},
+		})
+		space_brackets[i]:set({
+			drawing = has_apps,
+			background = {
+				color = is_focused and colors_spaces[i] or colors.background,
+			},
+		})
+
+		-- Update app icons
+		if has_apps then
+			local icon_line = ""
+			for _, app in ipairs(workspace_apps[ws_str]) do
+				local lookup = app_icons[app]
+				local icon = lookup or app_icons["default"]
+				icon_line = icon_line .. icon
+			end
+			spaces[i]:set({ label = icon_line })
+		end
+	end
+end
+
 for i = 1, 9, 1 do
-	local space = sbar.add("space", "space." .. i, {
-		space = i,
+	local space = sbar.add("item", "space." .. i, {
+		drawing = false,
 		icon = {
 			font = {
 				family = settings.font.numbers,
@@ -75,6 +146,7 @@ for i = 1, 9, 1 do
 
 	-- Individual bracket for each space
 	local bracket = sbar.add("bracket", "space.bracket." .. i, { space.name }, {
+		drawing = false,
 		background = {
 			color = colors.background,
 			border_color = colors_spaces[i],
@@ -85,50 +157,16 @@ for i = 1, 9, 1 do
 	})
 	space_brackets[i] = bracket
 
-	space:subscribe("space_change", function(env)
-		local selected = env.SELECTED == "true"
-		space:set({
-			icon = { highlight = selected },
-			label = { highlight = selected },
-			background = {
-				color = selected and colors_spaces[i] or colors.transparent,
-			},
-		})
-		bracket:set({
-			background = {
-				color = selected and colors_spaces[i] or colors.background,
-			},
-		})
+	space:subscribe("aerospace_workspace_change", function(env)
+		update_spaces()
 	end)
 
 	space:subscribe("mouse.clicked", function(env)
-		sbar.exec("aerospace workspace " .. env.SID)
+		sbar.exec("aerospace workspace " .. i)
 	end)
 end
 
--- Observer for window changes in spaces
-local space_window_observer = sbar.add("item", {
-	drawing = false,
-	updates = true,
-})
-
-space_window_observer:subscribe("space_windows_change", function(env)
-	local icon_line = ""
-	local no_app = true
-	for app, _ in pairs(env.INFO.apps) do
-		no_app = false
-		local lookup = app_icons[app]
-		local icon = ((lookup == nil) and app_icons["default"] or lookup)
-		icon_line = icon_line .. icon
-	end
-
-	if no_app then
-		icon_line = ""
-	end
-
-	sbar.animate("tanh", 10, function()
-		spaces[env.INFO.space]:set({ label = icon_line })
-	end)
-end)
+-- Initial update on load
+update_spaces()
 
 sbar.add("item", { width = 6 })

@@ -24,6 +24,11 @@ default-root-container-orientation = 'auto'
 # Mouse follows focus when focused monitor changes
 on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
 
+# Notify SketchyBar about workspace change
+# NOTE: This only fires on workspace switch, not on window move.
+# For custom scripts (like alt-o), trigger sketchybar manually.
+exec-on-workspace-change = ['/bin/bash', '-c', 'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE']
+
 # Gaps between windows
 [gaps]
     inner.horizontal = 8
@@ -101,7 +106,12 @@ if [ -n "$id" ]; then
         aerospace move-node-to-workspace --window-id "$id" 9
     else
         aerospace move-node-to-workspace --window-id "$id" 1
+        # Unhide and show Chrome
+        osascript -e 'tell application "Google Chrome" to activate'
     fi
+    # Wait for aerospace to complete and trigger sketchybar update
+    sleep 0.1
+    /opt/homebrew/bin/sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$(aerospace list-workspaces --focused)
 fi
 '''
 
