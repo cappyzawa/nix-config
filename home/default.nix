@@ -97,7 +97,7 @@
     gh = {
       enable = true;
       extensions = with pkgs; [
-        # gh-dash is managed by programs.gh-dash
+        gh-dash # config is managed by programs.gh-dash + akari-theme
         # gh-ghq-cd  # TODO: Add when flake is available
       ];
       settings = {
@@ -320,9 +320,10 @@
       enable = true;
     };
 
-    # gh-dash (theme is managed by akari-theme module)
+    # gh-dash (installed via gh.extensions, config managed by akari-theme)
     gh-dash = {
       enable = true;
+      package = null; # installed via programs.gh.extensions
     };
 
     # Alacritty (theme is managed by akari-theme module)
