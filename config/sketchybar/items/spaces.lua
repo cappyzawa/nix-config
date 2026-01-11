@@ -41,11 +41,10 @@ local apple = sbar.add("item", "apple", {
 	},
 	label = { drawing = false },
 	background = {
-		color = colors.background,
+		color = colors.bg1,
 		border_color = colors.lantern_mid,
 		border_width = 2,
-		height = 28,
-		corner_radius = 8,
+		height = 34,
 	},
 	padding_left = 4,
 	padding_right = 4,
@@ -117,7 +116,7 @@ for i = 1, 9, 1 do
 		icon = {
 			font = {
 				family = settings.font.numbers,
-				size = 14,
+				size = 16,
 			},
 			string = i,
 			padding_left = 8,
@@ -130,14 +129,14 @@ for i = 1, 9, 1 do
 			padding_left = 0,
 			color = colors_spaces[i],
 			highlight_color = colors.background,
-			font = "sketchybar-app-font:Regular:14.0",
+			font = "sketchybar-app-font:Regular:16.0",
 			y_offset = -1,
 		},
 		padding_right = 2,
 		padding_left = 2,
 		background = {
 			color = colors.transparent,
-			height = 28,
+			height = 34,
 			border_width = 0,
 		},
 	})
@@ -148,11 +147,10 @@ for i = 1, 9, 1 do
 	local bracket = sbar.add("bracket", "space.bracket." .. i, { space.name }, {
 		drawing = false,
 		background = {
-			color = colors.background,
+			color = colors.bg1,
 			border_color = colors_spaces[i],
 			border_width = 2,
-			height = 28,
-			corner_radius = 8,
+			height = 34,
 		},
 	})
 	space_brackets[i] = bracket

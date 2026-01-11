@@ -22,7 +22,7 @@ local front_app = sbar.add("item", "front_app", {
 	label = {
 		font = {
 			style = settings.font.style_map["Bold"],
-			size = 12.0,
+			size = 16.0,
 		},
 		color = colors.cyan,
 		padding_left = 4,
@@ -35,11 +35,10 @@ local front_app = sbar.add("item", "front_app", {
 
 sbar.add("bracket", "front_app.bracket", { front_app_icon.name, front_app.name }, {
 	background = {
-		color = colors.background,
+		color = colors.bg1,
 		border_color = colors.cyan,
 		border_width = 2,
-		height = 28,
-		corner_radius = 8,
+		height = 34,
 	},
 })
 

@@ -6,7 +6,7 @@ local cal_clock = sbar.add("item", {
 		drawing = "off",
 	},
 	label = {
-		color = colors.night,
+		color = colors.lantern_mid,
 		padding_right = 0,
 		align = "right",
 		font = { family = settings.font.numbers },
@@ -23,7 +23,7 @@ local cal_day_of_week = sbar.add("item", {
 		drawing = "off",
 	},
 	label = {
-		color = colors.night,
+		color = colors.lantern_mid,
 		padding_right = 0,
 		align = "center",
 		font = { family = settings.font.numbers },
@@ -40,7 +40,7 @@ local cal_month = sbar.add("item", {
 		drawing = "off",
 	},
 	label = {
-		color = colors.night,
+		color = colors.lantern_mid,
 		padding_right = 0,
 		align = "center",
 		font = { family = settings.font.numbers },
@@ -58,7 +58,7 @@ local cal_day = sbar.add("item", {
 		drawing = "off",
 	},
 	label = {
-		color = colors.night,
+		color = colors.lantern_mid,
 		padding_right = 0,
 		align = "center",
 		font = { family = settings.font.numbers },
@@ -73,9 +73,9 @@ local cal_day = sbar.add("item", {
 
 sbar.add("bracket", { cal_clock.name, cal_month.name, cal_day_of_week.name, cal_day.name }, {
 	background = {
-		color = colors.background,
+		color = colors.bg1,
 		height = 34,
-		border_color = colors.night,
+		border_color = colors.lantern_mid,
 		border_width = 2,
 	},
 })
