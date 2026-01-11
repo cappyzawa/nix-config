@@ -1,34 +1,20 @@
 {
   "nodes": {
-    "akari-fzf": {
-      "flake": false,
+    "akari-theme": {
+      "inputs": {
+        "nixpkgs": "nixpkgs"
+      },
       "locked": {
-        "lastModified": 1768054843,
-        "narHash": "sha256-McXGljmosRPelguvxkjldKAgssFYbF+H58owqh6R4wc=",
+        "lastModified": 1768155397,
+        "narHash": "sha256-9JaJx1vTgMedu3hKTacgc5qEZ8q43+jEFIL2ofafqik=",
         "owner": "cappyzawa",
-        "repo": "akari-fzf",
-        "rev": "157641876e2e73ab943e32aaa34ad9c0fa17a886",
+        "repo": "akari-theme",
+        "rev": "c45d24f94c27bf00ab2c1c58ac22d4a9a32b5618",
         "type": "github"
       },
       "original": {
         "owner": "cappyzawa",
-        "repo": "akari-fzf",
-        "type": "github"
-      }
-    },
-    "akari-zsh": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1768054845,
-        "narHash": "sha256-kE4k+NPewGLl/ghNOxOsPxpj/Ywfim4oPJ6aPtD1CPI=",
-        "owner": "cappyzawa",
-        "repo": "akari-zsh",
-        "rev": "03de73f8a4452b686751d1fa8b94388fcc3849ea",
-        "type": "github"
-      },
-      "original": {
-        "owner": "cappyzawa",
-        "repo": "akari-zsh",
+        "repo": "akari-theme",
         "type": "github"
       }
     },
@@ -74,6 +60,22 @@
     },
     "nixpkgs": {
       "locked": {
+        "lastModified": 1767892417,
+        "narHash": "sha256-dhhvQY67aboBk8b0/u0XB6vwHdgbROZT3fJAjyNh5Ww=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "3497aa5c9457a9d88d71fa93a4a8368816fbeeba",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_2": {
+      "locked": {
         "lastModified": 1768032153,
         "narHash": "sha256-6kD1MdY9fsE6FgSwdnx29hdH2UcBKs3/+JJleMShuJg=",
         "owner": "nixos",
@@ -90,11 +92,10 @@
     },
     "root": {
       "inputs": {
-        "akari-fzf": "akari-fzf",
-        "akari-zsh": "akari-zsh",
+        "akari-theme": "akari-theme",
         "home-manager": "home-manager",
         "nix-darwin": "nix-darwin",
-        "nixpkgs": "nixpkgs",
+        "nixpkgs": "nixpkgs_2",
         "sbarlua": "sbarlua",
         "tpm": "tpm"
       }

@@ -3,14 +3,21 @@
   pkgs,
   lib,
   username,
-  akari-fzf,
-  akari-zsh,
   tpm,
   sbarluaPkg,
   ...
 }:
 
 {
+  # Akari theme
+  akari = {
+    enable = true;
+    variant = "night";
+    tmux = {
+      iconNormal = "󱥸";
+      iconPrefix = "";
+    };
+  };
   home = {
     inherit username;
     homeDirectory = "/Users/${username}";
@@ -90,7 +97,7 @@
     gh = {
       enable = true;
       extensions = with pkgs; [
-        gh-dash
+        # gh-dash is managed by programs.gh-dash
         # gh-ghq-cd  # TODO: Add when flake is available
       ];
       settings = {
@@ -104,9 +111,134 @@
       };
     };
 
-    # Starship prompt
+    # Starship prompt (akari-night palette is managed by akari-theme module)
     starship = {
       enable = true;
+      settings = {
+        add_newline = true;
+        # akari-night palette is added by akari-theme module
+
+        os = {
+          disabled = true;
+          symbols = {
+            Alpaquita = " ";
+            Alpine = " ";
+            AlmaLinux = " ";
+            Amazon = " ";
+            Android = " ";
+            AOSC = " ";
+            Arch = " ";
+            Artix = " ";
+            CachyOS = " ";
+            CentOS = " ";
+            Debian = " ";
+            DragonFly = " ";
+            Elementary = " ";
+            Emscripten = " ";
+            EndeavourOS = " ";
+            Fedora = " ";
+            FreeBSD = " ";
+            Garuda = "󰛓 ";
+            Gentoo = " ";
+            HardenedBSD = "󰞌 ";
+            Illumos = "󰈸 ";
+            Ios = "󰀷 ";
+            Kali = " ";
+            Linux = " ";
+            Mabox = " ";
+            Macos = " ";
+            Manjaro = " ";
+            Mariner = " ";
+            MidnightBSD = " ";
+            Mint = " ";
+            NetBSD = " ";
+            NixOS = " ";
+            Nobara = " ";
+            OpenBSD = "󰈺 ";
+            openSUSE = " ";
+            OracleLinux = "󰌷 ";
+            Pop = " ";
+            Raspbian = " ";
+            Redhat = " ";
+            RedHatEnterprise = " ";
+            RockyLinux = " ";
+            Redox = "󰀘 ";
+            Solus = "󰠳 ";
+            SUSE = " ";
+            Ubuntu = " ";
+            Unknown = " ";
+            Void = " ";
+            Windows = "󰍲 ";
+            Zorin = " ";
+          };
+        };
+
+        kubernetes = {
+          symbol = "󱃾 ";
+          disabled = false;
+        };
+        docker_context.disabled = true;
+        directory = {
+          truncation_length = 2;
+          read_only = "󱧵 ";
+          read_only_style = "";
+        };
+        git_branch.symbol = " ";
+        git_status = {
+          conflicted = "=";
+          up_to_date = "";
+          untracked = "?\${count}";
+          stashed = "\\$\${count}";
+          modified = "!\${count}";
+          staged = "+\${count}";
+          renamed = "»";
+          deleted = "✘";
+          ahead = "⇡\${count}";
+          diverged = "⇕⇡\${ahead_count}⇣\${behind_count}";
+          behind = "⇣\${count}";
+        };
+        aws.disabled = true;
+        nodejs.symbol = "󰎙 ";
+        dotnet.symbol = " ";
+        python.symbol = " ";
+        java.symbol = " ";
+        c.symbol = " ";
+        golang.symbol = " ";
+        lua = {
+          symbol = " ";
+          disabled = true;
+        };
+        terraform.symbol = "󱁢 ";
+        fill = {
+          symbol = "─";
+          style = "fg:current_line";
+        };
+        cmd_duration.min_time = 500;
+        shell = {
+          unknown_indicator = "shell";
+          powershell_indicator = "powershell";
+          bash_indicator = "bash";
+          zsh_indicator = "zsh";
+          fish_indicator = "fish";
+          disabled = true;
+        };
+        time = {
+          time_format = "%H:%M";
+          disabled = true;
+        };
+        username = {
+          show_always = true;
+          disabled = true;
+        };
+        character = {
+          success_symbol = "[](bold green)";
+          error_symbol = "[](bold red)";
+          vicmd_symbol = "[](bold yellow)";
+        };
+        package.symbol = "󰏗 ";
+        rust.symbol = "󱘗 ";
+        gcloud.symbol = " ";
+      };
     };
 
     # Direnv
@@ -175,11 +307,10 @@
       };
     };
 
-    # Bat
+    # Bat (theme is managed by akari-theme module)
     bat = {
       enable = true;
       config = {
-        theme = "akari-night";
         color = "always";
       };
     };
@@ -187,6 +318,57 @@
     # Lazygit
     lazygit = {
       enable = true;
+    };
+
+    # gh-dash (theme is managed by akari-theme module)
+    gh-dash = {
+      enable = true;
+    };
+
+    # Alacritty (theme is managed by akari-theme module)
+    alacritty = {
+      enable = true;
+      settings = {
+        env.TERM = "xterm-256color";
+        font = {
+          builtin_box_drawing = true;
+          size = 22.0;
+          bold = {
+            family = "Moralerspace Argon";
+            style = "Bold";
+          };
+          italic = {
+            family = "Moralerspace Argon";
+            style = "Italic";
+          };
+          normal = {
+            family = "Moralerspace Argon";
+            style = "Regular";
+          };
+        };
+        terminal.shell = {
+          program = "/bin/zsh";
+          args = [
+            "-l"
+            "-c"
+            "tmux new-session -AD -s zzz"
+          ];
+        };
+        window = {
+          decorations = "none";
+          dynamic_padding = true;
+          option_as_alt = "Both";
+          padding = {
+            x = 5;
+            y = 5;
+          };
+        };
+        cursor.style = {
+          shape = "Block";
+          blinking = "Off";
+        };
+        keyboard.bindings = [ ];
+      };
     };
 
     # Tmux
@@ -319,10 +501,7 @@
         set -g @plugin 'tmux-plugins/tmux-continuum'
         set -g @continuum-restore 'on'
         set -g @continuum-save-interval '10'
-        set -g @plugin 'cappyzawa/akari-tmux'
-        set -g @akari_variant 'night'
-        set -g @akari_icon_normal '󱥸'
-        set -g @akari_icon_prefix '''
+        # akari-tmux is now managed by akari-theme module
         set -g @plugin 'cappyzawa/tmux-popups'
         set -g @popup_g 'lazygit'
         set -g @popup_l 'gh cd -p 1'
@@ -386,18 +565,7 @@
             sha256 = "sha256-4Dp2ehZLO83NhdBOKV0BhYFIvieaZPqiZZZtxsXWRaQ=";
           };
         }
-        # Akari fzf theme
-        {
-          name = "akari-fzf";
-          file = "akari-night.sh";
-          src = akari-fzf;
-        }
-        # Akari zsh-syntax-highlighting theme
-        {
-          name = "akari-zsh";
-          file = "akari-night.zsh";
-          src = akari-zsh;
-        }
+        # akari-fzf and akari-zsh are now managed by akari-theme module
       ];
 
       initContent = lib.mkMerge [
@@ -414,16 +582,7 @@
           [[ -d "''${HOME}/.krew/bin" ]] && path+=("''${HOME}/.krew/bin")
         '')
         ''
-          # Starship (cached daily for performance)
-          export STARSHIP_CONFIG="''${XDG_CONFIG_HOME:-$HOME/.config}/starship/starship.toml"
-          () {
-            local cache="''${HOME}/.cache/zsh/starship-init-$(date +%Y%m%d).zsh"
-            if [[ ! -f "$cache" ]]; then
-              mkdir -p "''${cache:h}"
-              starship init zsh > "$cache"
-            fi
-            source "$cache"
-          }
+          # Starship is now managed by programs.starship + akari-theme module
 
           # Direnv (deferred)
           zsh-defer eval "$(direnv hook zsh)"
@@ -448,6 +607,7 @@
       ];
 
       # Zsh options and environment variables
+      # LG_CONFIG_FILE is managed by akari-theme module
       sessionVariables = {
         KEYTIMEOUT = "20";
         EDITOR = "hx";
@@ -456,7 +616,6 @@
         SVN_EDITOR = "hx";
         GIT_EDITOR = "hx";
         CLAUDE_CONFIG_DIR = "$HOME/.config/claude";
-        LG_CONFIG_FILE = "$HOME/.config/lazygit/themes/akari-night.yml";
       };
     };
   };
@@ -502,11 +661,7 @@
       "sketchybar/items/widgets/memory.lua".source = ../config/sketchybar/items/widgets/memory.lua;
       "sketchybar/items/widgets/wifi.lua".source = ../config/sketchybar/items/widgets/wifi.lua;
 
-      # Alacritty
-      "alacritty" = {
-        source = ../config/alacritty;
-        recursive = true;
-      };
+      # Alacritty is managed by programs.alacritty + akari-theme module
 
       # Claude Code
       "claude/settings.json".source = ../config/claude/settings.json;
@@ -516,16 +671,12 @@
         executable = true;
       };
 
-      # Helix
+      # Helix (themes are managed by akari-theme module)
       "helix/config.toml".source = ../config/helix/config.toml;
       "helix/languages.toml".source = ../config/helix/languages.toml;
-      "helix/themes" = {
-        source = ../config/helix/themes;
-        recursive = true;
-      };
 
-      # Starship
-      "starship/starship.toml".source = ../config/starship/starship.toml;
+      # Starship is managed by programs.starship + akari-theme module
+      # Keep starship-claude.toml for Claude Code
       "starship/starship-claude.toml".source = ../config/starship/starship-claude.toml;
 
       # Zsh config files
@@ -534,20 +685,7 @@
       "zsh/30_fzf.zsh".source = ../config/zsh/30_fzf.zsh;
       "zsh/40_integrations.zsh".source = ../config/zsh/40_integrations.zsh;
 
-      # Bat theme
-      "bat/themes" = {
-        source = ../config/bat/themes;
-        recursive = true;
-      };
-
-      # Lazygit themes
-      "lazygit/themes" = {
-        source = ../config/lazygit/themes;
-        recursive = true;
-      };
-
-      # gh-dash
-      "gh-dash/config.yml".source = ../config/gh-dash/config.yml;
+      # Bat theme, Lazygit themes, and gh-dash are managed by akari-theme module
 
       # Karabiner-Elements
       "karabiner/karabiner.json".source = ../config/karabiner/karabiner.json;

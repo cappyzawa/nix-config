@@ -11,14 +11,7 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    akari-fzf = {
-      url = "github:cappyzawa/akari-fzf";
-      flake = false;
-    };
-    akari-zsh = {
-      url = "github:cappyzawa/akari-zsh";
-      flake = false;
-    };
+    akari-theme.url = "github:cappyzawa/akari-theme";
     tpm = {
       url = "github:tmux-plugins/tpm";
       flake = false;
@@ -35,8 +28,7 @@
       nixpkgs,
       nix-darwin,
       home-manager,
-      akari-fzf,
-      akari-zsh,
+      akari-theme,
       tpm,
       sbarlua,
       ...
@@ -100,11 +92,12 @@
               useGlobalPkgs = true;
               useUserPackages = true;
               backupFileExtension = "backup";
+              sharedModules = [
+                akari-theme.homeModules.default
+              ];
               extraSpecialArgs = {
                 inherit
                   username
-                  akari-fzf
-                  akari-zsh
                   tpm
                   sbarluaPkg
                   ;
