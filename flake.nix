@@ -96,19 +96,21 @@
           ./darwin
           home-manager.darwinModules.home-manager
           {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.backupFileExtension = "backup";
-            home-manager.extraSpecialArgs = {
-              inherit
-                username
-                akari-fzf
-                akari-zsh
-                tpm
-                sbarluaPkg
-                ;
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              backupFileExtension = "backup";
+              extraSpecialArgs = {
+                inherit
+                  username
+                  akari-fzf
+                  akari-zsh
+                  tpm
+                  sbarluaPkg
+                  ;
+              };
+              users.${username} = import ./home;
             };
-            home-manager.users.${username} = import ./home;
           }
         ];
       };

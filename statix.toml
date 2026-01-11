@@ -1,6 +1,0 @@
-# Statix configuration
-# https://github.com/nerdypepper/statix
-
-disabled = [
-  "repeated_keys",  # W20: Allow repeated keys like `home.username`, `home.homeDirectory`
-]
