@@ -1,7 +1,10 @@
 local colors = require("colors")
+local icons = require("icons")
 local settings = require("settings")
+local app_icons = require("helpers.icon_map")
 
 local spaces = {}
+local space_brackets = {}
 
 -- Workspace colors using akari-night palette
 local colors_spaces = {
@@ -16,6 +19,27 @@ local colors_spaces = {
 	[9] = colors.foreground,
 }
 
+-- Apple logo at the start
+local apple = sbar.add("item", "apple", {
+	icon = {
+		string = icons.apple,
+		font = { size = 16 },
+		color = colors.lantern_mid,
+		padding_left = 8,
+		padding_right = 8,
+	},
+	label = { drawing = false },
+	background = {
+		color = colors.background,
+		border_color = colors.lantern_mid,
+		border_width = 2,
+		height = 28,
+		corner_radius = 8,
+	},
+	padding_left = 4,
+	padding_right = 4,
+})
+
 for i = 1, 9, 1 do
 	local space = sbar.add("space", "space." .. i, {
 		space = i,
@@ -26,65 +50,85 @@ for i = 1, 9, 1 do
 			},
 			string = i,
 			padding_left = 8,
-			padding_right = 8,
+			padding_right = 4,
 			color = colors_spaces[i],
 			highlight_color = colors.background,
 		},
 		label = {
-			drawing = false,
+			padding_right = 8,
+			padding_left = 0,
+			color = colors_spaces[i],
+			highlight_color = colors.background,
+			font = "sketchybar-app-font:Regular:14.0",
+			y_offset = -1,
 		},
-		padding_right = 4,
-		padding_left = 4,
+		padding_right = 2,
+		padding_left = 2,
 		background = {
 			color = colors.transparent,
-			height = 24,
+			height = 28,
 			border_width = 0,
-			corner_radius = 6,
 		},
 	})
 
 	spaces[i] = space
 
-	-- Padding space
-	sbar.add("space", "space.padding." .. i, {
-		space = i,
-		script = "",
-		width = settings.group_paddings,
+	-- Individual bracket for each space
+	local bracket = sbar.add("bracket", "space.bracket." .. i, { space.name }, {
+		background = {
+			color = colors.background,
+			border_color = colors_spaces[i],
+			border_width = 2,
+			height = 28,
+			corner_radius = 8,
+		},
 	})
+	space_brackets[i] = bracket
 
 	space:subscribe("space_change", function(env)
 		local selected = env.SELECTED == "true"
 		space:set({
 			icon = { highlight = selected },
+			label = { highlight = selected },
 			background = {
 				color = selected and colors_spaces[i] or colors.transparent,
-				border_color = selected and colors_spaces[i] or colors.transparent,
+			},
+		})
+		bracket:set({
+			background = {
+				color = selected and colors_spaces[i] or colors.background,
 			},
 		})
 	end)
 
 	space:subscribe("mouse.clicked", function(env)
-		-- Use aerospace to switch workspaces
 		sbar.exec("aerospace workspace " .. env.SID)
 	end)
 end
 
-sbar.add("bracket", {
-	spaces[1].name,
-	spaces[2].name,
-	spaces[3].name,
-	spaces[4].name,
-	spaces[5].name,
-	spaces[6].name,
-	spaces[7].name,
-	spaces[8].name,
-	spaces[9].name,
-}, {
-	background = {
-		color = colors.background,
-		border_color = colors.lantern_mid,
-		border_width = 2,
-	},
+-- Observer for window changes in spaces
+local space_window_observer = sbar.add("item", {
+	drawing = false,
+	updates = true,
 })
+
+space_window_observer:subscribe("space_windows_change", function(env)
+	local icon_line = ""
+	local no_app = true
+	for app, _ in pairs(env.INFO.apps) do
+		no_app = false
+		local lookup = app_icons[app]
+		local icon = ((lookup == nil) and app_icons["default"] or lookup)
+		icon_line = icon_line .. icon
+	end
+
+	if no_app then
+		icon_line = ""
+	end
+
+	sbar.animate("tanh", 10, function()
+		spaces[env.INFO.space]:set({ label = icon_line })
+	end)
+end)
 
 sbar.add("item", { width = 6 })

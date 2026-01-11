@@ -467,6 +467,7 @@
     "sketchybar/settings.lua".source = ../config/sketchybar/settings.lua;
     "sketchybar/helpers/init.lua".source = ../config/sketchybar/helpers/init.lua;
     "sketchybar/helpers/default_font.lua".source = ../config/sketchybar/helpers/default_font.lua;
+    "sketchybar/helpers/icon_map.lua".source = ../config/sketchybar/helpers/icon_map.lua;
     "sketchybar/items/init.lua".source = ../config/sketchybar/items/init.lua;
     "sketchybar/items/spaces.lua".source = ../config/sketchybar/items/spaces.lua;
     "sketchybar/items/front_app.lua".source = ../config/sketchybar/items/front_app.lua;

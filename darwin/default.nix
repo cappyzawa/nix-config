@@ -57,6 +57,7 @@
       "sf-symbols"
       "font-sf-mono"
       "font-sf-pro"
+      "font-sketchybar-app-font"
       "drawio"
       "excalidrawz"
       "obsidian"
