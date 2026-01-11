@@ -99,7 +99,12 @@ local function hide_details()
 	wifi:set({ popup = { drawing = false } })
 end
 
-local function toggle_details()
+local function toggle_details(env)
+	if env.BUTTON == "right" then
+		sbar.exec("open /System/Library/PreferencePanes/Network.prefPane")
+		return
+	end
+
 	local should_draw = wifi:query().popup.drawing == "off"
 	if should_draw then
 		wifi:set({ popup = { drawing = true } })
