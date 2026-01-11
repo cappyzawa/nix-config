@@ -106,6 +106,12 @@
       KeyRepeat = 2;
       _HIHideMenuBar = true;  # Hide menu bar for sketchybar
     };
+
+    # Window Manager (disable desktop widgets)
+    WindowManager = {
+      EnableStandardClickToShowDesktop = false;
+      StandardHideWidgets = true;
+    };
   };
 
   # Enable Touch ID for sudo
