@@ -31,7 +31,6 @@
       # Development tools
       ghq # Repository manager
       helix # Modal editor
-      gh-dash # GitHub dashboard
 
       # Nix tools
       nix-prefetch-github # Get sha256 for fetchFromGitHub
@@ -90,6 +89,10 @@
     # GitHub CLI
     gh = {
       enable = true;
+      extensions = with pkgs; [
+        gh-dash
+        # gh-ghq-cd  # TODO: Add when flake is available
+      ];
       settings = {
         version = "1";
         git_protocol = "https";
@@ -530,7 +533,6 @@
       "zsh/20_keybinds.zsh".source = ../config/zsh/20_keybinds.zsh;
       "zsh/30_fzf.zsh".source = ../config/zsh/30_fzf.zsh;
       "zsh/40_integrations.zsh".source = ../config/zsh/40_integrations.zsh;
-      "zsh/60_gh-extensions.defer.zsh".source = ../config/zsh/60_gh-extensions.defer.zsh;
 
       # Bat theme
       "bat/themes" = {
