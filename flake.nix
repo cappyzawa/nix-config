@@ -29,7 +29,18 @@
     };
   };
 
-  outputs = { self, nixpkgs, nix-darwin, home-manager, akari-fzf, akari-zsh, tpm, sbarlua, ... }:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      nix-darwin,
+      home-manager,
+      akari-fzf,
+      akari-zsh,
+      tpm,
+      sbarlua,
+      ...
+    }:
     let
       system = "aarch64-darwin";
       username = "cappyzawa";
@@ -76,6 +87,8 @@
       };
     in
     {
+      formatter.${system} = pkgs.nixfmt;
+
       darwinConfigurations.${username} = nix-darwin.lib.darwinSystem {
         inherit system;
         specialArgs = { inherit username; };
@@ -86,7 +99,15 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.backupFileExtension = "backup";
-            home-manager.extraSpecialArgs = { inherit username akari-fzf akari-zsh tpm sbarluaPkg; };
+            home-manager.extraSpecialArgs = {
+              inherit
+                username
+                akari-fzf
+                akari-zsh
+                tpm
+                sbarluaPkg
+                ;
+            };
             home-manager.users.${username} = import ./home;
           }
         ];

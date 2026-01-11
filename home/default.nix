@@ -1,4 +1,14 @@
-{ config, pkgs, lib, username, akari-fzf, akari-zsh, tpm, sbarluaPkg, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  username,
+  akari-fzf,
+  akari-zsh,
+  tpm,
+  sbarluaPkg,
+  ...
+}:
 
 {
   home.username = username;
@@ -17,21 +27,21 @@
   # Packages
   home.packages = with pkgs; [
     # Core utilities
-    jq        # JSON processor (used by Claude statusline)
-    fd        # Better find
-    eza       # Better ls
-    fzf       # Fuzzy finder
-    ripgrep   # Better grep
-    gnused    # GNU sed
-    wget      # HTTP client
+    jq # JSON processor (used by Claude statusline)
+    fd # Better find
+    eza # Better ls
+    fzf # Fuzzy finder
+    ripgrep # Better grep
+    gnused # GNU sed
+    wget # HTTP client
 
     # Development tools
-    ghq       # Repository manager
-    helix     # Modal editor
-    gh-dash   # GitHub dashboard
+    ghq # Repository manager
+    helix # Modal editor
+    gh-dash # GitHub dashboard
 
     # Nix tools
-    nix-prefetch-github  # Get sha256 for fetchFromGitHub
+    nix-prefetch-github # Get sha256 for fetchFromGitHub
 
     # Languages (for Helix)
     go
@@ -39,34 +49,34 @@
     zig
 
     # Language servers (for Helix)
-    gopls                            # Go
-    rust-analyzer                    # Rust
-    yaml-language-server             # YAML
-    taplo                            # TOML
-    marksman                         # Markdown
-    nodePackages.bash-language-server      # Bash
-    nodePackages.typescript-language-server  # TypeScript/JavaScript
-    vscode-langservers-extracted     # JSON, HTML, CSS
-    lua-language-server              # Lua
-    terraform-ls                     # Terraform
-    zls                              # Zig
+    gopls # Go
+    rust-analyzer # Rust
+    yaml-language-server # YAML
+    taplo # TOML
+    marksman # Markdown
+    nodePackages.bash-language-server # Bash
+    nodePackages.typescript-language-server # TypeScript/JavaScript
+    vscode-langservers-extracted # JSON, HTML, CSS
+    lua-language-server # Lua
+    terraform-ls # Terraform
+    zls # Zig
 
     # Formatters and linters (for Helix)
-    gotools        # goimports
-    shfmt          # Shell
-    shellcheck     # Shell linter
-    yamlfmt        # YAML
-    nodePackages.prettier  # Multi-format (JSON, Markdown, CSS, HTML)
-    terraform      # HCL formatter
+    gotools # goimports
+    shfmt # Shell
+    shellcheck # Shell linter
+    yamlfmt # YAML
+    nodePackages.prettier # Multi-format (JSON, Markdown, CSS, HTML)
+    terraform # HCL formatter
 
     # Additional development tools
-    colima         # Container runtime
-    nodejs         # Node.js
-    hyperfine      # Benchmarking tool
-    yq-go          # YAML processor
-    golangci-lint  # Go linter
-    goreleaser     # Go release tool
-    glow           # Markdown renderer
+    colima # Container runtime
+    nodejs # Node.js
+    hyperfine # Benchmarking tool
+    yq-go # YAML processor
+    golangci-lint # Go linter
+    goreleaser # Go release tool
+    glow # Markdown renderer
   ];
 
   # GitHub CLI
@@ -180,11 +190,10 @@
     historyLimit = 2000;
 
     extraConfig = ''
-      # Set PATH first for tpm and plugins (include nix paths)
-      set-environment -g PATH "/etc/profiles/per-user/''${USER}/bin:/run/current-system/sw/bin:/opt/homebrew/bin:/usr/local/bin:/bin:/usr/bin"
-
-      # Remove HM session var flag so new windows get fresh environment
-      set-environment -gr __HM_ZSH_SESS_VARS_SOURCED
+      # Remove session flags so new windows get fresh environment from /etc/zshenv
+      set-environment -gu __HM_ZSH_SESS_VARS_SOURCED
+      set-environment -gu __ETC_ZSHENV_SOURCED
+      set-environment -gu __NIX_DARWIN_SET_ENVIRONMENT_DONE
 
       setenv LANG en_US.UTF-8
 
@@ -321,7 +330,7 @@
     dotDir = "${config.xdg.configHome}/zsh";
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
-    defaultKeymap = "viins";  # Start in vi insert mode
+    defaultKeymap = "viins"; # Start in vi insert mode
 
     history = {
       size = 50000;
@@ -545,7 +554,7 @@
   };
 
   # SbarLua installation (symlink to expected location)
-  home.activation.sbarluaSetup = lib.hm.dag.entryAfter ["writeBoundary"] ''
+  home.activation.sbarluaSetup = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     mkdir -p $HOME/.local/share/sketchybar_lua
     ln -sf ${sbarluaPkg}/lib/sketchybar_lua/sketchybar.so $HOME/.local/share/sketchybar_lua/sketchybar.so
   '';

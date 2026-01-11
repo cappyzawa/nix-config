@@ -7,6 +7,12 @@ update: ## Update flake inputs and apply
 	nix flake update
 	sudo /run/current-system/sw/bin/darwin-rebuild switch --flake '.#cappyzawa'
 
+check: ## Run CI checks locally (flake check, fmt, statix, build)
+	nix flake check
+	nix fmt -- --check .
+	nix run nixpkgs#statix -- check .
+	nix build .#darwinConfigurations.cappyzawa.system --dry-run
+
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| sort \

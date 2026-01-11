@@ -7,6 +7,12 @@
   # Disable nix-darwin's Nix management (using Determinate Nix)
   nix.enable = false;
 
+  # Add Determinate Nix and Homebrew to PATH
+  environment.systemPath = [
+    "/nix/var/nix/profiles/default/bin"
+    "/opt/homebrew/bin"
+  ];
+
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
@@ -28,7 +34,7 @@
 
     onActivation = {
       autoUpdate = false;
-      cleanup = "zap";  # Remove unlisted casks/formulas
+      cleanup = "zap"; # Remove unlisted casks/formulas
     };
 
     taps = [
@@ -104,7 +110,7 @@
       AppleShowAllExtensions = true;
       InitialKeyRepeat = 15;
       KeyRepeat = 2;
-      _HIHideMenuBar = true;  # Hide menu bar for sketchybar
+      _HIHideMenuBar = true; # Hide menu bar for sketchybar
     };
 
     # Window Manager (disable desktop widgets)

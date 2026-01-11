@@ -10,6 +10,10 @@ jobs:
     - uses: DeterminateSystems/magic-nix-cache-action@main
     - name: Check flake
       run: nix flake check
+    - name: Check format
+      run: nix fmt -- --check .
+    - name: Run statix
+      run: nix run nixpkgs#statix -- check .
     - name: Build configuration
       run: nix build .#darwinConfigurations.cappyzawa.system --dry-run
   status-check:
