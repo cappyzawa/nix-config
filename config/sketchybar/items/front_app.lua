@@ -7,7 +7,7 @@ local front_app_icon = sbar.add("item", "front_app_icon", {
 	icon = { drawing = false },
 	label = {
 		font = "sketchybar-app-font:Regular:16.0",
-		color = colors.cyan,
+		color = colors.background,
 		padding_left = 8,
 		padding_right = 0,
 	},
@@ -24,7 +24,7 @@ local front_app = sbar.add("item", "front_app", {
 			style = settings.font.style_map["Bold"],
 			size = 16.0,
 		},
-		color = colors.cyan,
+		color = colors.background,
 		padding_left = 4,
 		padding_right = 8,
 	},
@@ -35,7 +35,7 @@ local front_app = sbar.add("item", "front_app", {
 
 sbar.add("bracket", "front_app.bracket", { front_app_icon.name, front_app.name }, {
 	background = {
-		color = colors.bg1,
+		color = colors.cyan,
 		border_color = colors.cyan,
 		border_width = 2,
 		height = 34,
