@@ -68,11 +68,11 @@ exec-on-workspace-change = ['/bin/bash', '-c', 'sketchybar --trigger aerospace_w
     alt-slash = 'layout tiles horizontal vertical'
     alt-comma = 'layout accordion horizontal vertical'
 
-    # Focus (vim-style)
-    alt-h = 'focus left'
-    alt-j = 'focus down'
-    alt-k = 'focus up'
-    alt-l = 'focus right'
+    # Focus (vim-style, ignore floating windows)
+    alt-h = 'focus --ignore-floating left'
+    alt-j = 'focus --ignore-floating down'
+    alt-k = 'focus --ignore-floating up'
+    alt-l = 'focus --ignore-floating right'
 
     # Move window (vim-style)
     alt-shift-h = 'move left'
