@@ -37,7 +37,7 @@ local cal_date = sbar.add("item", {
 
 sbar.add("bracket", { cal_clock.name, cal_date.name }, {
 	background = {
-		color = colors.bg1,
+		color = colors.background,
 		height = 34,
 		border_color = colors.lantern_mid,
 		border_width = 2,
