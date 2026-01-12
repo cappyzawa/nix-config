@@ -58,6 +58,10 @@ exec-on-workspace-change = ['/bin/bash', '-c', 'sketchybar --trigger aerospace_w
     if.app-id = 'com.tinyspeck.slackmacgap'
     run = 'move-node-to-workspace 2'
 
+[[on-window-detected]]
+    if.app-id = 'jp.naver.line.mac'
+    run = 'layout floating'
+
 # Main binding mode
 [mode.main.binding]
     # Layout
