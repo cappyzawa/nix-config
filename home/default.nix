@@ -656,7 +656,8 @@
       "sketchybar/items/init.lua".source = ../config/sketchybar/items/init.lua;
       "sketchybar/items/spaces.lua".source = ../config/sketchybar/items/spaces.lua;
       "sketchybar/items/front_app.lua".source = ../config/sketchybar/items/front_app.lua;
-      "sketchybar/items/calendar.lua".source = ../config/sketchybar/items/calendar.lua;
+      "sketchybar/items/clock.lua".source = ../config/sketchybar/items/clock.lua;
+      "sketchybar/items/date.lua".source = ../config/sketchybar/items/date.lua;
       "sketchybar/items/media.lua".source = ../config/sketchybar/items/media.lua;
       "sketchybar/items/widgets/init.lua".source = ../config/sketchybar/items/widgets/init.lua;
       "sketchybar/items/widgets/battery.lua".source = ../config/sketchybar/items/widgets/battery.lua;
