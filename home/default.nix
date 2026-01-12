@@ -25,6 +25,9 @@
     # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
     stateVersion = "24.11";
 
+    # Home directory files
+    file.".yamlfmt".source = ../config/yamlfmt/config.yaml;
+
     packages = with pkgs; [
       # Core utilities
       jq # JSON processor (used by Claude statusline)
