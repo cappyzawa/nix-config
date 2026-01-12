@@ -282,34 +282,10 @@
       };
     };
 
-    # Delta (git pager)
+    # Delta (git pager) - theme is managed by akari-theme module
     delta = {
       enable = true;
       enableGitIntegration = true;
-      options = {
-        features = "tokyonight";
-        tokyonight = {
-          commit-decoration-style = "bold box ul";
-          dark = true;
-          file-decoration-style = "none";
-          file-style = "omit";
-          hunk-header-decoration-style = "#2ac3de box ul";
-          hunk-header-file-style = "#c0caf5";
-          hunk-header-line-number-style = "bold #c0caf5";
-          hunk-header-style = "file line-number syntax";
-          line-numbers = true;
-          line-numbers-left-style = "#2ac3de";
-          line-numbers-minus-style = "#823c41";
-          line-numbers-plus-style = "#164846";
-          line-numbers-right-style = "#2ac3de";
-          line-numbers-zero-style = "#999999";
-          minus-emph-style = "normal #823c41";
-          minus-style = "normal #823c41";
-          plus-emph-style = "syntax #164846";
-          plus-style = "syntax #164846";
-          syntax-theme = "Nord";
-        };
-      };
     };
 
     # Bat (theme is managed by akari-theme module)
