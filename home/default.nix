@@ -74,6 +74,7 @@
       # Additional development tools
       colima # Container runtime
       nodejs # Node.js
+      uv # Python package manager (provides uvx)
       hyperfine # Benchmarking tool
       yq-go # YAML processor
       golangci-lint # Go linter
