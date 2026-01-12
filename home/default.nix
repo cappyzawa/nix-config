@@ -49,6 +49,7 @@
       go
       deno
       zig
+      tree-sitter # Parser generator for Helix grammars
 
       # Language servers (for Helix)
       gopls # Go
