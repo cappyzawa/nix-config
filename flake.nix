@@ -79,7 +79,7 @@
       };
     in
     {
-      formatter.${system} = pkgs.nixfmt;
+      formatter.${system} = pkgs.nixfmt-tree;
 
       darwinConfigurations.${username} = nix-darwin.lib.darwinSystem {
         inherit system;

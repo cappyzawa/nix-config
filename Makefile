@@ -9,7 +9,7 @@ update: ## Update flake inputs and apply
 
 check: ## Run CI checks locally (flake check, fmt, statix, build)
 	nix flake check
-	nix fmt -- --check .
+	nix fmt -- --ci
 	nix run nixpkgs#statix -- check .
 	nix build .#darwinConfigurations.cappyzawa.system --dry-run
 

@@ -15,7 +15,7 @@ jobs:
     - name: Check flake
       run: nix flake check
     - name: Check format
-      run: nix fmt -- --check .
+      run: nix fmt -- --ci
     - name: Run statix
       run: nix run nixpkgs#statix -- check .
     - name: Build configuration
