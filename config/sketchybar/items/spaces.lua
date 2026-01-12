@@ -13,6 +13,7 @@ local app_icons = require("helpers.icon_map")
 
 local spaces = {}
 local space_brackets = {}
+local space_spacers = {}
 
 -- Custom event triggered by aerospace via exec-on-workspace-change
 sbar.add("event", "aerospace_workspace_change")
@@ -96,6 +97,9 @@ local function update_spaces()
 				color = is_focused and colors_spaces[i] or colors.background,
 			},
 		})
+		space_spacers[i]:set({
+			drawing = has_apps,
+		})
 
 		-- Update app icons
 		if has_apps then
@@ -141,7 +145,14 @@ for i = 1, 9, 1 do
 		},
 	})
 
+	-- Spacer after each space
+	local spacer = sbar.add("item", "space.spacer." .. i, {
+		drawing = false,
+		width = 4,
+	})
+
 	spaces[i] = space
+	space_spacers[i] = spacer
 
 	-- Individual bracket for each space
 	local bracket = sbar.add("bracket", "space.bracket." .. i, { space.name }, {
