@@ -22,7 +22,7 @@ local media_cover = sbar.add("item", {
 		align = "center",
 		horizontal = true,
 		background = {
-			color = colors.bg1,
+			color = colors.background,
 			border_color = colors.lantern_mid,
 			border_width = 2,
 		},

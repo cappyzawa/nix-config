@@ -42,7 +42,7 @@ local apple = sbar.add("item", "apple", {
 	},
 	label = { drawing = false },
 	background = {
-		color = colors.bg1,
+		color = colors.background,
 		border_color = colors.lantern_mid,
 		border_width = 2,
 		height = 34,
@@ -158,7 +158,7 @@ for i = 1, 9, 1 do
 	local bracket = sbar.add("bracket", "space.bracket." .. i, { space.name }, {
 		drawing = false,
 		background = {
-			color = colors.bg1,
+			color = colors.background,
 			border_color = colors_spaces[i],
 			border_width = 2,
 			height = 34,

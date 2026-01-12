@@ -18,7 +18,7 @@ local wifi = sbar.add("item", "widgets.wifi", {
 	popup = {
 		align = "center",
 		background = {
-			color = colors.bg1,
+			color = colors.background,
 			border_color = colors.magenta,
 			border_width = 2,
 		},
@@ -139,7 +139,7 @@ hostname:subscribe("mouse.clicked", copy_label_to_clipboard)
 ip:subscribe("mouse.clicked", copy_label_to_clipboard)
 
 sbar.add("bracket", "widgets.wifi.bracket", { wifi.name }, {
-	background = { color = colors.bg1, border_color = colors.magenta, border_width = 2 },
+	background = { color = colors.background, border_color = colors.magenta, border_width = 2 },
 })
 
 sbar.add("item", { position = "right", width = 6 })

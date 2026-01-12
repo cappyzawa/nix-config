@@ -21,7 +21,7 @@ local memory = sbar.add("item", "widgets.memory", {
 })
 
 local bracket = sbar.add("bracket", "widgets.memory.bracket", { memory.name }, {
-	background = { color = colors.bg1, border_color = colors.life, border_width = 2 },
+	background = { color = colors.background, border_color = colors.life, border_width = 2 },
 })
 
 memory:subscribe({ "routine", "forced" }, function()

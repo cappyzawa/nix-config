@@ -20,7 +20,7 @@ local cpu = sbar.add("item", "widgets.cpu", {
 })
 
 local bracket = sbar.add("bracket", "widgets.cpu.bracket", { cpu.name }, {
-	background = { color = colors.bg1, border_color = colors.blue, border_width = 2 },
+	background = { color = colors.background, border_color = colors.blue, border_width = 2 },
 })
 
 cpu:subscribe({ "routine", "forced" }, function()

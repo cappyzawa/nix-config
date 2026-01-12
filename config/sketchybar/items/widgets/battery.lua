@@ -22,7 +22,7 @@ local battery = sbar.add("item", "widgets.battery", {
 	popup = {
 		align = "center",
 		background = {
-			color = colors.bg1,
+			color = colors.background,
 			border_color = colors.orange,
 			border_width = 2,
 		},
@@ -115,7 +115,7 @@ battery:subscribe("mouse.exited.global", function(env)
 end)
 
 local battery_bracket = sbar.add("bracket", "widgets.battery.bracket", { battery.name }, {
-	background = { color = colors.bg1, border_color = colors.green, border_width = 2 },
+	background = { color = colors.background, border_color = colors.green, border_width = 2 },
 })
 
 sbar.add("item", { position = "right", width = 6 })
