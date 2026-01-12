@@ -11,6 +11,7 @@ after-startup-command = [
     'exec-and-forget /opt/homebrew/bin/borders',
     'exec-and-forget /opt/homebrew/bin/sketchybar',
     'exec-and-forget open -a Alacritty',
+    'exec-and-forget open -a Slack',
 ]
 
 # Normalizations
@@ -52,6 +53,10 @@ exec-on-workspace-change = ['/bin/bash', '-c', 'sketchybar --trigger aerospace_w
 [[on-window-detected]]
     if.app-id = 'com.google.Chrome'
     run = 'move-node-to-workspace 1'
+
+[[on-window-detected]]
+    if.app-id = 'com.tinyspeck.slackmacgap'
+    run = 'move-node-to-workspace 2'
 
 # Main binding mode
 [mode.main.binding]
