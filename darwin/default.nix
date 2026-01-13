@@ -52,11 +52,36 @@
         EnableStandardClickToShowDesktop = false;
         StandardHideWidgets = true;
       };
+
+      # Keyboard shortcuts
+      CustomUserPreferences = {
+        "com.apple.symbolichotkeys" = {
+          AppleSymbolicHotKeys = {
+            # Show Notification Center: Command + Option + N
+            "163" = {
+              enabled = true;
+              value = {
+                parameters = [
+                  110 # 'n' ASCII code
+                  45 # N key code
+                  1572864 # Command (1048576) + Option (524288)
+                ];
+                type = "standard";
+              };
+            };
+          };
+        };
+      };
     };
 
     # Set desktop wallpaper to akari-night background color
     activationScripts.extraActivation.text = ''
       sudo -u ${username} /usr/bin/python3 /Users/${username}/.config/scripts/set-wallpaper.py || true
+    '';
+
+    # Apply settings without logout/login
+    activationScripts.postActivation.text = ''
+      sudo -u ${username} /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
     '';
   };
 
