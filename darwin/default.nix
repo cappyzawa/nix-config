@@ -138,6 +138,7 @@
         "docker"
         "lua"
         "mas"
+        "pkgx"
         "switchaudio-osx"
         "nowplaying-cli"
         "FelixKratz/formulae/borders"
