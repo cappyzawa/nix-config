@@ -52,6 +52,7 @@
 
         # Global settings
         NSGlobalDomain = {
+          ApplePressAndHoldEnabled = false; # Enable key repeat instead of accent menu
           AppleShowAllExtensions = true;
           InitialKeyRepeat = 15;
           KeyRepeat = 2;
