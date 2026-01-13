@@ -5,11 +5,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1768234350,
-        "narHash": "sha256-rTdnwwywehUjjkuOjfc7ZU0qlMUfs6bVLL/DQcR/2f4=",
+        "lastModified": 1768311438,
+        "narHash": "sha256-oKkBTsT0FU6pcSDWfYc9A73EcbCrvWfYtsx/44m1hoc=",
         "owner": "cappyzawa",
         "repo": "akari-theme",
-        "rev": "aaab0c7ac95db03fa5eb785544a555d872ead7f6",
+        "rev": "da992a70eaae96dc488ca2839d4afc3cb9d28df0",
         "type": "github"
       },
       "original": {
