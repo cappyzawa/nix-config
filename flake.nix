@@ -20,6 +20,10 @@
       url = "github:FelixKratz/SbarLua";
       flake = false;
     };
+    gh-ghq-cd = {
+      url = "github:cappyzawa/gh-ghq-cd";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -31,6 +35,7 @@
       akari-theme,
       tpm,
       sbarlua,
+      gh-ghq-cd,
       ...
     }:
     let
@@ -101,6 +106,7 @@
                   tpm
                   sbarluaPkg
                   ;
+                gh-ghq-cd-pkg = gh-ghq-cd.packages.${system}.gh-ghq-cd;
               };
               users.${username} = import ./home;
             };

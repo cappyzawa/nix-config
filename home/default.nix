@@ -5,6 +5,7 @@
   username,
   tpm,
   sbarluaPkg,
+  gh-ghq-cd-pkg,
   ...
 }:
 
@@ -101,9 +102,9 @@
     # GitHub CLI
     gh = {
       enable = true;
-      extensions = with pkgs; [
-        gh-dash # config is managed by programs.gh-dash + akari-theme
-        # gh-ghq-cd  # TODO: Add when flake is available
+      extensions = [
+        pkgs.gh-dash # config is managed by programs.gh-dash + akari-theme
+        gh-ghq-cd-pkg
       ];
       settings = {
         version = "1";
