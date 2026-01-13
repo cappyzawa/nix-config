@@ -308,6 +308,18 @@
       package = null; # installed via programs.gh.extensions
     };
 
+    # Atuin (shell history)
+    atuin = {
+      enable = true;
+      enableZshIntegration = true;
+      flags = [ "--disable-up-arrow" ];
+      settings = {
+        search_mode = "fuzzy";
+        filter_mode = "global";
+        style = "compact";
+      };
+    };
+
     # Alacritty (theme is managed by akari-theme module)
     alacritty = {
       enable = true;
@@ -538,16 +550,6 @@
             sha256 = "sha256-q26XVS/LcyZPRqDNwKKA9exgBByE0muyuNb0Bbar2lY=";
           };
         }
-        # fzf history search
-        {
-          name = "zsh-fzf-history-search";
-          src = pkgs.fetchFromGitHub {
-            owner = "joshskidmore";
-            repo = "zsh-fzf-history-search";
-            rev = "master";
-            sha256 = "sha256-4Dp2ehZLO83NhdBOKV0BhYFIvieaZPqiZZZtxsXWRaQ=";
-          };
-        }
         # akari-fzf and akari-zsh are now managed by akari-theme module
       ];
 
@@ -569,10 +571,6 @@
 
           # Direnv (deferred)
           zsh-defer eval "$(direnv hook zsh)"
-
-          # fzf-history-search settings
-          export ZSH_FZF_HISTORY_SEARCH_REMOVE_DUPLICATES=1
-          export ZSH_FZF_HISTORY_SEARCH_DATES_IN_SEARCH=1
 
           # Source local config files
           for config_file ("''${XDG_CONFIG_HOME:-$HOME/.config}"/zsh/*.zsh(N)); do

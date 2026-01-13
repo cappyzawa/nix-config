@@ -26,6 +26,8 @@ bindkey -M viins '^B' backward-char
 bindkey -M viins '^N' down-history
 bindkey -M viins '^P' up-history
 
-# fzf history search (re-bind after vi mode)
-bindkey -M viins '^R' fzf_history_search
-bindkey -M vicmd '^R' fzf_history_search
+# Disable arrow keys for history navigation
+bindkey -M viins -r '^[[A'  # Up arrow
+bindkey -M viins -r '^[[B'  # Down arrow
+bindkey -M vicmd -r '^[[A'
+bindkey -M vicmd -r '^[[B'
