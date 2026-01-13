@@ -148,6 +148,73 @@ darwin-rebuild --list-generations
 sudo darwin-rebuild switch --rollback
 ```
 
+## Using as a Module
+
+This configuration exports modules that can be imported from another flake.
+
+Create your own flake that imports this configuration:
+
+```nix
+{
+  inputs = {
+    nix-config.url = "github:cappyzawa/nix-config";
+  };
+
+  outputs = { nix-config, ... }:
+    let
+      inherit (nix-config.inputs) nix-darwin home-manager akari-theme tpm gh-ghq-cd;
+      system = "aarch64-darwin";
+      username = "your-username";
+    in
+    {
+      darwinConfigurations.${username} = nix-darwin.lib.darwinSystem {
+        inherit system;
+        specialArgs = { inherit username; };
+        modules = [
+          nix-config.darwinModules.default
+          home-manager.darwinModules.home-manager
+          {
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              backupFileExtension = "backup";
+              sharedModules = [ akari-theme.homeModules.default ];
+              extraSpecialArgs = {
+                inherit username tpm;
+                sbarluaPkg = nix-config.packages.${system}.sbarlua;
+                gh-ghq-cd-pkg = gh-ghq-cd.packages.${system}.gh-ghq-cd;
+              };
+              users.${username} = {
+                imports = [ nix-config.homeModules.default ];
+              };
+            };
+          }
+          # Add your overrides here
+        ];
+      };
+    };
+}
+```
+
+### Exported Outputs
+
+| Output | Description |
+|--------|-------------|
+| `darwinModules.default` | nix-darwin configuration (macOS settings, Homebrew) |
+| `homeModules.default` | Home Manager configuration (dotfiles, packages) |
+| `packages.${system}.sbarlua` | SbarLua package for SketchyBar |
+
+### Overriding Settings
+
+You can override any setting using `lib.mkForce`:
+
+```nix
+{
+  programs.git.userName = lib.mkForce "work-name";
+  programs.git.userEmail = lib.mkForce "work@example.com";
+}
+```
+
 ## File Structure
 
 ```

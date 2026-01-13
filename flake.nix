@@ -86,6 +86,13 @@
     {
       formatter.${system} = pkgs.nixfmt-tree;
 
+      # Packages for external flakes
+      packages.${system}.sbarlua = sbarluaPkg;
+
+      # Modules for external flakes (e.g., private work config)
+      darwinModules.default = ./darwin;
+      homeModules.default = ./home;
+
       darwinConfigurations.${username} = nix-darwin.lib.darwinSystem {
         inherit system;
         specialArgs = { inherit username; };
