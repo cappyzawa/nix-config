@@ -98,6 +98,7 @@
         specialArgs = { inherit username; };
         modules = [
           ./darwin
+          { myConfig.includePersonalApps = true; }
           home-manager.darwinModules.home-manager
           {
             home-manager = {
