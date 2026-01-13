@@ -24,7 +24,7 @@ local bracket = sbar.add("bracket", "widgets.cpu.bracket", { cpu.name }, {
 })
 
 cpu:subscribe({ "routine", "forced" }, function()
-	sbar.exec("ps -A -o %cpu | awk '{s+=$1} END {printf \"%.0f\", s}'", function(result)
+	sbar.exec("ps -A -o %cpu | awk -v cores=$(sysctl -n hw.ncpu) '{s+=$1} END {printf \"%.0f\", s/cores}'", function(result)
 		local load = tonumber(result) or 0
 		local color = colors.blue
 
