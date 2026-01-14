@@ -53,6 +53,8 @@ make switch
 
 ### Update dependencies
 
+[Renovate](.github/renovate.json5) automatically updates flake inputs via pull requests. To update manually:
+
 ```bash
 make update
 ```
@@ -60,11 +62,7 @@ make update
 ### Rollback
 
 ```bash
-# List generations
-darwin-rebuild --list-generations
-
-# Rollback to previous generation
-sudo darwin-rebuild switch --rollback
+make rollback
 ```
 
 ## Using as a Module

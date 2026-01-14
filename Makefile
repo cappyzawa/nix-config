@@ -10,6 +10,10 @@ update: ## Update flake inputs and apply
 	nix flake update
 	sudo /run/current-system/sw/bin/darwin-rebuild switch --flake '.#cappyzawa'
 
+rollback: ## Select a generation with fzf and switch to it
+	@gen=$$(sudo darwin-rebuild --list-generations | fzf --tac | awk '{print $$1}') && \
+	sudo darwin-rebuild switch --switch-generation $$gen
+
 check: ## Run CI checks locally (flake check, fmt, statix, build)
 	nix flake check
 	nix fmt -- --ci
