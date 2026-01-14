@@ -1,5 +1,8 @@
 .DEFAULT_GOAL := help
 
+bootstrap: ## First-time setup: bootstrap nix-darwin
+	nix run nix-darwin -- switch --flake '.#cappyzawa'
+
 switch: ## Apply nix-darwin and home-manager configuration
 	sudo /run/current-system/sw/bin/darwin-rebuild switch --flake '.#cappyzawa'
 

@@ -29,100 +29,19 @@ cd ~/nix-config
 
 ```bash
 # First time: bootstrap nix-darwin
-nix run nix-darwin -- switch --flake '.#cappyzawa'
+make bootstrap
 
-# After first run: use darwin-rebuild
-sudo darwin-rebuild switch --flake '.#cappyzawa'
+# After first run: use make switch
+make switch
 ```
 
 ## Adding Dependencies
 
-### CLI tools (Nix packages)
-
-Edit `nix/home/default.nix` and add packages to `home.packages`:
-
-```nix
-home.packages = with pkgs; [
-  jq
-  fd
-  bat
-  # Add your package here
-  kubectl
-  terraform
-];
-```
-
-Search for packages at [search.nixos.org](https://search.nixos.org/packages).
-
-### GUI applications (Homebrew casks)
-
-Edit `nix/darwin/default.nix` and add to `homebrew.casks`:
-
-```nix
-homebrew.casks = [
-  "alacritty"
-  "arc"
-  # Add your cask here
-  "slack"
-  "zoom"
-];
-```
-
-### CLI tools via Homebrew
-
-Edit `nix/darwin/default.nix` and add to `homebrew.brews`:
-
-```nix
-homebrew.brews = [
-  "docker"
-  "colima"
-  # Add your formula here
-];
-```
-
-### Configuration files
-
-Edit `nix/home/default.nix` and add to `xdg.configFile`:
-
-```nix
-xdg.configFile = {
-  # Single file
-  "myapp/config.toml".source = ../config/myapp/config.toml;
-
-  # Directory (recursive)
-  "myapp" = {
-    source = ../config/myapp;
-    recursive = true;
-  };
-
-  # Executable file
-  "myapp/script.sh" = {
-    source = ../config/myapp/script.sh;
-    executable = true;
-  };
-};
-```
-
-### Programs with Home Manager modules
-
-Many programs have dedicated Home Manager modules with configuration options:
-
-```nix
-programs.git = {
-  enable = true;
-  userName = "Your Name";
-  userEmail = "your@email.com";
-};
-
-programs.starship = {
-  enable = true;
-  settings = {
-    add_newline = false;
-  };
-};
-```
-
-See [Home Manager options](https://nix-community.github.io/home-manager/options.xhtml) for available modules.
+- **CLI tools (Nix)**: Add to `home.packages` in [`nix/home/default.nix`](./nix/home/default.nix). Search packages at [search.nixos.org](https://search.nixos.org/packages).
+- **GUI apps (Homebrew casks)**: Add to `homebrew.casks` in [`nix/darwin/default.nix`](./nix/darwin/default.nix).
+- **CLI tools (Homebrew)**: Add to `homebrew.brews` in [`nix/darwin/default.nix`](./nix/darwin/default.nix).
+- **Dotfiles**: Add to `xdg.configFile` in [`nix/home/default.nix`](./nix/home/default.nix), source files go in [`config/`](./config/).
+- **Programs**: Use Home Manager modules (e.g., `programs.git`, `programs.zsh`). See [Home Manager options](https://nix-community.github.io/home-manager/options.xhtml).
 
 ## Daily Usage
 
