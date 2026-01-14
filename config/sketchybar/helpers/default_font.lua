@@ -1,12 +1,12 @@
 return {
-	text = "SF Pro",
-	numbers = "SF Mono",
+	text = "Moralerspace Argon",
+	numbers = "Moralerspace Argon",
 
 	style_map = {
 		["Regular"] = "Regular",
-		["Semibold"] = "Semibold",
+		["Semibold"] = "Bold",
 		["Bold"] = "Bold",
-		["Heavy"] = "Heavy",
-		["Black"] = "Black",
+		["Heavy"] = "Bold",
+		["Black"] = "Bold",
 	},
 }

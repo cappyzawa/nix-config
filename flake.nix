@@ -90,14 +90,20 @@
       packages.${system}.sbarlua = sbarluaPkg;
 
       # Modules for external flakes (e.g., private work config)
-      darwinModules.default = ./darwin;
-      homeModules.default = ./home;
+      darwinModules = {
+        default = ./nix/darwin;
+        shared = ./nix/modules/shared.nix;
+      };
+      homeModules = {
+        default = ./nix/home;
+        shared = ./nix/modules/shared.nix;
+      };
 
       darwinConfigurations.${username} = nix-darwin.lib.darwinSystem {
         inherit system;
         specialArgs = { inherit username; };
         modules = [
-          ./darwin
+          ./nix/darwin
           { myConfig.includePersonalApps = true; }
           home-manager.darwinModules.home-manager
           {
@@ -116,7 +122,7 @@
                   ;
                 gh-ghq-cd-pkg = gh-ghq-cd.packages.${system}.gh-ghq-cd;
               };
-              users.${username} = import ./home;
+              users.${username} = import ./nix/home;
             };
           }
         ];

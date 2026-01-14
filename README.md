@@ -39,7 +39,7 @@ sudo darwin-rebuild switch --flake '.#cappyzawa'
 
 ### CLI tools (Nix packages)
 
-Edit `home/default.nix` and add packages to `home.packages`:
+Edit `nix/home/default.nix` and add packages to `home.packages`:
 
 ```nix
 home.packages = with pkgs; [
@@ -56,7 +56,7 @@ Search for packages at [search.nixos.org](https://search.nixos.org/packages).
 
 ### GUI applications (Homebrew casks)
 
-Edit `darwin/default.nix` and add to `homebrew.casks`:
+Edit `nix/darwin/default.nix` and add to `homebrew.casks`:
 
 ```nix
 homebrew.casks = [
@@ -70,7 +70,7 @@ homebrew.casks = [
 
 ### CLI tools via Homebrew
 
-Edit `darwin/default.nix` and add to `homebrew.brews`:
+Edit `nix/darwin/default.nix` and add to `homebrew.brews`:
 
 ```nix
 homebrew.brews = [
@@ -82,7 +82,7 @@ homebrew.brews = [
 
 ### Configuration files
 
-Edit `home/default.nix` and add to `xdg.configFile`:
+Edit `nix/home/default.nix` and add to `xdg.configFile`:
 
 ```nix
 xdg.configFile = {
@@ -201,7 +201,9 @@ Create your own flake that imports this configuration:
 | Output | Description |
 |--------|-------------|
 | `darwinModules.default` | nix-darwin configuration (macOS settings, Homebrew) |
+| `darwinModules.shared` | Shared options module for nix-darwin |
 | `homeModules.default` | Home Manager configuration (dotfiles, packages) |
+| `homeModules.shared` | Shared options module for Home Manager |
 | `packages.${system}.sbarlua` | SbarLua package for SketchyBar |
 
 ### Overriding Settings
@@ -215,21 +217,8 @@ You can override any setting using `lib.mkForce`:
 }
 ```
 
-## File Structure
+### Using Shared Options
 
-```
-.
-├── Makefile        # Build commands
-├── flake.nix       # Flake entry point
-├── flake.lock      # Locked dependencies
-├── darwin/         # nix-darwin configuration
-│   └── default.nix # macOS system configuration
-├── home/           # Home Manager configuration
-│   └── default.nix # User environment configuration
-└── config/         # Static configuration files
-    ├── aerospace/
-    ├── alacritty/
-    ├── helix/
-    ├── starship/
-    └── zsh/
-```
+The shared module provides common configuration values (fonts, etc.) that can be used across modules.
+
+See [`nix/modules/shared.nix`](./nix/modules/shared.nix) for available options.

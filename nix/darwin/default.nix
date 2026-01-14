@@ -7,6 +7,10 @@
 }:
 
 {
+  imports = [
+    ../modules/shared.nix
+  ];
+
   options.myConfig = {
     includePersonalApps = lib.mkEnableOption "personal applications (LINE, etc.)";
   };

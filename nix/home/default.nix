@@ -9,7 +9,15 @@
   ...
 }:
 
+let
+  fontFamily = config.shared.fonts.main;
+  fontSize = config.shared.fonts.size;
+in
 {
+  imports = [
+    ../modules/shared.nix
+  ];
+
   # Akari theme
   akari = {
     enable = true;
@@ -27,7 +35,7 @@
     stateVersion = "24.11";
 
     # Home directory files
-    file.".yamlfmt".source = ../config/yamlfmt/config.yaml;
+    file.".yamlfmt".source = ../../config/yamlfmt/config.yaml;
 
     packages = with pkgs; [
       # Core utilities
@@ -327,17 +335,17 @@
         env.TERM = "xterm-256color";
         font = {
           builtin_box_drawing = true;
-          size = 22.0;
+          size = fontSize;
           bold = {
-            family = "Moralerspace Argon";
+            family = fontFamily;
             style = "Bold";
           };
           italic = {
-            family = "Moralerspace Argon";
+            family = fontFamily;
             style = "Italic";
           };
           normal = {
-            family = "Moralerspace Argon";
+            family = fontFamily;
             style = "Regular";
           };
         };
@@ -608,69 +616,69 @@
     # Config files
     configFile = {
       # AeroSpace
-      "aerospace/aerospace.toml".source = ../config/aerospace/aerospace.toml;
+      "aerospace/aerospace.toml".source = ../../config/aerospace/aerospace.toml;
 
       # JankyBorders
       "borders/bordersrc" = {
-        source = ../config/borders/bordersrc;
+        source = ../../config/borders/bordersrc;
         executable = true;
       };
 
       # SketchyBar
       "sketchybar/sketchybarrc" = {
-        source = ../config/sketchybar/sketchybarrc;
+        source = ../../config/sketchybar/sketchybarrc;
         executable = true;
       };
-      "sketchybar/init.lua".source = ../config/sketchybar/init.lua;
-      "sketchybar/bar.lua".source = ../config/sketchybar/bar.lua;
-      "sketchybar/colors.lua".source = ../config/sketchybar/colors.lua;
-      "sketchybar/default.lua".source = ../config/sketchybar/default.lua;
-      "sketchybar/icons.lua".source = ../config/sketchybar/icons.lua;
-      "sketchybar/settings.lua".source = ../config/sketchybar/settings.lua;
-      "sketchybar/helpers/init.lua".source = ../config/sketchybar/helpers/init.lua;
-      "sketchybar/helpers/default_font.lua".source = ../config/sketchybar/helpers/default_font.lua;
-      "sketchybar/helpers/icon_map.lua".source = ../config/sketchybar/helpers/icon_map.lua;
-      "sketchybar/items/init.lua".source = ../config/sketchybar/items/init.lua;
-      "sketchybar/items/spaces.lua".source = ../config/sketchybar/items/spaces.lua;
-      "sketchybar/items/front_app.lua".source = ../config/sketchybar/items/front_app.lua;
-      "sketchybar/items/clock.lua".source = ../config/sketchybar/items/clock.lua;
-      "sketchybar/items/date.lua".source = ../config/sketchybar/items/date.lua;
-      "sketchybar/items/media.lua".source = ../config/sketchybar/items/media.lua;
-      "sketchybar/items/widgets/init.lua".source = ../config/sketchybar/items/widgets/init.lua;
-      "sketchybar/items/widgets/battery.lua".source = ../config/sketchybar/items/widgets/battery.lua;
-      "sketchybar/items/widgets/volume.lua".source = ../config/sketchybar/items/widgets/volume.lua;
-      "sketchybar/items/widgets/cpu.lua".source = ../config/sketchybar/items/widgets/cpu.lua;
-      "sketchybar/items/widgets/memory.lua".source = ../config/sketchybar/items/widgets/memory.lua;
-      "sketchybar/items/widgets/wifi.lua".source = ../config/sketchybar/items/widgets/wifi.lua;
+      "sketchybar/init.lua".source = ../../config/sketchybar/init.lua;
+      "sketchybar/bar.lua".source = ../../config/sketchybar/bar.lua;
+      "sketchybar/colors.lua".source = ../../config/sketchybar/colors.lua;
+      "sketchybar/default.lua".source = ../../config/sketchybar/default.lua;
+      "sketchybar/icons.lua".source = ../../config/sketchybar/icons.lua;
+      "sketchybar/settings.lua".source = ../../config/sketchybar/settings.lua;
+      "sketchybar/helpers/init.lua".source = ../../config/sketchybar/helpers/init.lua;
+      "sketchybar/helpers/default_font.lua".source = ../../config/sketchybar/helpers/default_font.lua;
+      "sketchybar/helpers/icon_map.lua".source = ../../config/sketchybar/helpers/icon_map.lua;
+      "sketchybar/items/init.lua".source = ../../config/sketchybar/items/init.lua;
+      "sketchybar/items/spaces.lua".source = ../../config/sketchybar/items/spaces.lua;
+      "sketchybar/items/front_app.lua".source = ../../config/sketchybar/items/front_app.lua;
+      "sketchybar/items/clock.lua".source = ../../config/sketchybar/items/clock.lua;
+      "sketchybar/items/date.lua".source = ../../config/sketchybar/items/date.lua;
+      "sketchybar/items/media.lua".source = ../../config/sketchybar/items/media.lua;
+      "sketchybar/items/widgets/init.lua".source = ../../config/sketchybar/items/widgets/init.lua;
+      "sketchybar/items/widgets/battery.lua".source = ../../config/sketchybar/items/widgets/battery.lua;
+      "sketchybar/items/widgets/volume.lua".source = ../../config/sketchybar/items/widgets/volume.lua;
+      "sketchybar/items/widgets/cpu.lua".source = ../../config/sketchybar/items/widgets/cpu.lua;
+      "sketchybar/items/widgets/memory.lua".source = ../../config/sketchybar/items/widgets/memory.lua;
+      "sketchybar/items/widgets/wifi.lua".source = ../../config/sketchybar/items/widgets/wifi.lua;
 
       # Alacritty is managed by programs.alacritty + akari-theme module
 
       # Claude Code
-      "claude/settings.json".source = ../config/claude/settings.json;
-      "claude/CLAUDE.md".source = ../config/claude/CLAUDE.md;
+      "claude/settings.json".source = ../../config/claude/settings.json;
+      "claude/CLAUDE.md".source = ../../config/claude/CLAUDE.md;
       "claude/statusline.sh" = {
-        source = ../config/claude/statusline.sh;
+        source = ../../config/claude/statusline.sh;
         executable = true;
       };
 
       # Helix (themes are managed by akari-theme module)
-      "helix/config.toml".source = ../config/helix/config.toml;
-      "helix/languages.toml".source = ../config/helix/languages.toml;
+      "helix/config.toml".source = ../../config/helix/config.toml;
+      "helix/languages.toml".source = ../../config/helix/languages.toml;
 
       # Starship is managed by programs.starship + akari-theme module
       # Keep starship-claude.toml for Claude Code
-      "starship/starship-claude.toml".source = ../config/starship/starship-claude.toml;
+      "starship/starship-claude.toml".source = ../../config/starship/starship-claude.toml;
 
       # Zsh config files
-      "zsh/10_aliases.zsh".source = ../config/zsh/10_aliases.zsh;
-      "zsh/20_keybinds.zsh".source = ../config/zsh/20_keybinds.zsh;
-      "zsh/30_fzf.zsh".source = ../config/zsh/30_fzf.zsh;
-      "zsh/40_integrations.zsh".source = ../config/zsh/40_integrations.zsh;
+      "zsh/10_aliases.zsh".source = ../../config/zsh/10_aliases.zsh;
+      "zsh/20_keybinds.zsh".source = ../../config/zsh/20_keybinds.zsh;
+      "zsh/30_fzf.zsh".source = ../../config/zsh/30_fzf.zsh;
+      "zsh/40_integrations.zsh".source = ../../config/zsh/40_integrations.zsh;
 
       # Bat theme, Lazygit themes, and gh-dash are managed by akari-theme module
 
       # Karabiner-Elements
-      "karabiner/karabiner.json".source = ../config/karabiner/karabiner.json;
+      "karabiner/karabiner.json".source = ../../config/karabiner/karabiner.json;
 
       # TPM (Tmux Plugin Manager)
       "tmux/plugins/tpm" = {
@@ -680,7 +688,7 @@
 
       # Scripts
       "scripts/set-wallpaper.py" = {
-        source = ../config/scripts/set-wallpaper.py;
+        source = ../../config/scripts/set-wallpaper.py;
         executable = true;
       };
     };
