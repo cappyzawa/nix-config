@@ -612,6 +612,42 @@ in
         GIT_EDITOR = "hx";
         CLAUDE_CONFIG_DIR = "$HOME/.config/claude";
       };
+
+      shellAliases = {
+        # Navigation
+        ".." = "cd ..";
+        l = "ls -l";
+        ll = "ls -lF";
+        lla = "ls -lAF";
+        la = "ls -AF";
+        lx = "ls -lXB";
+        lk = "ls -lSr";
+        lc = "ls -ltcr";
+        lu = "ls -ltur";
+        lt = "ls -ltr";
+        lr = "ls -lR";
+
+        # System utilities
+        du = "du -h";
+        job = "jobs -l";
+        grep = "grep --color=auto";
+        fgrep = "fgrep --color=auto";
+        egrep = "egrep --color=auto";
+
+        # macOS specific
+        flushdns = "sudo killall -HUP mDNSResponder";
+
+        # Git
+        gst = "git status";
+
+        # Kubernetes
+        k = "kubectl";
+
+        # Tools (Nix-managed, always available)
+        ls = "eza";
+        lg = "lazygit";
+        vim = "hx";
+      };
     };
   };
 
