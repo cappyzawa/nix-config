@@ -83,6 +83,8 @@ in
 
       # Additional development tools
       colima # Container runtime
+      docker # Docker CLI
+      docker-buildx # Docker buildx plugin
       kind # Kubernetes in Docker
       kubernetes-helm # Kubernetes package manager
       nodejs # Node.js

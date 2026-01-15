@@ -139,7 +139,6 @@
       ];
 
       brews = [
-        "docker"
         "lua"
         "mas"
         "pkgx"
