@@ -83,6 +83,8 @@ in
 
       # Additional development tools
       colima # Container runtime
+      kind # Kubernetes in Docker
+      kubernetes-helm # Kubernetes package manager
       nodejs # Node.js
       uv # Python package manager (provides uvx)
       hyperfine # Benchmarking tool
