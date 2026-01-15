@@ -86,7 +86,9 @@ in
       docker # Docker CLI
       docker-buildx # Docker buildx plugin
       kind # Kubernetes in Docker
+      kubectl # Kubernetes CLI
       kubernetes-helm # Kubernetes package manager
+      kustomize # Kubernetes configuration customization
       nodejs # Node.js
       uv # Python package manager (provides uvx)
       hyperfine # Benchmarking tool
