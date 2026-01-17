@@ -7,7 +7,7 @@ return {
 	lantern_far = 0xffD4A05A,
 
 	life = 0xff7FAF6A,
-	night = 0xff5A6F82,
+	night = 0xff7A8FA2,
 	rain = 0xff6F8F8A,
 	muted = 0xff8E7BA0,
 
@@ -25,14 +25,14 @@ return {
 	},
 	popup = {
 		bg = 0xc025231F,
-		border = 0xff5A6F82,
+		border = 0xff7A8FA2,
 	},
 
 	-- Surface colors
 	bg1 = 0xff2E2C28,
 	bg2 = 0xff3A3834,
 
-	grey = 0xff5A6F82,
+	grey = 0xff7A8FA2,
 
 	-- Semantic colors
 	red = 0xffD25046,
@@ -40,7 +40,7 @@ return {
 	yellow = 0xffD4A05A,
 	green = 0xff7FAF6A,
 	cyan = 0xff6F8F8A,
-	blue = 0xff5A6F82,
+	blue = 0xff7A8FA2,
 	magenta = 0xff8E7BA0,
 	white = 0xffE6DED3,
 	black = 0xff1E1C18,
