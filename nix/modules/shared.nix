@@ -13,7 +13,7 @@ in
       };
       size = mkOption {
         type = types.float;
-        default = 22.0;
+        default = 20.0;
         description = "Default font size";
       };
     };
