@@ -162,15 +162,19 @@ in
 
         # Gaps between windows
         gaps = {
-          inner.horizontal = 8;
-          inner.vertical = 8;
-          outer.left = 8;
-          outer.bottom = 8;
-          outer.top = [
-            { monitor."DELL U2723QE" = 52; }
-            8
-          ];
-          outer.right = 8;
+          inner = {
+            horizontal = 8;
+            vertical = 8;
+          };
+          outer = {
+            left = 8;
+            bottom = 8;
+            top = [
+              { monitor."DELL U2723QE" = 52; }
+              8
+            ];
+            right = 8;
+          };
         };
 
         # Window rules
