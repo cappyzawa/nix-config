@@ -49,7 +49,7 @@ in
 
       # Development tools
       ghq # Repository manager
-      helix # Modal editor
+      # Helix is managed by programs.helix
 
       # Nix tools
       nix-prefetch-github # Get sha256 for fetchFromGitHub
@@ -531,6 +531,445 @@ in
       package = null; # installed via programs.gh.extensions
     };
 
+    # Helix editor (theme is managed by akari-theme module)
+    helix = {
+      enable = true;
+      defaultEditor = false; # Using sessionVariables for EDITOR
+      settings = {
+        theme = "akari-night";
+        editor = {
+          true-color = true;
+          cursorline = true;
+          color-modes = true;
+          auto-completion = true;
+          auto-save = true;
+          auto-format = true;
+          auto-pairs = true;
+          end-of-line-diagnostics = "hint";
+          clipboard-provider = "pasteboard";
+          mouse = false;
+          statusline = {
+            left = [
+              "mode"
+              "spinner"
+              "version-control"
+            ];
+            center = [ "file-name" ];
+            right = [
+              "diagnostics"
+              "selections"
+              "position"
+              "file-encoding"
+              "file-type"
+            ];
+            separator = "│";
+          };
+          lsp = {
+            display-messages = true;
+            auto-signature-help = true;
+            display-inlay-hints = false;
+            display-signature-help-docs = true;
+            snippets = true;
+            goto-reference-include-declaration = true;
+          };
+          cursor-shape = {
+            insert = "bar";
+            normal = "block";
+            select = "underline";
+          };
+          file-picker = {
+            hidden = false;
+            follow-symlinks = true;
+            deduplicate-links = true;
+            parents = true;
+            ignore = true;
+            git-ignore = true;
+            git-global = true;
+            git-exclude = true;
+          };
+          search = {
+            smart-case = true;
+            wrap-around = true;
+          };
+          whitespace.render = "none";
+          gutters.layout = [
+            "diff"
+            "diagnostics"
+            "line-numbers"
+            "spacer"
+          ];
+          soft-wrap.enable = false;
+        };
+        keys = {
+          normal = {
+            p = "paste_clipboard_after";
+            P = "paste_clipboard_before";
+            y = "yank_to_clipboard";
+            Y = "yank_joined_to_clipboard";
+            d = [
+              "yank_to_clipboard"
+              "delete_selection_noyank"
+            ];
+            b = ":echo %sh{git blame --date=short -L %{cursor_line},+1 %{buffer_name} | cut -d' ' -f1-4 | sed 's/$/)/g'}";
+            B = ":echo %sh{git show --no-patch --format='%h (%an: %ar): %s' $(git blame -p %{buffer_name} -L%{cursor_line},+1 | head -1 | cut -d' ' -f1)}";
+          };
+          select = {
+            p = "paste_clipboard_after";
+            P = "paste_clipboard_before";
+            y = "yank_to_clipboard";
+            Y = "yank_joined_to_clipboard";
+            R = "replace_selections_with_clipboard";
+            d = [
+              "yank_to_clipboard"
+              "delete_selection_noyank"
+            ];
+          };
+          insert = {
+            j.j = "normal_mode";
+          };
+        };
+      };
+      languages = {
+        use-grammars = {
+          except = [
+            "hare"
+            "wgsl"
+          ];
+        };
+        language = [
+          # Go
+          {
+            name = "go";
+            scope = "source.go";
+            file-types = [ "go" ];
+            roots = [
+              "go.work"
+              "go.mod"
+            ];
+            auto-format = true;
+            comment-token = "//";
+            language-servers = [ "gopls" ];
+            formatter = {
+              command = "goimports";
+            };
+            indent = {
+              tab-width = 4;
+              unit = "\t";
+            };
+          }
+          # Rust
+          {
+            name = "rust";
+            scope = "source.rust";
+            roots = [
+              "Cargo.toml"
+              "Cargo.lock"
+            ];
+            auto-format = true;
+            language-servers = [ "rust-analyzer" ];
+          }
+          # YAML
+          {
+            name = "yaml";
+            scope = "source.yaml";
+            file-types = [
+              "yml"
+              "yaml"
+            ];
+            comment-token = "#";
+            language-servers = [ "yaml-language-server" ];
+            formatter = {
+              command = "yamlfmt";
+              args = [ "-" ];
+            };
+            auto-format = true;
+            indent = {
+              tab-width = 2;
+              unit = "  ";
+            };
+          }
+          # JSON
+          {
+            name = "json";
+            scope = "source.json";
+            file-types = [ "json" ];
+            language-servers = [ "vscode-json-language-server" ];
+            formatter = {
+              command = "prettier";
+              args = [
+                "--stdin-filepath"
+                "file.json"
+              ];
+            };
+            auto-format = true;
+            indent = {
+              tab-width = 2;
+              unit = "  ";
+            };
+          }
+          # TOML
+          {
+            name = "toml";
+            scope = "source.toml";
+            injection-regex = "toml";
+            file-types = [ "toml" ];
+            comment-token = "#";
+            language-servers = [ "taplo" ];
+            indent = {
+              tab-width = 2;
+              unit = "  ";
+            };
+            auto-format = true;
+          }
+          # Markdown
+          {
+            name = "markdown";
+            scope = "source.md";
+            injection-regex = "md|markdown";
+            file-types = [
+              "md"
+              "markdown"
+              "PULLREQ_EDITMSG"
+              "ISSUE_EDITMSG"
+            ];
+            language-servers = [ "marksman" ];
+            formatter = {
+              command = "prettier";
+              args = [
+                "--stdin-filepath"
+                "file.md"
+              ];
+            };
+            auto-format = false;
+            indent = {
+              tab-width = 2;
+              unit = "  ";
+            };
+          }
+          # Dockerfile
+          {
+            name = "dockerfile";
+            scope = "source.dockerfile";
+            file-types = [
+              "Dockerfile"
+              "dockerfile"
+            ];
+            comment-token = "#";
+            indent = {
+              tab-width = 2;
+              unit = "  ";
+            };
+          }
+          # Bash/Shell
+          {
+            name = "bash";
+            scope = "source.bash";
+            injection-regex = "(shell|bash|zsh|sh)";
+            file-types = [
+              "sh"
+              "bash"
+              "zsh"
+              "zsh-theme"
+              { glob = ".zshenv"; }
+              { glob = ".zshrc"; }
+              { glob = ".zprofile"; }
+              { glob = ".bashrc"; }
+              { glob = ".bash_profile"; }
+              { glob = ".bash_login"; }
+              { glob = ".profile"; }
+              { glob = ".tmux.conf"; }
+            ];
+            shebangs = [
+              "sh"
+              "bash"
+              "dash"
+              "zsh"
+            ];
+            comment-token = "#";
+            language-servers = [ "bash-language-server" ];
+            formatter = {
+              command = "shfmt";
+              args = [
+                "-i"
+                "2"
+              ];
+            };
+            auto-format = true;
+            indent = {
+              tab-width = 2;
+              unit = "  ";
+            };
+          }
+          # CSS
+          {
+            name = "css";
+            scope = "source.css";
+            file-types = [ "css" ];
+            formatter = {
+              command = "prettier";
+              args = [
+                "--stdin-filepath"
+                "file.css"
+              ];
+            };
+            auto-format = true;
+            indent = {
+              tab-width = 2;
+              unit = "  ";
+            };
+          }
+          # HTML
+          {
+            name = "html";
+            scope = "text.html.basic";
+            file-types = [ "html" ];
+            formatter = {
+              command = "prettier";
+              args = [
+                "--stdin-filepath"
+                "file.html"
+              ];
+            };
+            auto-format = true;
+            indent = {
+              tab-width = 2;
+              unit = "  ";
+            };
+          }
+          # JavaScript
+          {
+            name = "javascript";
+            scope = "source.js";
+            file-types = [
+              "js"
+              "mjs"
+            ];
+            language-servers = [ "typescript-language-server" ];
+            auto-format = true;
+            indent = {
+              tab-width = 2;
+              unit = "  ";
+            };
+          }
+          # TypeScript
+          {
+            name = "typescript";
+            scope = "source.ts";
+            file-types = [ "ts" ];
+            language-servers = [ "typescript-language-server" ];
+            auto-format = true;
+            indent = {
+              tab-width = 2;
+              unit = "  ";
+            };
+          }
+          # TSX
+          {
+            name = "tsx";
+            scope = "source.tsx";
+            file-types = [ "tsx" ];
+            language-servers = [ "typescript-language-server" ];
+            auto-format = true;
+            indent = {
+              tab-width = 2;
+              unit = "  ";
+            };
+          }
+          # Lua
+          {
+            name = "lua";
+            scope = "source.lua";
+            file-types = [ "lua" ];
+            language-servers = [ "lua-language-server" ];
+            auto-format = true;
+            indent = {
+              tab-width = 2;
+              unit = "  ";
+            };
+          }
+          # Terraform
+          {
+            name = "terraform";
+            scope = "source.hcl";
+            file-types = [
+              "tf"
+              "hcl"
+            ];
+            language-servers = [ "terraform-ls" ];
+            auto-format = true;
+            indent = {
+              tab-width = 2;
+              unit = "  ";
+            };
+          }
+          # Fish
+          {
+            name = "fish";
+            scope = "source.fish";
+            file-types = [ "fish" ];
+            comment-token = "#";
+            language-servers = [ "fish-lsp" ];
+            formatter = {
+              command = "fish_indent";
+            };
+            auto-format = true;
+            indent = {
+              tab-width = 2;
+              unit = "  ";
+            };
+          }
+        ];
+        language-server = {
+          gopls = {
+            command = "gopls";
+            args = [ "serve" ];
+          };
+          rust-analyzer = {
+            command = "rust-analyzer";
+            config.check.command = "clippy";
+          };
+          yaml-language-server = {
+            command = "yaml-language-server";
+            args = [ "--stdio" ];
+          };
+          vscode-json-language-server = {
+            command = "vscode-json-language-server";
+            args = [ "--stdio" ];
+          };
+          taplo = {
+            command = "taplo";
+            args = [
+              "lsp"
+              "stdio"
+            ];
+          };
+          marksman = {
+            command = "marksman";
+            args = [ "server" ];
+          };
+          bash-language-server = {
+            command = "bash-language-server";
+            args = [ "start" ];
+          };
+          typescript-language-server = {
+            command = "typescript-language-server";
+            args = [ "--stdio" ];
+          };
+          lua-language-server = {
+            command = "lua-language-server";
+          };
+          terraform-ls = {
+            command = "terraform-ls";
+            args = [ "serve" ];
+          };
+          fish-lsp = {
+            command = "fish-lsp";
+            args = [ "start" ];
+          };
+        };
+      };
+    };
+
     # Atuin (shell history)
     atuin = {
       enable = true;
@@ -911,9 +1350,7 @@ in
         executable = true;
       };
 
-      # Helix (themes are managed by akari-theme module)
-      "helix/config.toml".source = ../../config/helix/config.toml;
-      "helix/languages.toml".source = ../../config/helix/languages.toml;
+      # Helix is managed by programs.helix + akari-theme module
 
       # Starship is managed by programs.starship + akari-theme module
       # Keep starship-claude.toml for Claude Code

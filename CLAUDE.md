@@ -38,9 +38,8 @@ This is a Nix Flake-based configuration for macOS using nix-darwin and Home Mana
 │   └── modules/       # Shared modules
 │       └── shared.nix
 └── config/            # Static configuration files
-    ├── aerospace/
-    ├── alacritty/
-    ├── helix/
+    ├── borders/
+    ├── sketchybar/
     └── ...
 ```
 
