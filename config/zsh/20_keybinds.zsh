@@ -25,9 +25,3 @@ bindkey -M viins '^B' backward-char
 # History navigation
 bindkey -M viins '^N' down-history
 bindkey -M viins '^P' up-history
-
-# Disable arrow keys for history navigation
-bindkey -M viins -r '^[[A'  # Up arrow
-bindkey -M viins -r '^[[B'  # Down arrow
-bindkey -M vicmd -r '^[[A'
-bindkey -M vicmd -r '^[[B'
