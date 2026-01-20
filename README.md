@@ -28,12 +28,14 @@ cd ~/nix-config
 ### 3. Apply the configuration
 
 ```bash
-# First time: bootstrap nix-darwin
-make bootstrap
+# First time: bootstrap nix-darwin (specify your host)
+make bootstrap NIXNAME=cappyzawa
 
 # After first run: use make switch
 make switch
 ```
+
+Available hosts can be found in `hosts/` directory or via `make help`.
 
 ## Adding Dependencies
 
@@ -42,6 +44,7 @@ make switch
 - **CLI tools (Homebrew)**: Add to `homebrew.brews` in [`nix/darwin/default.nix`](./nix/darwin/default.nix).
 - **Dotfiles**: Add to `xdg.configFile` in [`nix/home/default.nix`](./nix/home/default.nix), source files go in [`config/`](./config/).
 - **Programs**: Use Home Manager modules (e.g., `programs.git`, `programs.zsh`). See [Home Manager options](https://nix-community.github.io/home-manager/options.xhtml).
+- **Machine-specific settings**: Add to `hosts/{hostname}.nix`.
 
 ## Daily Usage
 
@@ -65,77 +68,18 @@ make update
 make rollback
 ```
 
-## Using as a Module
+## Multi-machine Setup
 
-This configuration exports modules that can be imported from another flake.
+This configuration supports multiple machines with different usernames. Each machine has its own configuration in `hosts/`.
 
-Create your own flake that imports this configuration:
+To add a new machine:
 
-```nix
-{
-  inputs = {
-    nix-config.url = "github:cappyzawa/nix-config";
-  };
-
-  outputs = { nix-config, ... }:
-    let
-      inherit (nix-config.inputs) nix-darwin home-manager akari-theme tpm gh-ghq-cd;
-      system = "aarch64-darwin";
-      username = "your-username";
-    in
-    {
-      darwinConfigurations.${username} = nix-darwin.lib.darwinSystem {
-        inherit system;
-        specialArgs = { inherit username; };
-        modules = [
-          nix-config.darwinModules.default
-          home-manager.darwinModules.home-manager
-          {
-            home-manager = {
-              useGlobalPkgs = true;
-              useUserPackages = true;
-              backupFileExtension = "backup";
-              sharedModules = [ akari-theme.homeModules.default ];
-              extraSpecialArgs = {
-                inherit username tpm;
-                sbarluaPkg = nix-config.packages.${system}.sbarlua;
-                gh-ghq-cd-pkg = gh-ghq-cd.packages.${system}.gh-ghq-cd;
-              };
-              users.${username} = {
-                imports = [ nix-config.homeModules.default ];
-              };
-            };
-          }
-          # Add your overrides here
-        ];
-      };
-    };
-}
-```
-
-### Exported Outputs
-
-| Output | Description |
-|--------|-------------|
-| `darwinModules.default` | nix-darwin configuration (macOS settings, Homebrew) |
-| `darwinModules.shared` | Shared options module for nix-darwin |
-| `homeModules.default` | Home Manager configuration (dotfiles, packages) |
-| `homeModules.shared` | Shared options module for Home Manager |
-| `packages.${system}.sbarlua` | SbarLua package for SketchyBar |
-
-### Overriding Settings
-
-You can override any setting using `lib.mkForce`:
-
-```nix
-{
-  programs.git.userName = lib.mkForce "work-name";
-  programs.git.userEmail = lib.mkForce "work@example.com";
-}
-```
-
-### Using Shared Options
-
-The shared module provides common configuration values (fonts, etc.) that can be used across modules.
-
-See [`nix/modules/shared.nix`](./nix/modules/shared.nix) for available options.
+1. Create `hosts/{hostname}.nix` with machine-specific settings
+2. Add to `flake.nix`:
+   ```nix
+   darwinConfigurations.{hostname} = mkDarwin {
+     hostname = "{hostname}";
+     username = "{username}";  # optional if same as hostname
+   };
+   ```
+3. Bootstrap on the new machine: `make bootstrap NIXNAME={hostname}`

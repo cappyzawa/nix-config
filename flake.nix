@@ -123,16 +123,6 @@
       # Packages for external flakes
       packages.${system}.sbarlua = sbarluaPkg;
 
-      # Modules for external flakes (e.g., private work config)
-      darwinModules = {
-        default = ./nix/darwin;
-        shared = ./nix/modules/shared.nix;
-      };
-      homeModules = {
-        default = ./nix/home;
-        shared = ./nix/modules/shared.nix;
-      };
-
       darwinConfigurations.cappyzawa = mkDarwin {
         hostname = "cappyzawa";
       };
