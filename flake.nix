@@ -40,7 +40,6 @@
     }:
     let
       system = "aarch64-darwin";
-      username = "cappyzawa";
       pkgs = nixpkgs.legacyPackages.${system};
 
       # SbarLua derivation
@@ -82,6 +81,41 @@
           cp bin/sketchybar.so $out/lib/sketchybar_lua/
         '';
       };
+
+      # Helper function to create darwin configurations
+      mkDarwin =
+        {
+          hostname,
+          username ? hostname,
+        }:
+        nix-darwin.lib.darwinSystem {
+          inherit system;
+          specialArgs = { inherit username; };
+          modules = [
+            ./nix/darwin
+            ./hosts/${hostname}.nix
+            home-manager.darwinModules.home-manager
+            {
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                backupFileExtension = "backup";
+                sharedModules = [
+                  akari-theme.homeModules.default
+                ];
+                extraSpecialArgs = {
+                  inherit
+                    username
+                    tpm
+                    sbarluaPkg
+                    ;
+                  gh-ghq-cd-pkg = gh-ghq-cd.packages.${system}.gh-ghq-cd;
+                };
+                users.${username} = import ./nix/home;
+              };
+            }
+          ];
+        };
     in
     {
       formatter.${system} = pkgs.nixfmt-tree;
@@ -99,33 +133,8 @@
         shared = ./nix/modules/shared.nix;
       };
 
-      darwinConfigurations.${username} = nix-darwin.lib.darwinSystem {
-        inherit system;
-        specialArgs = { inherit username; };
-        modules = [
-          ./nix/darwin
-          { myConfig.includePersonalApps = true; }
-          home-manager.darwinModules.home-manager
-          {
-            home-manager = {
-              useGlobalPkgs = true;
-              useUserPackages = true;
-              backupFileExtension = "backup";
-              sharedModules = [
-                akari-theme.homeModules.default
-              ];
-              extraSpecialArgs = {
-                inherit
-                  username
-                  tpm
-                  sbarluaPkg
-                  ;
-                gh-ghq-cd-pkg = gh-ghq-cd.packages.${system}.gh-ghq-cd;
-              };
-              users.${username} = import ./nix/home;
-            };
-          }
-        ];
+      darwinConfigurations.cappyzawa = mkDarwin {
+        hostname = "cappyzawa";
       };
     };
 }
