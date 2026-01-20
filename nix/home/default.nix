@@ -58,6 +58,7 @@ in
       go
       deno
       zig
+      rustup # Rust toolchain manager
       tree-sitter # Parser generator for Helix grammars
 
       # Language servers (for Helix)
