@@ -58,11 +58,11 @@ in
       go
       deno
       zig
+      rustup # Rust toolchain manager
       tree-sitter # Parser generator for Helix grammars
 
       # Language servers (for Helix)
       gopls # Go
-      rust-analyzer-unwrapped # Rust (use with project-specific toolchains)
       yaml-language-server # YAML
       taplo # TOML
       marksman # Markdown
@@ -102,6 +102,19 @@ in
     activation.sbarluaSetup = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       mkdir -p $HOME/.local/share/sketchybar_lua
       ln -sf ${sbarluaPkg}/lib/sketchybar_lua/sketchybar.so $HOME/.local/share/sketchybar_lua/sketchybar.so
+    '';
+
+    # Rustup initialization
+    activation.rustupSetup = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      if command -v rustup >/dev/null 2>&1; then
+        # Install stable toolchain if not already installed
+        if ! $DRY_RUN_CMD rustup toolchain list | grep -q stable; then
+          $DRY_RUN_CMD rustup default stable
+        fi
+
+        # Install rust-analyzer component
+        $DRY_RUN_CMD rustup component add rust-analyzer
+      fi
     '';
   };
 
