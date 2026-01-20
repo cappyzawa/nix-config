@@ -1,9 +1,6 @@
 # Machine-specific configuration for work Mac (arkedge)
 { lib, ... }:
 {
-  # Exclude personal applications
-  myConfig.includePersonalApps = false;
-
   # Additional Homebrew casks for this machine
   homebrew.casks = [
     "twingate"

@@ -1,5 +1,7 @@
 # Machine-specific configuration for personal Mac (cappyzawa)
 {
-  # Include personal applications (LINE, etc.)
-  myConfig.includePersonalApps = true;
+  # Personal applications
+  homebrew.masApps = {
+    "LINE" = 539883307;
+  };
 }

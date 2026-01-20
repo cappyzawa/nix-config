@@ -1,6 +1,4 @@
 {
-  config,
-  lib,
   pkgs,
   username,
   ...
@@ -10,10 +8,6 @@
   imports = [
     ../modules/shared.nix
   ];
-
-  options.myConfig = {
-    includePersonalApps = lib.mkEnableOption "personal applications (LINE, etc.)";
-  };
 
   config = {
     system = {
@@ -170,11 +164,6 @@
         "claude-code"
       ];
 
-      masApps =
-        { }
-        // lib.optionalAttrs config.myConfig.includePersonalApps {
-          "LINE" = 539883307;
-        };
     };
 
     # Enable Touch ID for sudo
