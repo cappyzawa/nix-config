@@ -58,12 +58,11 @@ in
       go
       deno
       zig
-      rustup # Rust toolchain manager
       tree-sitter # Parser generator for Helix grammars
 
       # Language servers (for Helix)
       gopls # Go
-      rust-analyzer # Rust
+      rust-analyzer-unwrapped # Rust (use with project-specific toolchains)
       yaml-language-server # YAML
       taplo # TOML
       marksman # Markdown

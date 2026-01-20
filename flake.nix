@@ -12,6 +12,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     akari-theme.url = "github:cappyzawa/akari-theme";
+    rust-overlay = {
+      url = "github:oxalica/rust-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     tpm = {
       url = "github:tmux-plugins/tpm";
       flake = false;
@@ -33,6 +37,7 @@
       nix-darwin,
       home-manager,
       akari-theme,
+      rust-overlay,
       tpm,
       sbarlua,
       gh-ghq-cd,
@@ -97,6 +102,11 @@
       homeModules = {
         default = ./nix/home;
         shared = ./nix/modules/shared.nix;
+      };
+
+      # Overlays for external flakes
+      overlays = {
+        default = rust-overlay.overlays.default;
       };
 
       darwinConfigurations.${username} = nix-darwin.lib.darwinSystem {
