@@ -136,5 +136,10 @@
       darwinConfigurations.cappyzawa = mkDarwin {
         hostname = "cappyzawa";
       };
+
+      darwinConfigurations.arkedge = mkDarwin {
+        hostname = "arkedge";
+        username = "kutsuzawa-shu";
+      };
     };
 }

@@ -3,8 +3,8 @@
 # Host configuration file (persisted after first bootstrap)
 HOST_FILE := $(HOME)/.config/nix/host
 
-# Available hosts (for validation and help message)
-AVAILABLE_HOSTS := cappyzawa
+# Available hosts (derived from hosts/*.nix files)
+AVAILABLE_HOSTS := $(patsubst hosts/%.nix,%,$(wildcard hosts/*.nix))
 
 # Determine NIXNAME: CLI arg > file > error
 ifdef NIXNAME
