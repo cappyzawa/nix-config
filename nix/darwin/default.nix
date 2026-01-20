@@ -1,5 +1,9 @@
 {
   pkgs,
+  lib,
+  inputs,
+  configName,
+  currentUser,
   username,
   ...
 }:

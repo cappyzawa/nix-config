@@ -1,5 +1,11 @@
 # Machine-specific configuration for work Mac (arkedge)
-{ lib, ... }:
+{
+  lib,
+  inputs,
+  configName,
+  currentUser,
+  ...
+}:
 {
   # Additional Homebrew casks for this machine
   homebrew.casks = [
@@ -7,7 +13,7 @@
   ];
 
   # AeroSpace overrides for external monitors
-  home-manager.users."kutsuzawa-shu" = {
+  home-manager.users.${currentUser} = {
     programs.aerospace.settings.gaps.outer.top = lib.mkForce [
       { monitor."DELL U2723QE" = 52; }
       { monitor."JAPANNEXT MNT" = 55; }
