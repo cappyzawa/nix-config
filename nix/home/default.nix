@@ -1364,8 +1364,11 @@ in
 
       # Bat theme, Lazygit themes, and gh-dash are managed by akari-theme module
 
-      # Karabiner-Elements
-      "karabiner/karabiner.json".source = ../../config/karabiner/karabiner.json;
+      # Karabiner-Elements (force to avoid .backup conflict with Karabiner's own backup)
+      "karabiner/karabiner.json" = {
+        source = ../../config/karabiner/karabiner.json;
+        force = true;
+      };
 
       # TPM (Tmux Plugin Manager)
       "tmux/plugins/tpm" = {
