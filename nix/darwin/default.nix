@@ -71,6 +71,10 @@
         CustomUserPreferences = {
           "com.apple.symbolichotkeys" = {
             AppleSymbolicHotKeys = {
+              # Disable Spotlight search (Command + Space)
+              "64" = {
+                enabled = false;
+              };
               # Show Notification Center: Command + Option + N
               "163" = {
                 enabled = true;
