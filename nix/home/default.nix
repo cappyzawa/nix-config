@@ -195,7 +195,7 @@ in
           }
           {
             "if"."app-id" = "com.google.Chrome";
-            run = "move-node-to-workspace 1";
+            run = "move-node-to-workspace 9";
           }
           {
             "if"."app-id" = "com.tinyspeck.slackmacgap";
@@ -260,17 +260,18 @@ in
           "alt-shift-8" = "move-node-to-workspace 8";
           "alt-shift-9" = "move-node-to-workspace 9";
 
-          # Toggle Chrome between workspace 1 and 9
+          # Toggle Chrome between current workspace and workspace 9
           "alt-o" = ''
             exec-and-forget
+            current_ws=$(aerospace list-workspaces --focused)
             info=$(aerospace list-windows --all --format '%{window-id}|%{app-name}|%{workspace}' | grep "Google Chrome" | head -1)
             id=$(echo "$info" | awk -F'|' '{print $1}')
             ws=$(echo "$info" | awk -F'|' '{print $3}')
             if [ -n "$id" ]; then
-                if [ "$ws" = "1" ]; then
+                if [ "$ws" = "$current_ws" ]; then
                     aerospace move-node-to-workspace --window-id "$id" 9
                 else
-                    aerospace move-node-to-workspace --window-id "$id" 1
+                    aerospace move-node-to-workspace --window-id "$id" "$current_ws"
                     osascript -e 'tell application "Google Chrome" to activate'
                 fi
                 sleep 0.1
