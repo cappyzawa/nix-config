@@ -205,6 +205,10 @@ in
             "if"."app-id" = "jp.naver.line.mac";
             run = "move-node-to-workspace 2";
           }
+          {
+            "if"."app-id" = "us.zoom.xos";
+            run = "move-node-to-workspace 3";
+          }
         ];
 
         # Main binding mode
