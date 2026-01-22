@@ -9,9 +9,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 make check
 
 # Apply configuration (after making changes)
+# NOTE: Requires sudo, user must run this manually
 make switch
 
 # Update flake inputs and apply
+# NOTE: Requires sudo, user must run this manually
 make update
 
 # First-time setup (bootstrap nix-darwin)

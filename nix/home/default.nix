@@ -94,6 +94,7 @@ in
       kustomize # Kubernetes configuration customization
       nodejs # Node.js
       nodePackages.pnpm # pnpm package manager
+      protobuf # Protocol Buffers compiler (protoc)
       uv # Python package manager (provides uvx)
       hyperfine # Benchmarking tool
       yq-go # YAML processor
