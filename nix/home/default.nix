@@ -99,6 +99,12 @@ in
       golangci-lint # Go linter
       goreleaser # Go release tool
       glow # Markdown renderer
+
+      # Security and credentials
+      aws-vault # AWS credential vault
+      awscli2 # AWS CLI
+      gnupg # GnuPG (gpg command)
+      _1password-cli # 1Password CLI (op command)
     ];
 
     # SbarLua installation (symlink to expected location)
@@ -434,7 +440,10 @@ in
           diverged = "⇕⇡\${ahead_count}⇣\${behind_count}";
           behind = "⇣\${count}";
         };
-        aws.disabled = true;
+        aws = {
+          symbol = " ";
+          disabled = false;
+        };
         nodejs.symbol = "󰎙 ";
         dotnet.symbol = " ";
         python.symbol = " ";
@@ -475,6 +484,7 @@ in
         package.symbol = "󰏗 ";
         rust.symbol = "󱘗 ";
         gcloud.symbol = " ";
+        nix_shell.symbol = " ";
       };
     };
 

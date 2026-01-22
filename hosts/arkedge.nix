@@ -19,5 +19,10 @@
       { monitor."JAPANNEXT MNT" = 55; }
       8
     ];
+
+    # AWS configuration for work environment
+    programs.zsh.sessionVariables = {
+      AWS_PROFILE = "Aegs-Staging";
+    };
   };
 }
