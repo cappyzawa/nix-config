@@ -289,6 +289,25 @@ in
             fi
           '';
 
+          # Toggle Slack between current workspace and workspace 2
+          "alt-i" = ''
+            exec-and-forget
+            current_ws=$(aerospace list-workspaces --focused)
+            info=$(aerospace list-windows --all --format '%{window-id}|%{app-name}|%{workspace}' | grep "Slack" | head -1)
+            id=$(echo "$info" | awk -F'|' '{print $1}')
+            ws=$(echo "$info" | awk -F'|' '{print $3}')
+            if [ -n "$id" ]; then
+                if [ "$ws" = "$current_ws" ]; then
+                    aerospace move-node-to-workspace --window-id "$id" 2
+                else
+                    aerospace move-node-to-workspace --window-id "$id" "$current_ws"
+                    osascript -e 'tell application "Slack" to activate'
+                fi
+                sleep 0.1
+                /opt/homebrew/bin/sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$(aerospace list-workspaces --focused)
+            fi
+          '';
+
           # Workspace navigation
           "alt-tab" = "workspace-back-and-forth";
           "alt-shift-tab" = "move-workspace-to-monitor --wrap-around next";
