@@ -24,5 +24,32 @@
     programs.zsh.sessionVariables = {
       AWS_PROFILE = "Aegs-Staging";
     };
+
+    # Helix opslang support (work-specific)
+    programs.helix.languages = {
+      language = [
+        {
+          name = "opslang";
+          scope = "source.opslang";
+          injection-regex = "opslang";
+          file-types = [ "ops" ];
+          comment-token = "#";
+          indent = {
+            tab-width = 2;
+            unit = "  ";
+          };
+          grammar = "opslang";
+        }
+      ];
+      grammar = [
+        {
+          name = "opslang";
+          source = {
+            git = "https://github.com/arkedge/tree-sitter-opslang";
+            rev = "main";
+          };
+        }
+      ];
+    };
   };
 }
