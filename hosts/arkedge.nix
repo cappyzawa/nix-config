@@ -7,9 +7,19 @@
   ...
 }:
 {
+  # Additional Homebrew taps for this machine
+  homebrew.taps = [
+    "sqldef/sqldef"
+  ];
+
   # Additional Homebrew casks for this machine
   homebrew.casks = [
     "twingate"
+  ];
+
+  # Additional Homebrew brews for this machine
+  homebrew.brews = [
+    "sqldef/sqldef/psqldef"
   ];
 
   # AeroSpace overrides for external monitors

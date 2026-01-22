@@ -100,7 +100,6 @@ in
       golangci-lint # Go linter
       goreleaser # Go release tool
       glow # Markdown renderer
-      sqldef # SQL schema management tool
 
       # Security and credentials
       aws-vault # AWS credential vault
