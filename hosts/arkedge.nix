@@ -24,6 +24,9 @@
 
   # AeroSpace overrides for external monitors
   home-manager.users.${currentUser} = {
+    # Additional packages for work environment
+    home.packages = [ inputs.nixpkgs.legacyPackages.aarch64-darwin.dotenvy ];
+
     programs.aerospace.settings.gaps.outer.top = lib.mkForce [
       { monitor."DELL U2723QE" = 52; }
       { monitor."JAPANNEXT MNT" = 55; }
