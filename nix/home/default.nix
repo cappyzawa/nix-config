@@ -550,7 +550,10 @@ in
           graph = "log --graph --date-order -C -M --pretty=format:\"<%h> %ad [%an] %Cgreen%d%Creset %s\" --all --date=short";
           undo = "reset --soft HEAD^";
         };
-        ghq.root = "~/ghq/src";
+        ghq = {
+          root = "~/ghq/src";
+          afterClone = "git submodule update --init --recursive";
+        };
         merge.conflictstyle = "diff3";
         pull.rebase = true;
         init.defaultBranch = "main";
