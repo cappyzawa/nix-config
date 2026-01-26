@@ -224,6 +224,14 @@ in
             "if"."app-id" = "us.zoom.xos";
             run = "move-node-to-workspace 3";
           }
+          {
+            "if"."app-id" = "com.chocoford.excalidraw";
+            run = "move-node-to-workspace 7";
+          }
+          {
+            "if"."app-id" = "md.obsidian";
+            run = "move-node-to-workspace 8";
+          }
         ];
 
         # Main binding mode
