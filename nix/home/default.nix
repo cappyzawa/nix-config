@@ -143,6 +143,14 @@ in
         # Basic settings
         "config-version" = 2;
 
+        # Configure environment for exec commands
+        exec = {
+          inherit-env-vars = true;
+          env-vars = {
+            PATH = "/etc/profiles/per-user/${config.home.username}/bin:/opt/homebrew/bin:\${PATH}";
+          };
+        };
+
         # Start JankyBorders and SketchyBar after startup
         "after-startup-command" = [
           "exec-and-forget /opt/homebrew/bin/borders"
