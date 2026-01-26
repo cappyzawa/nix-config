@@ -137,7 +137,6 @@
       };
 
       taps = [
-        "nikitabobko/tap"
         "FelixKratz/formulae"
       ];
 
@@ -152,8 +151,6 @@
       ];
 
       casks = [
-        "nikitabobko/tap/aerospace"
-        "alacritty"
         "1password"
         "raycast"
         "google-chrome"
