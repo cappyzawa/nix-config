@@ -1,4 +1,5 @@
 {
+  config,
   pkgs,
   lib,
   inputs,
@@ -31,7 +32,7 @@
           show-recents = false;
           tilesize = 48;
           persistent-apps = [
-            "/Applications/Alacritty.app"
+            "${config.users.users.${username}.home}/Applications/Home Manager Apps/Alacritty.app"
             "/Applications/Google Chrome.app"
           ];
         };
