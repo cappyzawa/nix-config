@@ -68,7 +68,6 @@ in
       gopls # Go
       yaml-language-server # YAML
       taplo # TOML
-      marksman # Markdown
       nodePackages.bash-language-server # Bash
       nodePackages.typescript-language-server # TypeScript/JavaScript
       vscode-langservers-extracted # JSON, HTML, CSS
@@ -771,7 +770,6 @@ in
               "PULLREQ_EDITMSG"
               "ISSUE_EDITMSG"
             ];
-            language-servers = [ "marksman" ];
             formatter = {
               command = "prettier";
               args = [
@@ -930,6 +928,7 @@ in
           {
             name = "terraform";
             scope = "source.hcl";
+            grammar = "hcl";
             file-types = [
               "tf"
               "hcl"
@@ -981,10 +980,6 @@ in
               "lsp"
               "stdio"
             ];
-          };
-          marksman = {
-            command = "marksman";
-            args = [ "server" ];
           };
           bash-language-server = {
             command = "bash-language-server";
