@@ -40,6 +40,15 @@ in
     # Home directory files
     file.".yamlfmt".source = ../../config/yamlfmt/config.yaml;
 
+    # Session PATH (declarative PATH management)
+    sessionPath = [
+      "$HOME/bin"
+      "$HOME/go/bin"
+      "$HOME/.cargo/bin"
+      "$HOME/.local/bin"
+      "$HOME/.krew/bin"
+    ];
+
     packages = with pkgs; [
       # Core utilities
       jq # JSON processor (used by Claude statusline)
@@ -94,6 +103,7 @@ in
       nodejs # Node.js
       nodePackages.pnpm # pnpm package manager
       protobuf # Protocol Buffers compiler (protoc)
+      grpcurl # gRPC client for testing
       uv # Python package manager (provides uvx)
       hyperfine # Benchmarking tool
       yq-go # YAML processor
@@ -1094,6 +1104,7 @@ in
 
       extraConfig = ''
         # Remove session flags so new windows get fresh environment from /etc/zshenv
+        set-environment -gu __HM_SESS_VARS_SOURCED
         set-environment -gu __HM_ZSH_SESS_VARS_SOURCED
         set-environment -gu __ETC_ZSHENV_SOURCED
         set-environment -gu __NIX_DARWIN_SET_ENVIRONMENT_DONE
@@ -1268,39 +1279,28 @@ in
         # akari-fzf and akari-zsh are now managed by akari-theme module
       ];
 
-      initContent = lib.mkMerge [
-        (lib.mkBefore ''
-          # PATH management (must be first for nix-managed tools)
-          typeset -U path
-          # nix-darwin + home-manager uses per-user profile
-          [[ -d "/etc/profiles/per-user/''${USER}/bin" ]] && path=("/etc/profiles/per-user/''${USER}/bin" $path)
-          # Standalone home-manager uses .nix-profile
-          [[ -d "''${HOME}/.nix-profile/bin" ]] && path=("''${HOME}/.nix-profile/bin" $path)
-          [[ -d "''${HOME}/bin" ]] && path=("''${HOME}/bin" $path)
-          [[ -d "''${CARGO_HOME:-$HOME/.cargo}/bin" ]] && path=("''${CARGO_HOME:-$HOME/.cargo}/bin" $path)
-          [[ -d "''${HOME}/.local/bin" ]] && path+=("''${HOME}/.local/bin")
-          [[ -d "''${HOME}/.krew/bin" ]] && path+=("''${HOME}/.krew/bin")
-        '')
-        ''
-          # Starship is now managed by programs.starship + akari-theme module
+      initContent = ''
+        # Deduplicate PATH entries
+        typeset -U path
 
-          # Direnv (deferred)
-          zsh-defer eval "$(direnv hook zsh)"
+        # Starship is now managed by programs.starship + akari-theme module
 
-          # Source local config files
-          for config_file ("''${XDG_CONFIG_HOME:-$HOME/.config}"/zsh/*.zsh(N)); do
-            source "$config_file"
-          done
+        # Direnv (deferred)
+        zsh-defer eval "$(direnv hook zsh)"
 
-          # Deferred config files
-          for config_file ("''${XDG_CONFIG_HOME:-$HOME/.config}"/zsh/*.defer.zsh(N)); do
-            zsh-defer source "$config_file"
-          done
+        # Source local config files
+        for config_file ("''${XDG_CONFIG_HOME:-$HOME/.config}"/zsh/*.zsh(N)); do
+          source "$config_file"
+        done
 
-          # Load local configuration (machine-specific, secrets)
-          [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
-        ''
-      ];
+        # Deferred config files
+        for config_file ("''${XDG_CONFIG_HOME:-$HOME/.config}"/zsh/*.defer.zsh(N)); do
+          zsh-defer source "$config_file"
+        done
+
+        # Load local configuration (machine-specific, secrets)
+        [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
+      '';
 
       # Zsh options and environment variables
       # LG_CONFIG_FILE is managed by akari-theme module
