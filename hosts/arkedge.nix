@@ -17,7 +17,10 @@
   # AeroSpace overrides for external monitors
   home-manager.users.${currentUser} = {
     # Additional packages for work environment
-    home.packages = [ inputs.nixpkgs.legacyPackages.aarch64-darwin.dotenvy ];
+    home.packages = [
+      inputs.nixpkgs.legacyPackages.aarch64-darwin.dotenvy
+      inputs.nixpkgs.legacyPackages.aarch64-darwin.postgresql
+    ];
 
     programs = {
       # AeroSpace settings for external monitors
