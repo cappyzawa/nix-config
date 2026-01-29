@@ -9,9 +9,15 @@
 {
   # Additional Homebrew packages for this machine
   homebrew = {
-    taps = [ "sqldef/sqldef" ];
+    taps = [
+      "sqldef/sqldef"
+      "kayac/tap"
+    ];
     casks = [ "twingate" ];
-    brews = [ "sqldef/sqldef/psqldef" ];
+    brews = [
+      "sqldef/sqldef/psqldef"
+      "kayac/tap/ecspresso"
+    ];
   };
 
   # AeroSpace overrides for external monitors
