@@ -142,6 +142,35 @@ in
   # See: https://github.com/nix-community/home-manager/issues/7935
   manual.manpages.enable = false;
 
+  # Services
+  services = {
+    # Colima container runtime (docker-build profile)
+    colima = {
+      enable = true;
+      profiles = {
+        docker-build = {
+          isService = false; # Manual start/stop (not auto-start)
+          isActive = false; # Don't set as active context (manual switching)
+          settings = {
+            cpu = 4;
+            memory = 8;
+            disk = 100;
+            arch = "aarch64";
+            runtime = "docker";
+            vmType = "vz";
+            rosetta = true;
+            kubernetes.enabled = false;
+            network = {
+              address = false;
+              mode = "shared";
+            };
+            mountType = "virtiofs";
+          };
+        };
+      };
+    };
+  };
+
   programs = {
     # Let Home Manager manage itself
     home-manager.enable = true;
@@ -1343,6 +1372,11 @@ in
 
         # Kubernetes
         k = "kubectl";
+
+        # Colima docker-build profile
+        colima-build-start = "colima start docker-build --save-config=false";
+        colima-build-stop = "colima stop docker-build";
+        colima-build-status = "colima status docker-build";
 
         # Tools (Nix-managed, always available)
         ls = "eza";
