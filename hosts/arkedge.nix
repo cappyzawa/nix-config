@@ -12,11 +12,13 @@
     taps = [
       "sqldef/sqldef"
       "kayac/tap"
+      "fujiwara/tap"
     ];
     casks = [ "twingate" ];
     brews = [
       "sqldef/sqldef/psqldef"
       "kayac/tap/ecspresso"
+      "fujiwara/tap/lambroll"
     ];
   };
 
@@ -25,7 +27,9 @@
     # Additional packages for work environment
     home.packages = [
       inputs.nixpkgs.legacyPackages.aarch64-darwin.dotenvy
+      inputs.nixpkgs.legacyPackages.aarch64-darwin.jsonnet
       inputs.nixpkgs.legacyPackages.aarch64-darwin.postgresql
+      inputs.nixpkgs.legacyPackages.aarch64-darwin.wireguard-tools
     ];
 
     programs = {
