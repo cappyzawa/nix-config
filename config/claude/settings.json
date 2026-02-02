@@ -148,7 +148,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "afplay /System/Library/Sounds/Glass.aiff"
+            "command": "terminal-notifier -title \"Claude Code\" -subtitle \"$(tmux display-message -p '#I #W' 2>/dev/null || basename $PWD)\" -message \"Done\" -activate org.alacritty"
           }
         ]
       }
@@ -159,7 +159,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "afplay /System/Library/Sounds/Glass.aiff"
+            "command": "terminal-notifier -title \"Claude Code\" -subtitle \"$(tmux display-message -p '#I #W' 2>/dev/null || basename $PWD)\" -message \"Stopped\" -activate org.alacritty"
           }
         ]
       }

@@ -147,6 +147,7 @@
         "pkgx"
         "switchaudio-osx"
         "nowplaying-cli"
+        "terminal-notifier"
         "FelixKratz/formulae/borders"
         "FelixKratz/formulae/sketchybar"
       ];
