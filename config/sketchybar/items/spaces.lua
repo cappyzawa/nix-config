@@ -53,10 +53,15 @@ local apple = sbar.add("item", "apple", {
 
 -- Helper function to run command synchronously
 local function run_cmd(cmd)
-	local handle = io.popen(cmd)
+	local handle = io.popen('/bin/bash -l -c "' .. cmd .. '"')
 	local result = handle:read("*a")
 	handle:close()
 	return result
+end
+
+-- Helper function to execute command asynchronously via bash
+local function exec_cmd(cmd)
+	sbar.exec('/bin/bash -l -c "' .. cmd .. '"')
 end
 
 -- Function to update workspace visibility and apps
@@ -171,7 +176,7 @@ for i = 1, 9, 1 do
 	end)
 
 	space:subscribe("mouse.clicked", function(env)
-		sbar.exec("aerospace workspace " .. i)
+		exec_cmd("aerospace workspace " .. i)
 	end)
 end
 
