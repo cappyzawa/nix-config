@@ -144,11 +144,12 @@ in
 
   # Services
   services = {
-    # Colima container runtime (docker-build profile)
+    # Colima container runtime
     colima = {
       enable = true;
       profiles = {
-        docker-build = {
+        # aarch64 profile (Apple Silicon native)
+        docker-build-aarch64 = {
           isService = false; # Manual start/stop (not auto-start)
           isActive = false; # Don't set as active context (manual switching)
           settings = {
@@ -156,6 +157,26 @@ in
             memory = 8;
             disk = 100;
             arch = "aarch64";
+            runtime = "docker";
+            vmType = "vz";
+            rosetta = true;
+            kubernetes.enabled = false;
+            network = {
+              address = false;
+              mode = "shared";
+            };
+            mountType = "virtiofs";
+          };
+        };
+        # x86_64 profile (AMD64 emulation)
+        docker-build-amd64 = {
+          isService = false; # Manual start/stop (not auto-start)
+          isActive = false; # Don't set as active context (manual switching)
+          settings = {
+            cpu = 4;
+            memory = 8;
+            disk = 100;
+            arch = "x86_64";
             runtime = "docker";
             vmType = "vz";
             rosetta = true;
@@ -1373,10 +1394,14 @@ in
         # Kubernetes
         k = "kubectl";
 
-        # Colima docker-build profile
-        colima-build-start = "colima start docker-build --save-config=false";
-        colima-build-stop = "colima stop docker-build";
-        colima-build-status = "colima status docker-build";
+        # Colima profiles (aarch64 and amd64)
+        colima-aarch64-start = "colima start docker-build-aarch64 --save-config=false";
+        colima-aarch64-stop = "colima stop docker-build-aarch64";
+        colima-aarch64-status = "colima status docker-build-aarch64";
+
+        colima-amd64-start = "colima start --profile docker-build-amd64 --arch x86_64 --cpu 4 --memory 8 --vm-type vz --save-config=false";
+        colima-amd64-stop = "colima stop docker-build-amd64";
+        colima-amd64-status = "colima status docker-build-amd64";
 
         # Tools (Nix-managed, always available)
         ls = "eza";
