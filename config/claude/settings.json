@@ -14,6 +14,7 @@
       "Bash(cargo fmt:*)",
       "Bash(cargo test:*)",
       "Bash(cat:*)",
+      "Bash(docker compose:*)",
       "Bash(find:*)",
       "Bash(gh pr view:*)",
       "Bash(git diff:*)",
