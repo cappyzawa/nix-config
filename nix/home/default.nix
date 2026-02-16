@@ -110,6 +110,7 @@ in
       golangci-lint # Go linter
       goreleaser # Go release tool
       glow # Markdown renderer
+      bacon # Rust background compiler
 
       # Security and credentials
       aws-vault # AWS credential vault
