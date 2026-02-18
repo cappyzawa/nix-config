@@ -6,7 +6,6 @@
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
   },
   "model": "opusplan",
-  "includeCoAuthoredBy": false,
   "permissions": {
     "allow": [
       "Bash(cargo check:*)",
