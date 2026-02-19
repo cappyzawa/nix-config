@@ -6,6 +6,10 @@
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
   },
   "model": "opusplan",
+  "attribution": {
+    "commit": "Co-Authored-By: Claude <noreply@anthropic.com>",
+    "pr": "🤖 Generated with Claude Code"
+  },
   "permissions": {
     "allow": [
       "Bash(cargo check:*)",
