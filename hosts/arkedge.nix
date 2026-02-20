@@ -16,94 +16,118 @@
     ];
     casks = [ "twingate" ];
     brews = [
+      "ical-buddy"
       "sqldef/sqldef/psqldef"
       "kayac/tap/ecspresso"
       "fujiwara/tap/lambroll"
     ];
   };
 
-  # AeroSpace overrides for external monitors
-  home-manager.users.${currentUser} = {
-    # Additional packages for work environment
-    home.packages = [
-      inputs.nixpkgs.legacyPackages.aarch64-darwin.dotenvy
-      inputs.nixpkgs.legacyPackages.aarch64-darwin.jsonnet
-      inputs.nixpkgs.legacyPackages.aarch64-darwin.postgresql
-      inputs.nixpkgs.legacyPackages.aarch64-darwin.wireguard-tools
-    ];
-
-    programs = {
-      # AeroSpace settings for external monitors
-      aerospace.settings.gaps.outer.top = lib.mkForce [
-        { monitor."DELL U2723QE" = 52; }
-        { monitor."JAPANNEXT MNT" = 55; }
-        8
+  home-manager.users.${currentUser} =
+    { config, ... }:
+    {
+      # Additional packages for work environment
+      home.packages = [
+        inputs.nixpkgs.legacyPackages.aarch64-darwin.dotenvy
+        inputs.nixpkgs.legacyPackages.aarch64-darwin.jsonnet
+        inputs.nixpkgs.legacyPackages.aarch64-darwin.postgresql
+        inputs.nixpkgs.legacyPackages.aarch64-darwin.wireguard-tools
       ];
 
-      # AWS configuration for work environment
-      zsh.sessionVariables = {
-        AWS_PROFILE = "Aegs-Staging";
+      # Meeting opener script and launchd agent
+      xdg.configFile."meeting-opener/meeting-opener.sh" = {
+        source = ../config/meeting-opener/meeting-opener.sh;
+        executable = true;
       };
 
-      # gh-dash configuration for work environment
-      # Note: Update the date filter periodically to exclude old items
-      gh-dash.settings = {
-        prSections = [
-          {
-            title = "My Pull Requests";
-            filters = "is:open author:@me updated:>2026-01-01";
-          }
-          {
-            title = "Needs My Review";
-            filters = "is:open review-requested:@me updated:>2026-01-01";
-          }
-          {
-            title = "Involved";
-            filters = "is:open involves:@me -author:@me updated:>2026-01-01";
-          }
-        ];
-        issuesSections = [
-          {
-            title = "My Issues";
-            filters = "is:open author:@me updated:>2026-01-01";
-          }
-          {
-            title = "Assigned";
-            filters = "is:open assignee:@me updated:>2026-01-01";
-          }
-          {
-            title = "Involved";
-            filters = "is:open involves:@me -author:@me updated:>2026-01-01";
-          }
-        ];
+      launchd.agents.meeting-opener = {
+        enable = true;
+        config = {
+          Program = "${config.home.homeDirectory}/.config/meeting-opener/meeting-opener.sh";
+          ProgramArguments = [ "${config.home.homeDirectory}/.config/meeting-opener/meeting-opener.sh" ];
+          StartInterval = 60;
+          EnvironmentVariables = {
+            PATH = "/opt/homebrew/bin:/usr/bin:/bin";
+            HOME = "${config.home.homeDirectory}";
+            XDG_STATE_HOME = "${config.home.homeDirectory}/.local/state";
+          };
+          StandardErrorPath = "${config.home.homeDirectory}/.local/state/meeting-opener/stderr.log";
+          StandardOutPath = "${config.home.homeDirectory}/.local/state/meeting-opener/stdout.log";
+        };
       };
 
-      # Helix opslang support (work-specific)
-      helix.languages = {
-        language = [
-          {
-            name = "opslang";
-            scope = "source.opslang";
-            injection-regex = "opslang";
-            file-types = [ "ops" ];
-            comment-token = "#";
-            indent = {
-              tab-width = 2;
-              unit = "  ";
-            };
-            grammar = "opslang";
-          }
+      programs = {
+        # AeroSpace settings for external monitors
+        aerospace.settings.gaps.outer.top = lib.mkForce [
+          { monitor."DELL U2723QE" = 52; }
+          { monitor."JAPANNEXT MNT" = 55; }
+          8
         ];
-        grammar = [
-          {
-            name = "opslang";
-            source = {
-              git = "https://github.com/arkedge/tree-sitter-opslang";
-              rev = "main";
-            };
-          }
-        ];
+
+        # AWS configuration for work environment
+        zsh.sessionVariables = {
+          AWS_PROFILE = "Aegs-Staging";
+        };
+
+        # gh-dash configuration for work environment
+        # Note: Update the date filter periodically to exclude old items
+        gh-dash.settings = {
+          prSections = [
+            {
+              title = "My Pull Requests";
+              filters = "is:open author:@me updated:>2026-01-01";
+            }
+            {
+              title = "Needs My Review";
+              filters = "is:open review-requested:@me updated:>2026-01-01";
+            }
+            {
+              title = "Involved";
+              filters = "is:open involves:@me -author:@me updated:>2026-01-01";
+            }
+          ];
+          issuesSections = [
+            {
+              title = "My Issues";
+              filters = "is:open author:@me updated:>2026-01-01";
+            }
+            {
+              title = "Assigned";
+              filters = "is:open assignee:@me updated:>2026-01-01";
+            }
+            {
+              title = "Involved";
+              filters = "is:open involves:@me -author:@me updated:>2026-01-01";
+            }
+          ];
+        };
+
+        # Helix opslang support (work-specific)
+        helix.languages = {
+          language = [
+            {
+              name = "opslang";
+              scope = "source.opslang";
+              injection-regex = "opslang";
+              file-types = [ "ops" ];
+              comment-token = "#";
+              indent = {
+                tab-width = 2;
+                unit = "  ";
+              };
+              grammar = "opslang";
+            }
+          ];
+          grammar = [
+            {
+              name = "opslang";
+              source = {
+                git = "https://github.com/arkedge/tree-sitter-opslang";
+                rev = "main";
+              };
+            }
+          ];
+        };
       };
     };
-  };
 }
