@@ -170,6 +170,10 @@
       }
     ]
   },
+  "statusLine": {
+    "type": "command",
+    "command": "jq -r '.model.display_name'"
+  },
   "feedbackSurveyState": {
     "lastShownTime": 1754061905187
   }
