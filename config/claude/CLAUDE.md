@@ -33,6 +33,11 @@
 
 - コードの提案を行うときは、それが `cargo clippy` で指摘事項がないかチェックしてください
 
+## Pull Request
+
+- PR は初回作成時に必ず draft で作成すること
+- レビュー準備ができたら別途 `gh pr ready` で解除する
+
 ## GitHub へのアクセスについて
 
 - Web の Fetch ではなく、github mcp server でアクセスしてください
