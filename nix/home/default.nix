@@ -51,7 +51,7 @@ in
 
     packages = with pkgs; [
       # Core utilities
-      jq # JSON processor (used by Claude statusline)
+      jq # JSON processor
       fd # Better find
       eza # Better ls
       fzf # Fuzzy finder
@@ -1458,16 +1458,10 @@ in
       # Claude Code
       "claude/settings.json".source = ../../config/claude/settings.json;
       "claude/CLAUDE.md".source = ../../config/claude/CLAUDE.md;
-      "claude/statusline.sh" = {
-        source = ../../config/claude/statusline.sh;
-        executable = true;
-      };
 
       # Helix is managed by programs.helix + akari-theme module
 
       # Starship is managed by programs.starship + akari-theme module
-      # Keep starship-claude.toml for Claude Code
-      "starship/starship-claude.toml".source = ../../config/starship/starship-claude.toml;
 
       # Zsh config files
       "zsh/10_aliases.zsh".source = ../../config/zsh/10_aliases.zsh;
