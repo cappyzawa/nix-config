@@ -228,6 +228,7 @@ in
             "Bash(git commit:*)"
             "Bash(git diff:*)"
             "Bash(git log:*)"
+            "Bash(git push:*)"
             "Bash(git show:*)"
             "Bash(git status)"
             "Bash(go build:*)"
