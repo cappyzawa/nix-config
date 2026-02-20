@@ -7,8 +7,9 @@
   - 会話が日本語であれば構わないため、Thinking は英語でも問題ありません。
 - コードコメントは英語で記述すること
 
-## Commit
+## Git
 
+- cappyzawa 以外の repository では default branch への直接 push を避け、feature branch で PR を作成すること
 - 全ての Commit は署名をしてください
   - `git commit -s`
 - Commit Message は英語で記述してください
