@@ -193,6 +193,22 @@ in
     };
   };
 
+  launchd.agents.meeting-opener = {
+    enable = true;
+    config = {
+      Program = "${config.home.homeDirectory}/.config/meeting-opener/meeting-opener.sh";
+      ProgramArguments = [ "${config.home.homeDirectory}/.config/meeting-opener/meeting-opener.sh" ];
+      StartInterval = 60;
+      EnvironmentVariables = {
+        PATH = "/opt/homebrew/bin:/usr/bin:/bin";
+        HOME = "${config.home.homeDirectory}";
+        XDG_STATE_HOME = "${config.home.homeDirectory}/.local/state";
+      };
+      StandardErrorPath = "${config.home.homeDirectory}/.local/state/meeting-opener/stderr.log";
+      StandardOutPath = "${config.home.homeDirectory}/.local/state/meeting-opener/stdout.log";
+    };
+  };
+
   programs = {
     # Let Home Manager manage itself
     home-manager.enable = true;
@@ -1481,6 +1497,12 @@ in
       "tmux/plugins/tpm" = {
         source = tpm;
         recursive = true;
+      };
+
+      # Meeting opener
+      "meeting-opener/meeting-opener.sh" = {
+        source = ../../config/meeting-opener/meeting-opener.sh;
+        executable = true;
       };
 
       # Scripts

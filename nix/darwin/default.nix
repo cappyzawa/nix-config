@@ -142,6 +142,7 @@
       ];
 
       brews = [
+        "ical-buddy"
         "lua"
         "mas"
         "pkgx"
