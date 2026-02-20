@@ -202,6 +202,7 @@ in
       enable = true;
       package = null; # Homebrew cask
       memory.source = ../../config/claude/CLAUDE.md;
+      rulesDir = ../../config/claude/rules;
       settings = {
         cleanupPeriodDays = 7;
         env = {
