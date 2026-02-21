@@ -385,6 +385,12 @@ in
           type = "command";
           command = "jq -r '.model.display_name'";
         };
+        mcpServers = {
+          github = {
+            type = "http";
+            url = "https://api.githubcopilot.com/mcp/";
+          };
+        };
       };
       skillsDir = ../../config/claude/skills;
     };
