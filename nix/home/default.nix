@@ -209,7 +209,7 @@ in
           CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR = "1";
           CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS = "1";
         };
-        model = "opusplan";
+        vim = true;
         attribution = {
           commit = "Co-Authored-By: Claude <noreply@anthropic.com>";
           pr = "🤖 Generated with Claude Code";
