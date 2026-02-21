@@ -34,9 +34,10 @@
 
 ## セカンドオピニオン
 
-- 自身の判断に確信が持てない場合（技術的な正しさ、ベストプラクティス、最新情報など）は `codex exec -s read-only` を使って検証すること
-  - WebSearch よりも codex を優先する
+- ライブラリの API ドキュメント・使い方を調べるときは Context7 MCP (`resolve-library-id` → `get-library-docs`) を優先する
+- 設計判断・ベストプラクティス・技術的な正しさの検証には `codex exec -s read-only` を使う
   - 例: `codex exec -s read-only "質問内容"`
+- WebSearch は Context7 と codex のどちらでも解決できない場合の最終手段
 
 ## ワークフロー
 
