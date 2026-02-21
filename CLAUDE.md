@@ -7,3 +7,4 @@ Detailed rules are in `.claude/rules/`:
 - `build-commands.md` - make commands (check, switch, update, bootstrap)
 - `architecture.md` - directory structure, configuration flow, adding dependencies
 - `nix-patterns.md` - Nix/nix-darwin/Home Manager conventions
+- `claude-code-config.md` - Claude Code Home Manager module options and conventions
