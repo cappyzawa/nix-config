@@ -60,7 +60,7 @@ inputs.nix-darwin.lib.darwinSystem {
 
   modules = [
     ../nix/darwin
-    ../hosts/${name}.nix
+    ../hosts/${name}
     inputs.home-manager.darwinModules.home-manager
     {
       home-manager = {

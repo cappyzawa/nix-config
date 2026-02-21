@@ -36,7 +36,7 @@
 
       # Meeting opener script and launchd agent
       xdg.configFile."meeting-opener/meeting-opener.sh" = {
-        source = ../config/meeting-opener/meeting-opener.sh;
+        source = ../../config/meeting-opener/meeting-opener.sh;
         executable = true;
       };
 
@@ -59,13 +59,7 @@
       programs = {
         # AWS MCP servers for Claude Code
         claude-code = {
-          memory.text = lib.mkAfter ''
-            ## AWS 操作
-
-            - READ 系（describe, list, get など）は AWS MCP サーバー (`aws-aegs-staging`, `aws-aegs-production`) を使うこと
-            - WRITE 系（create, update, delete など）は Bash の `aws` コマンドを使うこと
-              - MCP サーバーは `READ_OPERATIONS_ONLY=true` で制限されているため write はエラーになる
-          '';
+          memory.text = lib.mkAfter (builtins.readFile ./claude-memory.md);
           settings.permissions.allow = [
             "mcp__aws-aegs-staging__suggest_aws_commands"
             "mcp__aws-aegs-staging__call_aws"
