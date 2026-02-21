@@ -119,6 +119,24 @@
 
       # The platform the configuration will be used on
       hostPlatform = "aarch64-darwin";
+
+      overlays = [
+        (final: prev: {
+          # Pin claude-code to 2.1.50 via claude-code-bin (nixpkgs-unstable is stuck at 2.1.39)
+          claude-code = prev.claude-code-bin.overrideAttrs (old: {
+            src = prev.fetchurl {
+              url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/2.1.50/darwin-arm64/claude";
+              sha256 = "4b6c1cb5e02428dbf600d08f88c28f9ea06619001c3efebf8890365e5b79d1b7";
+            };
+            version = "2.1.50";
+            installPhase =
+              builtins.replaceStrings
+                [ "--set DISABLE_AUTOUPDATER 1" ]
+                [ "--set DISABLE_AUTOUPDATER 1 --set DISABLE_INSTALLATION_CHECKS 1" ]
+                old.installPhase;
+          });
+        })
+      ];
     };
 
     # User configuration
