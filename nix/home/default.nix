@@ -201,7 +201,6 @@ in
     # Claude Code
     claude-code = {
       enable = true;
-      package = null; # Homebrew cask
       memory.source = ../../config/claude/CLAUDE.md;
       rulesDir = ../../config/claude/rules;
       settings = {
@@ -385,11 +384,11 @@ in
           type = "command";
           command = "jq -r '.model.display_name'";
         };
-        mcpServers = {
-          github = {
-            type = "http";
-            url = "https://api.githubcopilot.com/mcp/";
-          };
+      };
+      mcpServers = {
+        github = {
+          type = "http";
+          url = "https://api.githubcopilot.com/mcp/";
         };
       };
       skillsDir = ../../config/claude/skills;

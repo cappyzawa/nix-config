@@ -169,7 +169,6 @@
         "dropbox"
         "appcleaner"
         "logi-options+"
-        "claude-code"
       ];
 
     };
