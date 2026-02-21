@@ -386,6 +386,7 @@ in
           command = "jq -r '.model.display_name'";
         };
       };
+      skillsDir = ../../config/claude/skills;
     };
 
     # AeroSpace window manager
