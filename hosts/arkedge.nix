@@ -57,6 +57,31 @@
       };
 
       programs = {
+        # AWS MCP servers for Claude Code
+        claude-code.settings.permissions.allow = [
+          "mcp__aws-aegs-staging__suggest_aws_commands"
+          "mcp__aws-aegs-staging__call_aws"
+          "mcp__aws-aegs-production__suggest_aws_commands"
+          "mcp__aws-aegs-production__call_aws"
+        ];
+        claude-code.mcpServers =
+          let
+            awsProfiles = [
+              "Aegs-Staging"
+              "Aegs-Production"
+            ];
+            mkAwsServer = profile: {
+              type = "stdio";
+              command = "uvx";
+              args = [ "awslabs.aws-api-mcp-server@latest" ];
+              env = {
+                AWS_PROFILE = profile;
+                READ_OPERATIONS_ONLY = "true";
+              };
+            };
+          in
+          lib.listToAttrs (map (p: lib.nameValuePair "aws-${lib.toLower p}" (mkAwsServer p)) awsProfiles);
+
         # AeroSpace settings for external monitors
         aerospace.settings.gaps.outer.top = lib.mkForce [
           { monitor."DELL U2723QE" = 52; }
