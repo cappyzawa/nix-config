@@ -3,3 +3,4 @@ result
 # Include CLAUDE.md (overrides global gitignore)
 !CLAUDE.md
 !.claude/
+.claude/*.local.*
