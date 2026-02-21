@@ -384,11 +384,14 @@ in
           type = "command";
           command = "jq -r '.model.display_name'";
         };
-      };
-      mcpServers = {
-        github = {
-          type = "http";
-          url = "https://api.githubcopilot.com/mcp/";
+        mcpServers = {
+          github = {
+            type = "http";
+            url = "https://api.githubcopilot.com/mcp/";
+            headers = {
+              Authorization = "Bearer \${GITHUB_TOKEN}";
+            };
+          };
         };
       };
       skillsDir = ../../config/claude/skills;
@@ -1535,6 +1538,9 @@ in
 
         # Direnv (deferred)
         zsh-defer eval "$(direnv hook zsh)"
+
+        # GitHub token for MCP server
+        export GITHUB_TOKEN="$(gh auth token)"
 
         # Source local config files
         for config_file ("''${XDG_CONFIG_HOME:-$HOME/.config}"/zsh/*.zsh(N)); do
