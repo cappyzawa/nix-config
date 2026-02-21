@@ -11,11 +11,11 @@ globs:
 make check
 
 # Apply configuration (after making changes)
-# NOTE: Requires sudo, user must run this manually
+# NOTE: Internally calls sudo darwin-rebuild switch, so user must run this manually
 make switch
 
 # Update flake inputs and apply
-# NOTE: Requires sudo, user must run this manually
+# NOTE: Internally calls sudo darwin-rebuild switch, so user must run this manually
 make update
 
 # First-time setup (bootstrap nix-darwin)
