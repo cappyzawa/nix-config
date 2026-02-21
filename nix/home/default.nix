@@ -399,6 +399,19 @@ in
           type = "http";
           url = "https://mcp.context7.com/mcp";
         };
+        serena = {
+          type = "stdio";
+          command = "uvx";
+          args = [
+            "--from"
+            "git+https://github.com/oraios/serena"
+            "serena"
+            "start-mcp-server"
+            "--context=claude-code"
+            "--project-from-cwd"
+            "--enable-web-dashboard=false"
+          ];
+        };
       };
       skillsDir = ../../config/claude/skills;
     };
