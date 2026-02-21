@@ -18,10 +18,6 @@ globs:
 - `mcpServers` - MCP サーバー設定 (**`package` が必須**。ラッパーで `--mcp-config` を注入するため)
 - `enableMcpIntegration` - `programs.mcp.servers` との統合
 
-> **注意**: `package = null` (Homebrew cask) の場合、`mcpServers` オプションは使えない。
-> 代わりに `settings.mcpServers` に直接設定すること。
-
-
 ### ファイル系オプション (inline と Dir は排他)
 
 | inline | Dir | 配置先 |
