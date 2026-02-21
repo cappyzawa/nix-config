@@ -111,6 +111,7 @@ in
       goreleaser # Go release tool
       glow # Markdown renderer
       bacon # Rust background compiler
+      codex # OpenAI Codex CLI
 
       # Security and credentials
       aws-vault # AWS credential vault
@@ -221,6 +222,7 @@ in
             "Bash(cargo fmt:*)"
             "Bash(cargo test:*)"
             "Bash(cat:*)"
+            "Bash(codex:*)"
             "Bash(docker compose:*)"
             "Bash(find:*)"
             "Bash(gh pr create:*)"

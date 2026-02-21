@@ -32,6 +32,12 @@
 
 - Web の Fetch ではなく、github mcp server でアクセスしてください
 
+## セカンドオピニオン
+
+- 自身の判断に確信が持てない場合（技術的な正しさ、ベストプラクティス、最新情報など）は `codex exec` を使って検証すること
+  - WebSearch よりも codex を優先する
+  - 例: `codex exec "質問内容"`
+
 ## ワークフロー
 
 - `.claude/rules/` へのルール追加・作成の提案があれば、auto memory 内の `rule-proposals.md` に書き溜めておくこと
