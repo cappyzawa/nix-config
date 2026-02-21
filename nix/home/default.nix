@@ -201,7 +201,7 @@ in
     # Claude Code
     claude-code = {
       enable = true;
-      memory.source = ../../config/claude/CLAUDE.md;
+      memory.text = builtins.readFile ../../config/claude/CLAUDE.md;
       rulesDir = ../../config/claude/rules;
       settings = {
         cleanupPeriodDays = 7;
