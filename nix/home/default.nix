@@ -222,7 +222,7 @@ in
             "Bash(cargo fmt:*)"
             "Bash(cargo test:*)"
             "Bash(cat:*)"
-            "Bash(codex:*)"
+            "Bash(codex exec -s read-only:*)"
             "Bash(docker compose:*)"
             "Bash(find:*)"
             "Bash(gh pr create:*)"
