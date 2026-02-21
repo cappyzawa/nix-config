@@ -21,8 +21,6 @@ globs:
 > **注意**: `package = null` (Homebrew cask) の場合、`mcpServers` オプションは使えない。
 > 代わりに `settings.mcpServers` に直接設定すること。
 
-> **注意**: トップレベル `mcpServers` はビルド時に静的 JSON を生成するため、`${GITHUB_TOKEN}` 等の実行時環境変数展開が効かない。
-> 認証トークンが必要な場合は `settings.mcpServers` を使うこと（Claude Code が実行時に `${VAR}` を展開する）。
 
 ### ファイル系オプション (inline と Dir は排他)
 
