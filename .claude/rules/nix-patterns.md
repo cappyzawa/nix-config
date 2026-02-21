@@ -13,9 +13,10 @@ globs:
 
 ## Machine-specific Configuration
 
-Each machine has its own configuration file in `hosts/{hostname}.nix`. Use these files to add machine-specific settings like:
+Each machine has its own directory at `hosts/{hostname}/` with a `default.nix` and optional config files. Use these to add machine-specific settings like:
 
 - Additional Homebrew casks/brews
 - App Store apps (masApps)
 - AeroSpace monitor-specific settings
+- Host-specific config files (e.g., `claude-memory.md`)
 - Any other host-specific overrides

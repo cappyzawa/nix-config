@@ -2,6 +2,7 @@
 globs:
   - "nix/home/default.nix"
   - "config/claude/**"
+  - "hosts/*/claude-memory.md"
 ---
 
 # Claude Code 設定 (Home Manager)
@@ -14,7 +15,7 @@ globs:
 ## 利用可能なオプション
 
 - `settings` - JSON 設定 (permissions, hooks, env, vim, attribution, statusLine など)
-- `memory` - CLAUDE.md (`memory.source` または `memory.text`)
+- `memory` - CLAUDE.md (`memory.text` を使用。共通部分は `builtins.readFile` で読み込み、ホスト固有は `lib.mkAfter` で追記)
 - `mcpServers` - MCP サーバー設定 (**`package` が必須**。ラッパーで `--mcp-config` を注入するため)
 - `enableMcpIntegration` - `programs.mcp.servers` との統合
 

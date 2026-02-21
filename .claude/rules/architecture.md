@@ -13,8 +13,12 @@ This is a Nix Flake-based configuration for macOS using nix-darwin and Home Mana
 ```
 .
 ├── flake.nix          # Entry point: inputs, outputs, mkDarwin helper
-├── hosts/             # Machine-specific configuration
-│   └── cappyzawa.nix  # Personal Mac settings
+├── hosts/             # Machine-specific configuration (per-host directories)
+│   ├── arkedge/
+│   │   ├── default.nix        # Work Mac settings
+│   │   └── claude-memory.md   # Host-specific CLAUDE.md additions
+│   └── cappyzawa/
+│       └── default.nix        # Personal Mac settings
 ├── nix/
 │   ├── darwin/        # nix-darwin configuration
 │   │   └── default.nix    # macOS system: Homebrew, system defaults, security
@@ -22,7 +26,7 @@ This is a Nix Flake-based configuration for macOS using nix-darwin and Home Mana
 │   │   └── default.nix    # User environment: packages, programs, dotfiles
 │   └── modules/       # Shared modules
 │       └── shared.nix
-└── config/            # Static configuration files
+└── config/            # Static configuration files (shared across hosts)
     ├── borders/
     ├── sketchybar/
     └── ...
@@ -32,7 +36,7 @@ This is a Nix Flake-based configuration for macOS using nix-darwin and Home Mana
 
 ```
 flake.nix (mkDarwin helper)
-  └─→ hosts/{hostname}.nix (machine-specific settings)
+  └─→ hosts/{hostname}/default.nix (machine-specific settings and config files)
   └─→ nix/darwin/ (system-level: homebrew, macOS settings)
   └─→ nix/home/ (user-level: packages, programs, dotfiles)
         └─→ config/ (static configuration files linked via xdg.configFile)
@@ -44,4 +48,5 @@ flake.nix (mkDarwin helper)
 - **GUI apps via Homebrew casks**: Add to `homebrew.casks` in `nix/darwin/default.nix`
 - **CLI tools via Homebrew**: Add to `homebrew.brews` in `nix/darwin/default.nix`
 - **Dotfiles**: Add to `xdg.configFile` in `nix/home/default.nix`, source files go in `config/`
-- **Machine-specific settings**: Add to `hosts/{hostname}.nix`
+- **Machine-specific settings**: Add to `hosts/{hostname}/default.nix`
+- **Host-specific config files**: Place alongside `default.nix` in `hosts/{hostname}/`
