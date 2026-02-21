@@ -1,6 +1,6 @@
 require("items.spaces")
 require("items.front_app")
-require("items.clock")
-require("items.date")
 require("items.media")
 require("items.widgets")
+require("items.date")
+require("items.clock")
