@@ -35,7 +35,32 @@ $ARGUMENTS の先頭トークンから判別する:
 
 引数がない場合はユーザーに質問する。
 
-### 2. tmux で起動
+### 2. Worktree を準備
+
+`claude --worktree` は `<repo>/.claude/worktrees/<name>` に worktree を作成し、ブランチ名は `worktree-<name>` となる。
+ただし CLAUDE.md や .claude/ が git 未追跡の場合、新規 worktree にはこれらが含まれない。
+
+事前に worktree を作成し、未追跡の Claude 設定ファイルをコピーする prep スクリプトを `/tmp/worktree-prep.sh` に書き出す。
+
+```bash
+cat > /tmp/worktree-prep.sh << 'PREP'
+#!/bin/bash
+set -euo pipefail
+REPO_ROOT=$(git rev-parse --show-toplevel)
+WNAME="<worktree-name>"
+WORKTREE_DIR="${REPO_ROOT}/.claude/worktrees/${WNAME}"
+
+mkdir -p "$(dirname "$WORKTREE_DIR")"
+git worktree add "$WORKTREE_DIR" -b "worktree-${WNAME}" 2>/dev/null || true
+
+# Sync Claude config files (handles both tracked and untracked)
+[ -e "$REPO_ROOT/CLAUDE.md" ] && cp -f "$REPO_ROOT/CLAUDE.md" "$WORKTREE_DIR/CLAUDE.md"
+[ -d "$REPO_ROOT/.claude" ] && rsync -a --exclude='worktrees' "$REPO_ROOT/.claude/" "$WORKTREE_DIR/.claude/"
+PREP
+chmod +x /tmp/worktree-prep.sh
+```
+
+### 3. tmux で起動
 
 tmux window のタイトルは `<repository>/<worktree-name>` とする。
 repository 名は `basename $(git rev-parse --show-toplevel)` で取得する。
@@ -55,13 +80,13 @@ cat > /tmp/worktree-prompt.txt << 'EOF'
 $ARGUMENTS
 EOF
 
-# Check tmux and launch
+# Check tmux and launch (prep script runs first to ensure config files exist)
 if tmux list-sessions 2>/dev/null; then
     tmux new-window -n "<repo>/<worktree-name>"
-    tmux send-keys 'claude --worktree <worktree-name> --model opus --permission-mode plan "$(cat /tmp/worktree-prompt.txt)"' C-m
+    tmux send-keys 'bash /tmp/worktree-prep.sh && claude --worktree <worktree-name> --model opus --permission-mode plan "$(cat /tmp/worktree-prompt.txt)"' C-m
 else
     echo "Not in tmux session. Run manually:"
-    echo '  claude --worktree <worktree-name> --model opus --permission-mode plan'
+    echo '  bash /tmp/worktree-prep.sh && claude --worktree <worktree-name> --model opus --permission-mode plan'
 fi
 ```
 
