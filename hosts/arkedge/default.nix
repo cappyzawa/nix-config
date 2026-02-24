@@ -31,7 +31,11 @@
         inputs.nixpkgs.legacyPackages.aarch64-darwin.dotenvy
         inputs.nixpkgs.legacyPackages.aarch64-darwin.jsonnet
         inputs.nixpkgs.legacyPackages.aarch64-darwin.postgresql
-        inputs.nixpkgs.legacyPackages.aarch64-darwin.sloth
+        (inputs.nixpkgs.legacyPackages.aarch64-darwin.sloth.overrideAttrs (old: {
+          ldflags = (old.ldflags or [ ]) ++ [
+            "-X github.com/slok/sloth/internal/info.Version=v${old.version}"
+          ];
+        }))
         inputs.nixpkgs.legacyPackages.aarch64-darwin.wireguard-tools
       ];
 
