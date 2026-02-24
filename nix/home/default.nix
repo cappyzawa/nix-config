@@ -227,6 +227,7 @@ in
             "Bash(gh pr create:*)"
             "Bash(gh pr view:*)"
             "Bash(git add:*)"
+            "Bash(git branch:*)"
             "Bash(git commit:*)"
             "Bash(git diff:*)"
             "Bash(git log:*)"
