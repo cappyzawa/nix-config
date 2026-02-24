@@ -31,6 +31,7 @@
         inputs.nixpkgs.legacyPackages.aarch64-darwin.dotenvy
         inputs.nixpkgs.legacyPackages.aarch64-darwin.jsonnet
         inputs.nixpkgs.legacyPackages.aarch64-darwin.postgresql
+        inputs.nixpkgs.legacyPackages.aarch64-darwin.sloth
         inputs.nixpkgs.legacyPackages.aarch64-darwin.wireguard-tools
       ];
 
