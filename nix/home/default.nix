@@ -342,7 +342,7 @@ in
             "mcp__github__search_pull_requests"
             "mcp__github__search_repositories"
             "mcp__github__search_users"
-            "mcp__context7__get-library-docs"
+            "mcp__context7__query-docs"
             "mcp__context7__resolve-library-id"
             "mcp__serena__find_file"
             "mcp__serena__find_referencing_symbols"
