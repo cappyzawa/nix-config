@@ -423,7 +423,7 @@ in
           args = [
             "-y"
             "@modelcontextprotocol/server-filesystem"
-            "\${PWD}"
+            "\${HOME}/ghq/src"
           ];
         };
       };
