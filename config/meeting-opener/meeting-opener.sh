@@ -51,6 +51,7 @@ now_epoch=$(date +%s)
 
 # Get today's events (excluding all-day events) with event marker prefix
 raw=$(icalBuddy -ea -nc -b "${EVENT_MARKER} " -nrd -df '' -tf '%H:%M' \
+  -ec 'AE2a 運用' \
   -iep 'title,datetime,url,location,notes' \
   -po 'title,datetime,url,location,notes' \
   -ps '/ :: /' eventsToday 2>/dev/null || true)
@@ -80,6 +81,9 @@ while IFS= read -r line; do
   # Format: "title :: HH:MM - HH:MM :: ..."
   title=$(echo "$line" | sed 's/ :: .*//' | xargs)
   [[ -z "$title" ]] && continue
+
+  # Skip events from AE2a ops calendar
+  [[ "$title" == AE2a/* ]] && continue
   start_time=$(echo "$line" | grep -oE '[0-9]{1,2}:[0-9]{2} - ' | head -1 | sed 's/ - //') || true
   [[ -z "$start_time" ]] && continue
 
