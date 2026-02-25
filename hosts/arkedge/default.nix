@@ -100,6 +100,7 @@
         # AWS configuration for work environment
         zsh.sessionVariables = {
           AWS_PROFILE = "Aegs-Staging";
+          AWS_VAULT_BACKEND = "keychain";
         };
 
         # gh-dash configuration for work environment
