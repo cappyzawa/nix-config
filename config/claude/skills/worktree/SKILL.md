@@ -65,7 +65,8 @@ chmod +x /tmp/worktree-prep.sh
 tmux window のタイトルは `<repository>/<worktree-name>` とする。
 repository 名は `basename $(git rev-parse --show-toplevel)` で取得する。
 
-$ARGUMENTS をそのまま初期プロンプトとして渡す。
+初期プロンプトには `/add-dir <repo-root>` を先頭に付与し、その後に $ARGUMENTS を続ける。
+これにより worktree 先でも元リポジトリのファイルに組み込みツール（Glob/Read/Grep）でアクセスできる。
 `--model opus` と `--permission-mode plan` を指定する。
 
 > [!IMPORTANT]
@@ -75,8 +76,10 @@ $ARGUMENTS をそのまま初期プロンプトとして渡す。
 > 必ず一時ファイルに書き出してから `$(cat file)` で渡すこと。
 
 ```bash
-# Write prompt to temp file
-cat > /tmp/worktree-prompt.txt << 'EOF'
+# Write prompt to temp file (prepend /add-dir so built-in tools can access the original repo)
+REPO_ROOT=$(git rev-parse --show-toplevel)
+cat > /tmp/worktree-prompt.txt << EOF
+/add-dir ${REPO_ROOT}
 $ARGUMENTS
 EOF
 
