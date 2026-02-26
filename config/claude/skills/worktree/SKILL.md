@@ -65,9 +65,8 @@ chmod +x /tmp/worktree-prep.sh
 tmux window のタイトルは `<repository>/<worktree-name>` とする。
 repository 名は `basename $(git rev-parse --show-toplevel)` で取得する。
 
-初期プロンプトには `/add-dir <repo-root>` を先頭に付与し、その後に $ARGUMENTS を続ける。
-これにより worktree 先でも元リポジトリのファイルに組み込みツール（Glob/Read/Grep）でアクセスできる。
-`--model opus` と `--permission-mode plan` を指定する。
+CLI フラグ `--add-dir <repo-root>` を指定し、元リポジトリのファイルに組み込みツール（Glob/Read/Grep）でアクセスできるようにする。
+`--model opus` を指定する。
 
 > [!IMPORTANT]
 > **tmux send-keys と複数行プロンプト**
@@ -76,20 +75,20 @@ repository 名は `basename $(git rev-parse --show-toplevel)` で取得する。
 > 必ず一時ファイルに書き出してから `$(cat file)` で渡すこと。
 
 ```bash
-# Write prompt to temp file (prepend /add-dir so built-in tools can access the original repo)
+# Write prompt to temp file
 REPO_ROOT=$(git rev-parse --show-toplevel)
 cat > /tmp/worktree-prompt.txt << EOF
-/add-dir ${REPO_ROOT}
 $ARGUMENTS
 EOF
 
 # Check tmux and launch (prep script runs first to ensure config files exist)
+# --add-dir passes the original repo root so built-in tools (Glob/Read/Grep) can access it
 if tmux list-sessions 2>/dev/null; then
     tmux new-window -n "<repo>/<worktree-name>"
-    tmux send-keys 'bash /tmp/worktree-prep.sh && claude --worktree <worktree-name> --model opus --permission-mode plan "$(cat /tmp/worktree-prompt.txt)"' C-m
+    tmux send-keys "bash /tmp/worktree-prep.sh && claude --worktree <worktree-name> --add-dir ${REPO_ROOT} --model opus \"\$(cat /tmp/worktree-prompt.txt)\"" C-m
 else
     echo "Not in tmux session. Run manually:"
-    echo '  bash /tmp/worktree-prep.sh && claude --worktree <worktree-name> --model opus --permission-mode plan'
+    echo "  bash /tmp/worktree-prep.sh && claude --worktree <worktree-name> --add-dir ${REPO_ROOT} --model opus"
 fi
 ```
 
