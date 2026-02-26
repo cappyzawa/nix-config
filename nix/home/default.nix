@@ -83,6 +83,7 @@ in
       "$HOME/.cargo/bin"
       "$HOME/.local/bin"
       "$HOME/.krew/bin"
+      "$HOME/.gem/ruby/bin"
     ];
 
     packages = with pkgs; [
@@ -106,6 +107,7 @@ in
       go
       deno
       zig
+      ruby_3_4 # Ruby
       rustup # Rust toolchain manager
       tree-sitter # Parser generator for Helix grammars
 
@@ -121,7 +123,7 @@ in
       zls # Zig
 
       # Formatters and linters (for Helix)
-      gotools # goimports
+      (lib.lowPrio gotools) # goimports (lowPrio to avoid bundle conflict with Ruby)
       shfmt # Shell
       shellcheck # Shell linter
       yamlfmt # YAML
@@ -1615,6 +1617,7 @@ in
         CVSEDITOR = "hx";
         SVN_EDITOR = "hx";
         GIT_EDITOR = "hx";
+        GEM_HOME = "$HOME/.gem/ruby";
       };
 
       shellAliases = {
