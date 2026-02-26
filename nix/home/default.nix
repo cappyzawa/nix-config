@@ -21,6 +21,42 @@ in
     ../modules/shared.nix
   ];
 
+  shared.claudeMcpServers = {
+    github = {
+      type = "http";
+      url = "https://api.githubcopilot.com/mcp/";
+      headers = {
+        Authorization = "Bearer \${GITHUB_TOKEN}";
+      };
+    };
+    context7 = {
+      type = "http";
+      url = "https://mcp.context7.com/mcp";
+    };
+    serena = {
+      type = "stdio";
+      command = "uvx";
+      args = [
+        "--from"
+        "git+https://github.com/oraios/serena"
+        "serena"
+        "start-mcp-server"
+        "--context=claude-code"
+        "--project-from-cwd"
+        "--enable-web-dashboard=false"
+      ];
+    };
+    filesystem = {
+      type = "stdio";
+      command = "npx";
+      args = [
+        "-y"
+        "@modelcontextprotocol/server-filesystem"
+        "\${HOME}/ghq/src"
+      ];
+    };
+  };
+
   # Akari theme
   akari = {
     enable = true;
@@ -392,43 +428,22 @@ in
           command = "jq -r '.model.display_name'";
         };
       };
-      # MCP servers configured via settings (not mcpServers option)
-      # to avoid --mcp-config wrapper flag that breaks subcommands like `claude mcp add`
-      settings.mcpServers = {
-        github = {
-          type = "http";
-          url = "https://api.githubcopilot.com/mcp/";
-          headers = {
-            Authorization = "Bearer \${GITHUB_TOKEN}";
+      package =
+        let
+          mcpConfig = (pkgs.formats.json { }).generate "claude-code-mcp-config.json" {
+            mcpServers = config.shared.claudeMcpServers;
           };
+        in
+        pkgs.symlinkJoin {
+          name = "claude-code";
+          paths = [ pkgs.claude-code ];
+          nativeBuildInputs = [ pkgs.makeWrapper ];
+          postBuild = ''
+            wrapProgram $out/bin/claude \
+              --add-flags "--mcp-config=${mcpConfig}"
+          '';
+          inherit (pkgs.claude-code) meta;
         };
-        context7 = {
-          type = "http";
-          url = "https://mcp.context7.com/mcp";
-        };
-        serena = {
-          type = "stdio";
-          command = "uvx";
-          args = [
-            "--from"
-            "git+https://github.com/oraios/serena"
-            "serena"
-            "start-mcp-server"
-            "--context=claude-code"
-            "--project-from-cwd"
-            "--enable-web-dashboard=false"
-          ];
-        };
-        filesystem = {
-          type = "stdio";
-          command = "npx";
-          args = [
-            "-y"
-            "@modelcontextprotocol/server-filesystem"
-            "\${HOME}/ghq/src"
-          ];
-        };
-      };
       skillsDir = ../../config/claude/skills;
     };
 
