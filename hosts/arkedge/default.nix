@@ -71,7 +71,7 @@
             "mcp__aws-aegs-production__suggest_aws_commands"
             "mcp__aws-aegs-production__call_aws"
           ];
-          mcpServers =
+          settings.mcpServers =
             let
               awsProfiles = [
                 "Aegs-Staging"

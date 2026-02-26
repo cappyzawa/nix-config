@@ -392,7 +392,9 @@ in
           command = "jq -r '.model.display_name'";
         };
       };
-      mcpServers = {
+      # MCP servers configured via settings (not mcpServers option)
+      # to avoid --mcp-config wrapper flag that breaks subcommands like `claude mcp add`
+      settings.mcpServers = {
         github = {
           type = "http";
           url = "https://api.githubcopilot.com/mcp/";
