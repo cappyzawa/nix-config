@@ -39,6 +39,16 @@
   - 例: `codex exec -s read-only "質問内容"`
 - WebSearch は Context7 と codex のどちらでも解決できない場合の最終手段
 
+## ツール使用の優先順位
+
+Bash はシェル実行が必須なコマンドにのみ使うこと。以下は専用ツールで代替すること:
+
+- ファイル検索: Glob (find / ls の代わり)
+- ファイル内容検索: Grep (grep / rg の代わり)
+- ファイル読み込み: Read (cat / head / tail の代わり)
+- ファイル編集: Edit (sed / awk の代わり)
+- ファイル作成: Write
+
 ## ワークフロー
 
 - `.claude/rules/` へのルール追加・作成の提案があれば、auto memory 内の `rule-proposals.md` に書き溜めておくこと
