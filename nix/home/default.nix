@@ -856,6 +856,7 @@ in
         "CLAUDE.md"
         "CLAUDE.local.md"
         ".serena/"
+        ".playwright-mcp/"
       ];
       settings = {
         alias = {
