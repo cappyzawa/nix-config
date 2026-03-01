@@ -447,6 +447,7 @@ in
           inherit (pkgs.claude-code) meta;
         };
       skillsDir = ../../config/claude/skills;
+      agentsDir = ../../config/claude/agents;
     };
 
     # AeroSpace window manager
