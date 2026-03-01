@@ -36,6 +36,7 @@
             "-X github.com/slok/sloth/internal/info.Version=v${old.version}"
           ];
         }))
+        inputs.nixpkgs.legacyPackages.aarch64-darwin.prometheus.cli # promtool
         inputs.nixpkgs.legacyPackages.aarch64-darwin.wireguard-tools
       ];
 
