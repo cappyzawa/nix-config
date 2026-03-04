@@ -15,6 +15,9 @@
 let
   fontFamily = config.shared.fonts.main;
   fontSize = config.shared.fonts.size;
+  claudeMcpConfig =
+    (pkgs.formats.json { }).generate "claude-mcp-config.json"
+      config.shared.claudeMcpServers;
 in
 {
   imports = [
@@ -84,6 +87,7 @@ in
       "$HOME/.local/bin"
       "$HOME/.krew/bin"
       "$HOME/.gem/ruby/bin"
+      "$HOME/.claude/bin"
     ];
 
     packages = with pkgs; [
@@ -158,24 +162,42 @@ in
       _1password-cli # 1Password CLI (op command)
     ];
 
-    # SbarLua installation (symlink to expected location)
-    activation.sbarluaSetup = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      mkdir -p $HOME/.local/share/sketchybar_lua
-      ln -sf ${sbarluaPkg}/lib/sketchybar_lua/sketchybar.so $HOME/.local/share/sketchybar_lua/sketchybar.so
-    '';
-
-    # Rustup initialization
-    activation.rustupSetup = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      if command -v rustup >/dev/null 2>&1; then
-        # Install stable toolchain if not already installed
-        if ! $DRY_RUN_CMD rustup toolchain list | grep -q stable; then
-          $DRY_RUN_CMD rustup default stable
+    activation = {
+      # Merge MCP servers into ~/.claude.json (user-scope MCP config)
+      updateClaudeMcp = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        if [ -f "$HOME/.claude.json" ]; then
+          tmp=$(mktemp)
+          ${pkgs.jq}/bin/jq --slurpfile mcp ${claudeMcpConfig} '.mcpServers = $mcp[0]' "$HOME/.claude.json" > "$tmp"
+          $DRY_RUN_CMD mv "$tmp" "$HOME/.claude.json"
         fi
+      '';
 
-        # Install rust-analyzer component
-        $DRY_RUN_CMD rustup component add rust-analyzer
-      fi
-    '';
+      # Claude Code installation via official installer
+      installClaude = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        if [ ! -f "$HOME/.claude/bin/claude" ]; then
+          $DRY_RUN_CMD /usr/bin/curl -fsSL https://claude.ai/install.sh | PATH="/usr/bin:/bin:$PATH" bash
+        fi
+      '';
+
+      # SbarLua installation (symlink to expected location)
+      sbarluaSetup = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        mkdir -p $HOME/.local/share/sketchybar_lua
+        ln -sf ${sbarluaPkg}/lib/sketchybar_lua/sketchybar.so $HOME/.local/share/sketchybar_lua/sketchybar.so
+      '';
+
+      # Rustup initialization
+      rustupSetup = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        if command -v rustup >/dev/null 2>&1; then
+          # Install stable toolchain if not already installed
+          if ! $DRY_RUN_CMD rustup toolchain list | grep -q stable; then
+            $DRY_RUN_CMD rustup default stable
+          fi
+
+          # Install rust-analyzer component
+          $DRY_RUN_CMD rustup component add rust-analyzer
+        fi
+      '';
+    };
   };
 
   # Disable manpages to avoid builtins.toFile warning with Determinate Nix
@@ -430,22 +452,7 @@ in
           command = "jq -r '.model.display_name'";
         };
       };
-      package =
-        let
-          mcpConfig = (pkgs.formats.json { }).generate "claude-code-mcp-config.json" {
-            mcpServers = config.shared.claudeMcpServers;
-          };
-        in
-        pkgs.symlinkJoin {
-          name = "claude-code";
-          paths = [ pkgs.claude-code ];
-          nativeBuildInputs = [ pkgs.makeWrapper ];
-          postBuild = ''
-            wrapProgram $out/bin/claude \
-              --add-flags "--mcp-config=${mcpConfig}"
-          '';
-          inherit (pkgs.claude-code) meta;
-        };
+      package = null; # managed by official installer
       skillsDir = ../../config/claude/skills;
       agentsDir = ../../config/claude/agents;
     };

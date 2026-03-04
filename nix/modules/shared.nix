@@ -17,12 +17,10 @@ in
         description = "Default font size";
       };
     };
-    # Workaround for HM claude-code module --append-flags bug.
-    # Merged across host configs, then baked into a custom-wrapped package.
     claudeMcpServers = mkOption {
       type = types.attrsOf types.anything;
       default = { };
-      description = "MCP servers for Claude Code";
+      description = "MCP servers merged into ~/.claude.json at activation";
     };
   };
 }
