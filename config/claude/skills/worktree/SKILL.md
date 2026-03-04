@@ -2,7 +2,7 @@
 name: worktree
 description: Git worktree + tmux で並行作業セッションを起動する（Issue/PR/ブランチ対応）
 disable-model-invocation: false
-argument-hint: <Issue/PR URL, PR number, or branch-name> [task description]
+argument-hint: <Issue/PR URL, PR number, or branch-name> [--model <model>] [task description]
 allowed-tools: Bash
 model: haiku
 ---
@@ -20,6 +20,7 @@ Claude Code の `--worktree` フラグを活用して、並行作業セッショ
 - `/worktree https://github.com/owner/repo/issues/123`
 - `/worktree https://github.com/owner/repo/pull/456 をレビューして`
 - `/worktree feature/new-api 認証機能を実装して`
+- `/worktree feature/new-api --model opus 認証機能を実装して`
 
 ## 手順
 
@@ -35,6 +36,21 @@ $ARGUMENTS の先頭トークンから判別する:
 | それ以外 | `/` を `-` に置換 | `feature-new-api` |
 
 引数がない場合はユーザーに質問する。
+
+### 1.5. モデルを解析
+
+`$ARGUMENTS` に `--model <value>` が含まれる場合はその値を使う。なければデフォルトは `sonnet`。
+
+```bash
+MODEL="sonnet"
+ARGS="$ARGUMENTS"
+if echo "$ARGS" | grep -q -- '--model '; then
+  MODEL=$(echo "$ARGS" | sed 's/.*--model \([^ ]*\).*/\1/')
+  ARGS=$(echo "$ARGS" | sed 's/--model [^ ]*//' | xargs)
+fi
+```
+
+以降の手順では `$ARGS` をプロンプトとして使い、`$MODEL` をモデルに使う。
 
 ### 2. Worktree を準備
 
@@ -67,7 +83,7 @@ tmux window のタイトルは `<repository>/<worktree-name>` とする。
 repository 名は `basename $(git rev-parse --show-toplevel)` で取得する。
 
 CLI フラグ `--add-dir <repo-root>` を指定し、元リポジトリのファイルに組み込みツール（Glob/Read/Grep）でアクセスできるようにする。
-`--model opus` を指定する。
+`--model ${MODEL}` を指定する（デフォルト: `sonnet`）。
 
 > [!IMPORTANT]
 > **tmux send-keys と複数行プロンプト**
@@ -76,20 +92,20 @@ CLI フラグ `--add-dir <repo-root>` を指定し、元リポジトリのファ
 > 必ず一時ファイルに書き出してから `$(cat file)` で渡すこと。
 
 ```bash
-# Write prompt to temp file
+# Write prompt to temp file (use $ARGS with --model stripped)
 REPO_ROOT=$(git rev-parse --show-toplevel)
 cat > /tmp/worktree-prompt.txt << EOF
-$ARGUMENTS
+$ARGS
 EOF
 
 # Check tmux and launch (prep script runs first to ensure config files exist)
 # --add-dir passes the original repo root so built-in tools (Glob/Read/Grep) can access it
 if tmux list-sessions 2>/dev/null; then
     tmux new-window -n "<repo>/<worktree-name>"
-    tmux send-keys "bash /tmp/worktree-prep.sh && claude --worktree <worktree-name> --add-dir ${REPO_ROOT} --model opus \"\$(cat /tmp/worktree-prompt.txt)\"" C-m
+    tmux send-keys "bash /tmp/worktree-prep.sh && claude --worktree <worktree-name> --add-dir ${REPO_ROOT} --model ${MODEL} \"\$(cat /tmp/worktree-prompt.txt)\"" C-m
 else
     echo "Not in tmux session. Run manually:"
-    echo "  bash /tmp/worktree-prep.sh && claude --worktree <worktree-name> --add-dir ${REPO_ROOT} --model opus"
+    echo "  bash /tmp/worktree-prep.sh && claude --worktree <worktree-name> --add-dir ${REPO_ROOT} --model ${MODEL}"
 fi
 ```
 
