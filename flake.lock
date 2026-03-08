@@ -88,11 +88,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1772569491,
-        "narHash": "sha256-bdr6ueeXO1Xg91sFkuvaysYF0mVdwHBpdyhTjBEWv+s=",
+        "lastModified": 1772985285,
+        "narHash": "sha256-wEEmvfqJcl9J0wyMgMrj1TixOgInBW/6tLPhWGoZE3s=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "924e61f5c2aeab38504028078d7091077744ab17",
+        "rev": "5be5d8245cbc7bc0c09fbb5f38f23f223c543f85",
         "type": "github"
       },
       "original": {
@@ -161,11 +161,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1772554988,
-        "narHash": "sha256-8Kb+MSE6QYVX1S96aZOluOMVfvSEOs70vgX980qVUaY=",
+        "lastModified": 1772771118,
+        "narHash": "sha256-xWzaTvmmACR/SRWtABgI/Z97lcqwJAeoSd5QW1KdK1s=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "87f6b6e02cb3f87a1be4f939326c94c8af9d55d8",
+        "rev": "e38213b91d3786389a446dfce4ff5a8aaf6012f2",
         "type": "github"
       },
       "original": {
@@ -206,11 +206,11 @@
     "sbarlua": {
       "flake": false,
       "locked": {
-        "lastModified": 1723484726,
-        "narHash": "sha256-F0UfNxHM389GhiPQ6/GFbeKQq5EvpiqQdvyf7ygzkPg=",
+        "lastModified": 1772774660,
+        "narHash": "sha256-lhLTrdufA3ALJ2S5HLdgNOr5seWIWEHkVhZNPObzbvI=",
         "owner": "FelixKratz",
         "repo": "SbarLua",
-        "rev": "437bd2031da38ccda75827cb7548e7baa4aa9978",
+        "rev": "dba9cc421b868c918d5c23c408544a28aadf2f2f",
         "type": "github"
       },
       "original": {
