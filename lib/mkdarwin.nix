@@ -25,19 +25,22 @@ let
     ];
 
     buildPhase = ''
+      # Detect bundled Lua version
+      luaDir=$(ls -d lua-* | head -1)
+
       # Build Lua first
-      cd lua-5.4.7
+      cd "$luaDir"
       make macosx CC=clang
       cd ..
 
       # Build SbarLua
       mkdir -p bin
-      mv lua-5.4.7/src/liblua.a bin/
+      mv "$luaDir/src/liblua.a" bin/
 
       clang -std=c99 -O3 -g -shared -fPIC \
         -arch arm64 \
         src/*.c \
-        -Ilua-5.4.7/src -Lbin -llua \
+        -I"$luaDir/src" -Lbin -llua \
         -framework CoreFoundation \
         -o bin/sketchybar.so
     '';
