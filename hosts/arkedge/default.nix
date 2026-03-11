@@ -68,6 +68,8 @@
           awsProfiles = [
             "Aegs-Staging"
             "Aegs-Production"
+            "Satops-Staging"
+            "Satops-Production"
           ];
           mkAwsServer = profile: {
             type = "stdio";
@@ -105,6 +107,10 @@
             "mcp__aws-aegs-staging__call_aws"
             "mcp__aws-aegs-production__suggest_aws_commands"
             "mcp__aws-aegs-production__call_aws"
+            "mcp__aws-satops-staging__suggest_aws_commands"
+            "mcp__aws-satops-staging__call_aws"
+            "mcp__aws-satops-production__suggest_aws_commands"
+            "mcp__aws-satops-production__call_aws"
           ];
         };
 
