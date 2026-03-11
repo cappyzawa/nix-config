@@ -21,6 +21,7 @@
       "kayac/tap/ecspresso"
       "fujiwara/tap/lambroll"
       "influxdb-cli"
+      "awscurl"
     ];
   };
 
