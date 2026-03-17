@@ -141,6 +141,7 @@
 
       taps = [
         "FelixKratz/formulae"
+        "k1LoW/tap"
       ];
 
       brews = [
@@ -152,6 +153,7 @@
         "terminal-notifier"
         "FelixKratz/formulae/borders"
         "FelixKratz/formulae/sketchybar"
+        "k1LoW/tap/mo"
       ];
 
       casks = [
