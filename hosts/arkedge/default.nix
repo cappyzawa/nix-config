@@ -85,36 +85,6 @@
         lib.listToAttrs (map (p: lib.nameValuePair "aws-${lib.toLower p}" (mkAwsServer p)) awsProfiles);
 
       programs = {
-        claude-code = {
-          memory.text = lib.mkAfter (builtins.readFile ./claude-memory.md);
-          agentsDir = lib.mkForce (
-            let
-              pkgs = inputs.nixpkgs.legacyPackages.aarch64-darwin;
-              shared = ../../config/claude/agents;
-              hostSpecific = ./claude-agents;
-            in
-            pkgs.runCommandLocal "claude-agents-merged" { } ''
-              mkdir -p $out
-              for f in ${shared}/*; do
-                ln -s "$f" "$out/$(basename "$f")"
-              done
-              for f in ${hostSpecific}/*; do
-                ln -s "$f" "$out/$(basename "$f")"
-              done
-            ''
-          );
-          settings.permissions.allow = [
-            "mcp__aws-aegs-staging__suggest_aws_commands"
-            "mcp__aws-aegs-staging__call_aws"
-            "mcp__aws-aegs-production__suggest_aws_commands"
-            "mcp__aws-aegs-production__call_aws"
-            "mcp__aws-satops-staging__suggest_aws_commands"
-            "mcp__aws-satops-staging__call_aws"
-            "mcp__aws-satops-production__suggest_aws_commands"
-            "mcp__aws-satops-production__call_aws"
-          ];
-        };
-
         # AeroSpace settings for external monitors
         aerospace.settings.gaps.outer.top = lib.mkForce [
           { monitor."DELL U2723QE" = 52; }

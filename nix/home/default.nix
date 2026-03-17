@@ -179,6 +179,60 @@ in
         fi
       '';
 
+      # Setup Claude config files (settings, CLAUDE.md, rules, skills, agents)
+      setupClaude = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        REPO_ROOT="${config.home.homeDirectory}/ghq/src/github.com/cappyzawa/nix-config"
+        CLAUDE_DIR="$HOME/.claude"
+        HOST="${configName}"
+
+        mkdir -p "$CLAUDE_DIR"
+
+        # settings.json - copied as a writable file (not a symlink) so Claude Code can
+        # persist toggle states (e.g. voiceEnabled) without dirtying the git working tree
+        if [ -f "$REPO_ROOT/hosts/$HOST/claude-settings.json" ]; then
+          tmp=$(mktemp)
+          ${pkgs.jq}/bin/jq -s '
+            .[0] as $base | .[1] as $host |
+            $base * $host |
+            .permissions.allow = ($base.permissions.allow + $host.permissions.allow)
+          ' "$REPO_ROOT/config/claude/settings.json" "$REPO_ROOT/hosts/$HOST/claude-settings.json" > "$tmp"
+          $DRY_RUN_CMD mv "$tmp" "$CLAUDE_DIR/settings.json"
+        else
+          $DRY_RUN_CMD cp -f "$REPO_ROOT/config/claude/settings.json" "$CLAUDE_DIR/settings.json"
+        fi
+
+        # CLAUDE.md - common + host-specific (build atomically to respect dry-run)
+        if [ -f "$REPO_ROOT/hosts/$HOST/claude-memory.md" ]; then
+          tmp=$(mktemp)
+          cat "$REPO_ROOT/config/claude/CLAUDE.md" > "$tmp"
+          printf '\n' >> "$tmp"
+          cat "$REPO_ROOT/hosts/$HOST/claude-memory.md" >> "$tmp"
+          $DRY_RUN_CMD mv "$tmp" "$CLAUDE_DIR/CLAUDE.md"
+        else
+          $DRY_RUN_CMD cp -f "$REPO_ROOT/config/claude/CLAUDE.md" "$CLAUDE_DIR/CLAUDE.md"
+        fi
+
+        # rules, skills - symlink directories
+        for dir in rules skills; do
+          rm -rf "$CLAUDE_DIR/$dir"
+          ln -sfn "$REPO_ROOT/config/claude/$dir" "$CLAUDE_DIR/$dir"
+        done
+
+        # agents - merge if host-specific exists, otherwise symlink
+        if [ -d "$REPO_ROOT/hosts/$HOST/claude-agents" ]; then
+          rm -rf "$CLAUDE_DIR/agents"
+          mkdir -p "$CLAUDE_DIR/agents"
+          for src_dir in "$REPO_ROOT/config/claude/agents" "$REPO_ROOT/hosts/$HOST/claude-agents"; do
+            for f in "$src_dir"/*; do
+              ln -sf "$f" "$CLAUDE_DIR/agents/$(basename "$f")"
+            done
+          done
+        else
+          rm -rf "$CLAUDE_DIR/agents"
+          ln -sfn "$REPO_ROOT/config/claude/agents" "$CLAUDE_DIR/agents"
+        fi
+      '';
+
       # SbarLua installation (symlink to expected location)
       sbarluaSetup = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
         mkdir -p $HOME/.local/share/sketchybar_lua
@@ -257,204 +311,6 @@ in
   programs = {
     # Let Home Manager manage itself
     home-manager.enable = true;
-
-    # Claude Code
-    claude-code = {
-      enable = true;
-      memory.text = builtins.readFile ../../config/claude/CLAUDE.md;
-      rulesDir = ../../config/claude/rules;
-      settings = {
-        cleanupPeriodDays = 7;
-        env = {
-          CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS = "1";
-        };
-        vim = true;
-        attribution = {
-          commit = "Co-Authored-By: Claude <noreply@anthropic.com>";
-          pr = "🤖 Generated with Claude Code";
-        };
-        permissions = {
-          allow = [
-            "Bash(cargo check:*)"
-            "Bash(cargo clippy:*)"
-            "Bash(cargo fmt:*)"
-            "Bash(cargo test:*)"
-            "Bash(cat:*)"
-            "Bash(codex exec -s read-only:*)"
-            "Bash(docker compose:*)"
-            "Bash(find:*)"
-            "Bash(gh pr create:*)"
-            "Bash(gh pr view:*)"
-            "Bash(git add:*)"
-            "Bash(git branch:*)"
-            "Bash(git commit:*)"
-            "Bash(git diff:*)"
-            "Bash(git log:*)"
-            "Bash(git push:*)"
-            "Bash(git show:*)"
-            "Bash(git status)"
-            "Bash(go build:*)"
-            "Bash(go fmt:*)"
-            "Bash(go mod:*)"
-            "Bash(go test:*)"
-            "Bash(go vet:*)"
-            "Bash(golangci-lint:*)"
-            "Bash(grep:*)"
-            "Bash(head:*)"
-            "Bash(ls:*)"
-            "Bash(markdownlint:*)"
-            "Bash(npm run format:*)"
-            "Bash(npm run lint:*)"
-            "Bash(npm run test:*)"
-            "Bash(make test:*)"
-            "Bash(prettier:*)"
-            "Bash(rg:*)"
-            "Bash(shellcheck:*)"
-            "Bash(shfmt:*)"
-            "Bash(tail:*)"
-            "Bash(yarn format:*)"
-            "Bash(yarn lint:*)"
-            "Bash(yarn test:*)"
-            "Bash(aws acm describe-*:*)"
-            "Bash(aws acm get-*:*)"
-            "Bash(aws acm list-*:*)"
-            "Bash(aws apigatewayv2 get-*:*)"
-            "Bash(aws chatbot describe-*:*)"
-            "Bash(aws chatbot get-*:*)"
-            "Bash(aws chatbot list-*:*)"
-            "Bash(aws codebuild batch-get-*:*)"
-            "Bash(aws codebuild list-*:*)"
-            "Bash(aws dynamodb describe-*:*)"
-            "Bash(aws dynamodb get-*:*)"
-            "Bash(aws dynamodb list-*:*)"
-            "Bash(aws dynamodb scan:*)"
-            "Bash(aws ec2 describe-*:*)"
-            "Bash(aws ecr describe-*:*)"
-            "Bash(aws ecr list-*:*)"
-            "Bash(aws ecs describe-*:*)"
-            "Bash(aws ecs list-*:*)"
-            "Bash(aws elbv2 describe-*:*)"
-            "Bash(aws events describe-*:*)"
-            "Bash(aws events list-*:*)"
-            "Bash(aws iam get-*:*)"
-            "Bash(aws iam list-*:*)"
-            "Bash(aws lambda get-*:*)"
-            "Bash(aws lambda list-*:*)"
-            "Bash(aws logs describe-*:*)"
-            "Bash(aws logs filter-*:*)"
-            "Bash(aws logs get-*:*)"
-            "Bash(aws rds describe-*:*)"
-            "Bash(aws route53 get-*:*)"
-            "Bash(aws route53 list-*:*)"
-            "Bash(aws s3 ls:*)"
-            "Bash(aws s3api get-*:*)"
-            "Bash(aws s3api head-*:*)"
-            "Bash(aws s3api list-*:*)"
-            "Bash(aws scheduler get-*:*)"
-            "Bash(aws scheduler list-*:*)"
-            "Bash(aws secretsmanager describe-*:*)"
-            "Bash(aws secretsmanager get-*:*)"
-            "Bash(aws secretsmanager list-*:*)"
-            "Bash(aws sns get-*:*)"
-            "Bash(aws sns list-*:*)"
-            "Bash(aws sqs get-*:*)"
-            "Bash(aws sqs list-*:*)"
-            "Bash(aws sqs receive-*:*)"
-            "Bash(aws ssm describe-*:*)"
-            "Bash(aws ssm get-*:*)"
-            "Bash(aws ssm list-*:*)"
-            "Bash(aws sts get-caller-identity:*)"
-            "Bash(aws timestream-influxdb get-*:*)"
-            "Bash(aws timestream-influxdb list-*:*)"
-            "Glob"
-            "Grep"
-            "LS"
-            "Read"
-            "WebFetch(domain:doc.rust-lang.org)"
-            "WebFetch(domain:docs.anthropic.com)"
-            "WebFetch(domain:fluxcd.io)"
-            "WebFetch(domain:raw.githubusercontent.com)"
-            "mcp__filesystem__create_directory"
-            "mcp__filesystem__directory_tree"
-            "mcp__filesystem__get_file_info"
-            "mcp__filesystem__list_directory"
-            "mcp__filesystem__move_file"
-            "mcp__filesystem__read_file"
-            "mcp__filesystem__read_multiple_files"
-            "mcp__filesystem__search_files"
-            "mcp__github__create_pull_request"
-            "mcp__github__get_commit"
-            "mcp__github__get_file_contents"
-            "mcp__github__get_label"
-            "mcp__github__get_latest_release"
-            "mcp__github__get_me"
-            "mcp__github__get_release_by_tag"
-            "mcp__github__get_tag"
-            "mcp__github__get_team_members"
-            "mcp__github__get_teams"
-            "mcp__github__issue_read"
-            "mcp__github__list_branches"
-            "mcp__github__list_commits"
-            "mcp__github__list_issue_types"
-            "mcp__github__list_issues"
-            "mcp__github__list_pull_requests"
-            "mcp__github__list_releases"
-            "mcp__github__list_tags"
-            "mcp__github__pull_request_read"
-            "mcp__github__search_code"
-            "mcp__github__search_issues"
-            "mcp__github__search_pull_requests"
-            "mcp__github__search_repositories"
-            "mcp__github__search_users"
-            "mcp__context7__query-docs"
-            "mcp__context7__resolve-library-id"
-            "mcp__serena__find_file"
-            "mcp__serena__find_referencing_symbols"
-            "mcp__serena__find_symbol"
-            "mcp__serena__get_current_config"
-            "mcp__serena__get_symbols_overview"
-            "mcp__serena__list_dir"
-            "mcp__serena__list_memories"
-            "mcp__serena__read_file"
-            "mcp__serena__read_memory"
-            "mcp__serena__search_for_pattern"
-            "mcp__serena__think_about_collected_information"
-          ];
-          deny = [ "Read(~/.zshrc.local)" ];
-        };
-        hooks = {
-          Notification = [
-            {
-              matcher = "";
-              hooks = [
-                {
-                  type = "command";
-                  command = ''terminal-notifier -title "Claude Code" -subtitle "$(tmux display-message -t "$TMUX_PANE" -p '#I #W' 2>/dev/null || basename $PWD)" -message "Done" -activate org.alacritty'';
-                }
-              ];
-            }
-          ];
-          Stop = [
-            {
-              matcher = "";
-              hooks = [
-                {
-                  type = "command";
-                  command = ''terminal-notifier -title "Claude Code" -subtitle "$(tmux display-message -t "$TMUX_PANE" -p '#I #W' 2>/dev/null || basename $PWD)" -message "Stopped" -activate org.alacritty'';
-                }
-              ];
-            }
-          ];
-        };
-        statusLine = {
-          type = "command";
-          command = "jq -r '.model.display_name'";
-        };
-      };
-      package = null; # managed by official installer
-      skillsDir = ../../config/claude/skills;
-      agentsDir = ../../config/claude/agents;
-    };
 
     # AeroSpace window manager
     aerospace = {
