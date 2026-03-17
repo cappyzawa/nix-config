@@ -2,7 +2,7 @@
 name: worktree
 description: Git worktree + tmux で並行作業セッションを起動する（Issue/PR/ブランチ対応）
 disable-model-invocation: false
-argument-hint: <Issue/PR URL, PR number, or branch-name> [--model <model>] [task description]
+argument-hint: <Issue/PR URL, PR number, or branch-name> [--model <model>] [--plan] [task description]
 allowed-tools: Bash
 model: haiku
 ---
@@ -21,6 +21,9 @@ Claude Code の `--worktree` フラグを活用して、並行作業セッショ
 - `/worktree https://github.com/owner/repo/pull/456 をレビューして`
 - `/worktree feature/new-api 認証機能を実装して`
 - `/worktree feature/new-api --model opus 認証機能を実装して`
+- `/worktree feature/new-api --model opusplan 認証機能を実装して`
+- `/worktree feature/new-api --plan 設計を考えて`
+- `/worktree feature/new-api --model opusplan --plan 設計を考えて`
 
 ## 手順
 
@@ -37,20 +40,33 @@ $ARGUMENTS の先頭トークンから判別する:
 
 引数がない場合はユーザーに質問する。
 
-### 1.5. モデルを解析
+### 1.5. 引数を解析
 
-`$ARGUMENTS` に `--model <value>` が含まれる場合はその値を使う。なければデフォルトは `sonnet`。
+`$ARGUMENTS` から以下を抽出する:
+
+- `--model <value>`: モデルを指定。なければデフォルトは `sonnet`。
+  - **モデル値は絶対に変換・補完しないこと**。`opusplan` は `opus` でも `sonnet` でもなく `opusplan` そのまま使う。
+- `--plan`: plan mode フラグ。存在する場合は `--permission-mode plan` を claude コマンドに追加する。
 
 ```bash
 MODEL="sonnet"
+PLAN_FLAG=""
 ARGS="$ARGUMENTS"
+
+# Extract --model value as-is (do NOT normalize or alias the value)
 if echo "$ARGS" | grep -q -- '--model '; then
   MODEL=$(echo "$ARGS" | sed 's/.*--model \([^ ]*\).*/\1/')
   ARGS=$(echo "$ARGS" | sed 's/--model [^ ]*//' | xargs)
 fi
+
+# Extract --plan flag
+if echo "$ARGS" | grep -q -- '--plan'; then
+  PLAN_FLAG="--permission-mode plan"
+  ARGS=$(echo "$ARGS" | sed 's/--plan//' | xargs)
+fi
 ```
 
-以降の手順では `$ARGS` をプロンプトとして使い、`$MODEL` をモデルに使う。
+以降の手順では `$ARGS` をプロンプトとして使い、`$MODEL` をモデルに、`$PLAN_FLAG` を permission-mode オプションに使う。
 
 ### 2. Worktree を準備
 
@@ -102,10 +118,10 @@ EOF
 # --add-dir passes the original repo root so built-in tools (Glob/Read/Grep) can access it
 if tmux list-sessions 2>/dev/null; then
     tmux new-window -n "<repo>/<worktree-name>"
-    tmux send-keys "bash /tmp/worktree-prep.sh && claude --worktree <worktree-name> --add-dir ${REPO_ROOT} --model ${MODEL} \"\$(cat /tmp/worktree-prompt.txt)\"" C-m
+    tmux send-keys "bash /tmp/worktree-prep.sh && claude --worktree <worktree-name> --add-dir ${REPO_ROOT} --model ${MODEL} ${PLAN_FLAG} \"\$(cat /tmp/worktree-prompt.txt)\"" C-m
 else
     echo "Not in tmux session. Run manually:"
-    echo "  bash /tmp/worktree-prep.sh && claude --worktree <worktree-name> --add-dir ${REPO_ROOT} --model ${MODEL}"
+    echo "  bash /tmp/worktree-prep.sh && claude --worktree <worktree-name> --add-dir ${REPO_ROOT} --model ${MODEL} ${PLAN_FLAG}"
 fi
 ```
 
