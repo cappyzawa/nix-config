@@ -182,6 +182,7 @@
       }
     ]
   },
+  "language": "Japanese",
   "voiceEnabled": true,
   "statusLine": {
     "type": "command",
