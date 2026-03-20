@@ -282,6 +282,12 @@ in
               mode = "shared";
             };
             mountType = "virtiofs";
+            mounts = [
+              {
+                location = "~/ghq/src";
+                writable = false;
+              }
+            ];
           };
         };
         # x86_64 profile (AMD64 emulation)
@@ -302,6 +308,12 @@ in
               mode = "shared";
             };
             mountType = "virtiofs";
+            mounts = [
+              {
+                location = "~/ghq/src";
+                writable = false;
+              }
+            ];
           };
         };
       };
