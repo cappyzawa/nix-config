@@ -709,6 +709,40 @@ in
         rust.symbol = "󱘗 ";
         gcloud.symbol = " ";
         nix_shell.symbol = " ";
+        # Claude Code statusline modules
+        profiles.claude-code = "$directory$git_branch| $claude_model| $claude_context";
+        claude_model = {
+          format = "[\$symbol\$model](\$style) ";
+          symbol = "󰚩 ";
+          style = "bold purple";
+        };
+        claude_context = {
+          format = "[\$gauge \$percentage](\$style) ";
+          gauge_width = 8;
+          display = [
+            {
+              threshold = 0;
+              style = "bold green";
+              hidden = true;
+            }
+            {
+              threshold = 30;
+              style = "bold green";
+              hidden = false;
+            }
+            {
+              threshold = 60;
+              style = "bold yellow";
+              hidden = false;
+            }
+            {
+              threshold = 80;
+              style = "bold red";
+              hidden = false;
+            }
+          ];
+        };
+        claude_cost.disabled = true;
       };
     };
 
