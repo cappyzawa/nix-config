@@ -20,10 +20,8 @@ Claude Code の `--worktree` フラグを活用して、並行作業セッショ
 - `/worktree https://github.com/owner/repo/issues/123`
 - `/worktree https://github.com/owner/repo/pull/456 をレビューして`
 - `/worktree feature/new-api 認証機能を実装して`
-- `/worktree feature/new-api --model opus 認証機能を実装して`
-- `/worktree feature/new-api --model opusplan 認証機能を実装して`
+- `/worktree feature/new-api --model sonnet 認証機能を実装して`
 - `/worktree feature/new-api --plan 設計を考えて`
-- `/worktree feature/new-api --model opusplan --plan 設計を考えて`
 
 ## 手順
 
@@ -44,12 +42,12 @@ $ARGUMENTS の先頭トークンから判別する:
 
 `$ARGUMENTS` から以下を抽出する:
 
-- `--model <value>`: モデルを指定。なければデフォルトは `sonnet`。
-  - **モデル値は絶対に変換・補完しないこと**。`opusplan` は `opus` でも `sonnet` でもなく `opusplan` そのまま使う。
+- `--model <value>`: モデルを指定。なければデフォルトは `opus[1m]`。
+  - **モデル値は絶対に変換・補完しないこと**。ユーザーが指定した値をそのまま使う。
 - `--plan`: plan mode フラグ。存在する場合は `--permission-mode plan` を claude コマンドに追加する。
 
 ```bash
-MODEL="sonnet"
+MODEL="opus[1m]"
 PLAN_FLAG=""
 ARGS="$ARGUMENTS"
 
@@ -99,7 +97,7 @@ tmux window のタイトルは `<repository>/<worktree-name>` とする。
 repository 名は `basename $(git rev-parse --show-toplevel)` で取得する。
 
 CLI フラグ `--add-dir <repo-root>` を指定し、元リポジトリのファイルに組み込みツール（Glob/Read/Grep）でアクセスできるようにする。
-`--model ${MODEL}` を指定する（デフォルト: `sonnet`）。
+`--model ${MODEL}` を指定する（デフォルト: `opus[1m]`）。
 
 > [!IMPORTANT]
 > **tmux send-keys と複数行プロンプト**
