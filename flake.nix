@@ -40,10 +40,10 @@
     {
       formatter.${system} = pkgs.nixfmt-tree;
 
-      darwinConfigurations.cappyzawa = mkDarwin "cappyzawa" { };
-
-      darwinConfigurations.arkedge = mkDarwin "arkedge" {
-        user = "kutsuzawa-shu";
+      darwinConfigurations = {
+        cappyzawa = mkDarwin "cappyzawa" { };
+        arkedge = mkDarwin "arkedge" { user = "kutsuzawa-shu"; };
+        ubie = mkDarwin "ubie" { user = "shu.kutsuzawa"; };
       };
     };
 }
