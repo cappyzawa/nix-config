@@ -44,7 +44,7 @@ Available hosts can be found in `hosts/` directory or via `make help`.
 - **CLI tools (Homebrew)**: Add to `homebrew.brews` in [`nix/darwin/default.nix`](./nix/darwin/default.nix).
 - **Dotfiles**: Add to `xdg.configFile` in [`nix/home/default.nix`](./nix/home/default.nix), source files go in [`config/`](./config/).
 - **Programs**: Use Home Manager modules (e.g., `programs.git`, `programs.zsh`). See [Home Manager options](https://nix-community.github.io/home-manager/options.xhtml).
-- **Machine-specific settings**: Add to `hosts/{hostname}.nix`.
+- **Machine-specific settings**: Add to `hosts/{hostname}/default.nix`.
 
 ## Daily Usage
 
@@ -74,12 +74,11 @@ This configuration supports multiple machines with different usernames. Each mac
 
 To add a new machine:
 
-1. Create `hosts/{hostname}.nix` with machine-specific settings
+1. Create `hosts/{hostname}/default.nix` with machine-specific settings
 2. Add to `flake.nix`:
    ```nix
-   darwinConfigurations.{hostname} = mkDarwin {
-     hostname = "{hostname}";
-     username = "{username}";  # optional if same as hostname
+   darwinConfigurations.{hostname} = mkDarwin "{hostname}" {
+     user = "{username}";  # optional if same as hostname
    };
    ```
 3. Bootstrap on the new machine: `make bootstrap NIXNAME={hostname}`
