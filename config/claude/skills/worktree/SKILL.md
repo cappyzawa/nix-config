@@ -96,7 +96,6 @@ chmod +x /tmp/worktree-prep.sh
 tmux window のタイトルは `<repository>/<worktree-name>` とする。
 repository 名は `basename $(git rev-parse --show-toplevel)` で取得する。
 
-CLI フラグ `--add-dir <repo-root>` を指定し、元リポジトリのファイルに組み込みツール（Glob/Read/Grep）でアクセスできるようにする。
 `--model ${MODEL}` を指定する（デフォルト: `opus[1m]`）。
 
 > [!IMPORTANT]
@@ -107,19 +106,17 @@ CLI フラグ `--add-dir <repo-root>` を指定し、元リポジトリのファ
 
 ```bash
 # Write prompt to temp file (use $ARGS with --model stripped)
-REPO_ROOT=$(git rev-parse --show-toplevel)
 cat > /tmp/worktree-prompt.txt << EOF
 $ARGS
 EOF
 
 # Check tmux and launch (prep script runs first to ensure config files exist)
-# --add-dir passes the original repo root so built-in tools (Glob/Read/Grep) can access it
 if tmux list-sessions 2>/dev/null; then
     tmux new-window -n "<repo>/<worktree-name>"
-    tmux send-keys "bash /tmp/worktree-prep.sh && claude --worktree <worktree-name> --add-dir ${REPO_ROOT} --model '${MODEL}' ${PLAN_FLAG} \"\$(cat /tmp/worktree-prompt.txt)\"" C-m
+    tmux send-keys "bash /tmp/worktree-prep.sh && claude --worktree <worktree-name> --model '${MODEL}' ${PLAN_FLAG} \"\$(cat /tmp/worktree-prompt.txt)\"" C-m
 else
     echo "Not in tmux session. Run manually:"
-    echo "  bash /tmp/worktree-prep.sh && claude --worktree <worktree-name> --add-dir ${REPO_ROOT} --model '${MODEL}' ${PLAN_FLAG}"
+    echo "  bash /tmp/worktree-prep.sh && claude --worktree <worktree-name> --model '${MODEL}' ${PLAN_FLAG}"
 fi
 ```
 
