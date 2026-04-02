@@ -40,6 +40,7 @@
         }))
         inputs.nixpkgs.legacyPackages.aarch64-darwin.prometheus.cli # promtool
         inputs.nixpkgs.legacyPackages.aarch64-darwin.wireguard-tools
+        inputs.nixpkgs.legacyPackages.aarch64-darwin.ssm-session-manager-plugin
       ];
 
       # Meeting opener script and launchd agent
