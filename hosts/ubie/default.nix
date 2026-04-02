@@ -18,6 +18,12 @@
     ];
   };
   home-manager.users.${currentUser} = _: {
+    shared.claudeMcpServers = {
+      atlassian = {
+        type = "http";
+        url = "https://mcp.atlassian.com/v1/mcp";
+      };
+    };
     programs.mise.enable = true;
   };
 }

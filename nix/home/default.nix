@@ -32,10 +32,6 @@ in
         Authorization = "Bearer \${GITHUB_TOKEN}";
       };
     };
-    atlassian = {
-      type = "http";
-      url = "https://mcp.atlassian.com/v1/mcp";
-    };
     context7 = {
       type = "http";
       url = "https://mcp.context7.com/mcp";
