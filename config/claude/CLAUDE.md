@@ -1,5 +1,7 @@
 # CLAUDE.md
 
+@~/.claude/CLAUDE.local.md
+
 ## Common
 
 - 会話は基本的に日本語で行います
