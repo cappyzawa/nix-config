@@ -34,7 +34,7 @@ endef
 
 bootstrap: ## First-time setup: bootstrap nix-darwin (NIXNAME=<host> required on first run)
 	$(call check_nixname,bootstrap)
-	nix run nix-darwin -- switch --flake '.#$(_NIXNAME)'
+	sudo nix run nix-darwin -- switch --flake '.#$(_NIXNAME)'
 	$(call save_nixname)
 
 switch: ## Apply nix-darwin and home-manager configuration

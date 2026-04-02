@@ -9,10 +9,15 @@
   homebrew = {
     taps = [
     ];
-    casks = [ "twingate" ];
+    casks = [
+      "google-cloud-sdk"
+      "trunk-io"
+      "twingate"
+    ];
     brews = [
     ];
   };
   home-manager.users.${currentUser} = _: {
+    programs.mise.enable = true;
   };
 }
