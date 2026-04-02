@@ -113,10 +113,10 @@ EOF
 # Check tmux and launch (prep script runs first to ensure config files exist)
 if tmux list-sessions 2>/dev/null; then
     tmux new-window -n "<repo>/<worktree-name>"
-    tmux send-keys "bash /tmp/worktree-prep.sh && claude --worktree <worktree-name> --model '${MODEL}' ${PLAN_FLAG} \"\$(cat /tmp/worktree-prompt.txt)\"" C-m
+    tmux send-keys "bash /tmp/worktree-prep.sh && claude --worktree <worktree-name> --enable-auto-mode --model '${MODEL}' ${PLAN_FLAG} \"\$(cat /tmp/worktree-prompt.txt)\"" C-m
 else
     echo "Not in tmux session. Run manually:"
-    echo "  bash /tmp/worktree-prep.sh && claude --worktree <worktree-name> --model '${MODEL}' ${PLAN_FLAG}"
+    echo "  bash /tmp/worktree-prep.sh && claude --worktree <worktree-name> --enable-auto-mode --model '${MODEL}' ${PLAN_FLAG}"
 fi
 ```
 
