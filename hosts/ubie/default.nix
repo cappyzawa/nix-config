@@ -10,7 +10,7 @@
     taps = [
     ];
     casks = [
-      "google-cloud-sdk"
+      "gcloud-cli"
       "trunk-io"
       "twingate"
     ];
