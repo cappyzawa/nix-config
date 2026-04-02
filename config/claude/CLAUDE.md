@@ -1,7 +1,5 @@
 # CLAUDE.md
 
-@~/.claude/CLAUDE.local.md
-
 ## Common
 
 - 会話は基本的に日本語で行います
@@ -70,3 +68,6 @@ Bash はシェル実行が必須なコマンドにのみ使うこと。以下は
 - `.claude/rules/` へのルール追加・作成の提案があれば、auto memory 内の `rule-proposals.md` に書き溜めておくこと
   - 作業完了後にまとめてユーザーに提案する
   - glob でスコープを絞ること
+
+<!-- Local overrides: loaded last so they take precedence over the above -->
+@~/.claude/CLAUDE.local.md
