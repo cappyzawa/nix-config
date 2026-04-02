@@ -285,7 +285,7 @@ in
             mounts = [
               {
                 location = "~/ghq/src";
-                writable = false;
+                writable = true;
               }
             ];
           };
@@ -311,7 +311,7 @@ in
             mounts = [
               {
                 location = "~/ghq/src";
-                writable = false;
+                writable = true;
               }
             ];
           };
