@@ -88,6 +88,7 @@ in
       "$HOME/.krew/bin"
       "$HOME/.gem/ruby/bin"
       "$HOME/.claude/bin"
+      "$HOME/.npm-global/bin"
     ];
 
     packages = with pkgs; [

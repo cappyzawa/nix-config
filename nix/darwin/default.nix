@@ -154,6 +154,7 @@
         "FelixKratz/formulae/borders"
         "FelixKratz/formulae/sketchybar"
         "k1LoW/tap/mo"
+        "agent-browser"
       ];
 
       casks = [
