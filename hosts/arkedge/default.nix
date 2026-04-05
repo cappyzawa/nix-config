@@ -22,6 +22,7 @@
       "fujiwara/tap/lambroll"
       "influxdb-cli"
       "awscurl"
+      "ffmpeg"
     ];
   };
 

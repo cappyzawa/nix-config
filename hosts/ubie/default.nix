@@ -15,6 +15,7 @@
       "twingate"
     ];
     brews = [
+      "ffmpeg"
     ];
   };
   home-manager.users.${currentUser} = _: {
