@@ -185,6 +185,7 @@
     ]
   },
   "language": "Japanese",
+  "effortLevel": "high",
   "voiceEnabled": true,
   "statusLine": {
     "type": "command",
