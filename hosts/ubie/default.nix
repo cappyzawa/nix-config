@@ -16,6 +16,7 @@
     ];
     brews = [
       "ffmpeg"
+      "oven-sh/bun/bun"
     ];
   };
   home-manager.users.${currentUser} = _: {
