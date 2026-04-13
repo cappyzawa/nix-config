@@ -24,6 +24,10 @@
         type = "http";
         url = "https://mcp.atlassian.com/v1/mcp";
       };
+      notion = {
+        type = "http";
+        url = "https://mcp.notion.com/mcp";
+      };
     };
     programs.mise.enable = true;
   };
