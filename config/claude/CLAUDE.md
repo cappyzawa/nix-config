@@ -82,9 +82,10 @@ Bash はシェル実行が必須なコマンドにのみ使うこと。以下は
 
 ## ワークフロー
 
-- `.claude/rules/` へのルール追加・作成の提案があれば、auto memory 内の `rule-proposals.md` に書き溜めておくこと
-  - 作業完了後にまとめてユーザーに提案する
-  - glob でスコープを絞ること
+- 作業中にドキュメント（AGENTS.md, CLAUDE.md, docs/）から読み取れず推測で判断した箇所があれば、auto memory 内の doc-gaps.md に記録すること
+  - 何を知りたかったか、どこを探したか、最終的にどう判断したかを書く
+  - .claude/rules/ への追加が適切な場合は glob でスコープを絞って提案すること
+- 作業完了後にまとめてユーザーに報告する
 
 <!-- Local overrides: loaded last so they take precedence over the above -->
 @~/.claude/CLAUDE.local.md
