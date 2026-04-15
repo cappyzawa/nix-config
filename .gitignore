@@ -4,3 +4,11 @@ result
 !CLAUDE.md
 !.claude/
 .claude/*.local.*
+
+# Ignore all skills, whitelist only repo-managed ones
+# (~/.claude -> config/claude/ symlink causes plugin-installed skills to appear here)
+config/claude/skills/*
+!config/claude/skills/agent-browser/
+!config/claude/skills/codex/
+!config/claude/skills/excalidraw-skill/
+!config/claude/skills/worktree/
