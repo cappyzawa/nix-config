@@ -155,6 +155,7 @@
         "FelixKratz/formulae/sketchybar"
         "k1LoW/tap/mo"
         "agent-browser"
+        "oven-sh/bun/bun"
       ];
 
       casks = [
