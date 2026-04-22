@@ -2,7 +2,7 @@
 name: worktree
 description: Git worktree + tmux で並行作業セッションを起動する（Issue/PR/ブランチ対応）
 disable-model-invocation: false
-argument-hint: <Issue/PR URL, PR number, or branch-name> [--model <model>] [--plan] [task description]
+argument-hint: <Issue/PR URL, Issue number, or branch-name> [--model <model>] [--plan] [task description]
 allowed-tools: Bash
 model: haiku
 ---
@@ -25,6 +25,8 @@ Claude Code の `--worktree` フラグを活用して、並行作業セッショ
 
 ## 手順
 
+以降の shell snippet 中のプレースホルダ `<worktree-name>` は手順 1 で決めた WNAME、`<repo>` は `basename $(git rev-parse --show-toplevel)` の値で、実行前に文字列置換すること。
+
 ### 1. worktree 名を生成
 
 $ARGUMENTS の先頭トークンから判別する:
@@ -42,18 +44,19 @@ $ARGUMENTS の先頭トークンから判別する:
 
 `$ARGUMENTS` から以下を抽出する:
 
-- `--model <value>`: モデルを指定。なければデフォルトは `opus[1m]`。
+- `--model <value>`: モデルを指定。指定がなければ `--model` 自体を付与しない（claude のデフォルトに委ねる）。
   - **モデル値は絶対に変換・補完しないこと**。ユーザーが指定した値をそのまま使う。
 - `--plan`: plan mode フラグ。存在する場合は `--permission-mode plan` を claude コマンドに追加する。
 
 ```bash
-MODEL="opus[1m]"
+MODEL_FLAG=""
 PLAN_FLAG=""
 ARGS="$ARGUMENTS"
 
 # Extract --model value as-is (do NOT normalize or alias the value)
 if echo "$ARGS" | grep -q -- '--model '; then
   MODEL=$(echo "$ARGS" | sed 's/.*--model \([^ ]*\).*/\1/')
+  MODEL_FLAG="--model '${MODEL}'"
   ARGS=$(echo "$ARGS" | sed 's/--model [^ ]*//' | xargs)
 fi
 
@@ -64,7 +67,7 @@ if echo "$ARGS" | grep -q -- '--plan'; then
 fi
 ```
 
-以降の手順では `$ARGS` をプロンプトとして使い、`$MODEL` をモデルに、`$PLAN_FLAG` を permission-mode オプションに使う。
+以降の手順では `$ARGS` をプロンプトとして使い、`$MODEL_FLAG` をモデル指定に、`$PLAN_FLAG` を permission-mode オプションに使う。
 
 ### 2. Worktree を準備
 
@@ -96,7 +99,7 @@ chmod +x /tmp/worktree-prep.sh
 tmux window のタイトルは `<repository>/<worktree-name>` とする。
 repository 名は `basename $(git rev-parse --show-toplevel)` で取得する。
 
-`--model ${MODEL}` を指定する（デフォルト: `opus[1m]`）。
+`--model` はユーザーが `--model <value>` を渡したときのみ付与する（`$MODEL_FLAG` 経由）。未指定なら claude のデフォルトモデルに委ねる。
 
 > [!IMPORTANT]
 > **tmux send-keys と複数行プロンプト**
@@ -113,10 +116,10 @@ EOF
 # Check tmux and launch (prep script runs first to ensure config files exist)
 if tmux list-sessions 2>/dev/null; then
     tmux new-window -n "<repo>/<worktree-name>"
-    tmux send-keys "bash /tmp/worktree-prep.sh && claude --worktree <worktree-name> --enable-auto-mode --model '${MODEL}' ${PLAN_FLAG} \"\$(cat /tmp/worktree-prompt.txt)\"" C-m
+    tmux send-keys "bash /tmp/worktree-prep.sh && claude --worktree <worktree-name> --enable-auto-mode ${MODEL_FLAG} ${PLAN_FLAG} \"\$(cat /tmp/worktree-prompt.txt)\"" C-m
 else
     echo "Not in tmux session. Run manually:"
-    echo "  bash /tmp/worktree-prep.sh && claude --worktree <worktree-name> --enable-auto-mode --model '${MODEL}' ${PLAN_FLAG}"
+    echo "  bash /tmp/worktree-prep.sh && claude --worktree <worktree-name> --enable-auto-mode ${MODEL_FLAG} ${PLAN_FLAG}"
 fi
 ```
 
