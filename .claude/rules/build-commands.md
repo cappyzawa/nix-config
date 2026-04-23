@@ -1,5 +1,5 @@
 ---
-globs:
+paths:
   - "Makefile"
   - "flake.nix"
 ---

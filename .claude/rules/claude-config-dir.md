@@ -1,5 +1,5 @@
 ---
-globs:
+paths:
   - "config/claude/**"
   - ".gitignore"
 ---
