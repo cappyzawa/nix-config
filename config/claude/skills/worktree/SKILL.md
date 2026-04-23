@@ -4,7 +4,6 @@ description: Git worktree + tmux で並行作業セッションを起動する�
 disable-model-invocation: false
 argument-hint: <Issue/PR URL, Issue number, or branch-name> [--model <model>] [--plan] [task description]
 allowed-tools: Bash
-model: haiku
 ---
 
 # Worktree 管理
