@@ -1,5 +1,5 @@
 ---
-globs:
+paths:
   - "nix/home/default.nix"
   - "config/claude/**"
   - "hosts/*/claude-memory.md"
