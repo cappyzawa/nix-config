@@ -158,7 +158,8 @@
       "mcp__serena__search_for_pattern",
       "mcp__serena__think_about_collected_information"
     ],
-    "deny": ["Read(~/.zshrc.local)"]
+    "deny": ["Read(~/.zshrc.local)"],
+    "defaultMode": "auto"
   },
   "hooks": {
     "Notification": [
@@ -190,5 +191,6 @@
   "statusLine": {
     "type": "command",
     "command": "~/ghq/src/github.com/starship/starship/target/release/starship statusline claude-code"
-  }
+  },
+  "skipAutoPermissionPrompt": true
 }
