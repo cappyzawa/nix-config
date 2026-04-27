@@ -17,8 +17,10 @@ This is a Nix Flake-based configuration for macOS using nix-darwin and Home Mana
 │   ├── arkedge/
 │   │   ├── default.nix        # Work Mac settings
 │   │   └── claude-memory.md   # Host-specific CLAUDE.md additions
-│   └── cappyzawa/
-│       └── default.nix        # Personal Mac settings
+│   ├── cappyzawa/
+│   │   └── default.nix        # Personal Mac settings
+│   └── ubie/
+│       └── default.nix        # Work Mac settings
 ├── nix/
 │   ├── darwin/        # nix-darwin configuration
 │   │   └── default.nix    # macOS system: Homebrew, system defaults, security
@@ -45,6 +47,7 @@ flake.nix (mkDarwin helper)
 ## Adding Dependencies
 
 - **CLI tools via Nix**: Add to `home.packages` in `nix/home/default.nix`
+- **CLI tools from a flake (not in nixpkgs)**: Add the repo as a flake input in `flake.nix`, expose its package through `extraSpecialArgs` in `lib/mkdarwin.nix` (e.g. `gh-ghq-cd-pkg`, `gws-pkg`), then accept the arg in `nix/home/default.nix` and reference it from `home.packages` or `programs.gh.extensions`
 - **GUI apps via Homebrew casks**: Add to `homebrew.casks` in `nix/darwin/default.nix`
 - **CLI tools via Homebrew**: Add to `homebrew.brews` in `nix/darwin/default.nix`
 - **Dotfiles**: Add to `xdg.configFile` in `nix/home/default.nix`, source files go in `config/`
