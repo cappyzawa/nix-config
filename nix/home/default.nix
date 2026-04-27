@@ -758,7 +758,11 @@ in
     # Git
     git = {
       enable = true;
-      signing.format = "openpgp";
+      signing = {
+        format = "ssh";
+        signer = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
+        signByDefault = true;
+      };
       ignores = [
         ".idea/*"
         ".envrc"
