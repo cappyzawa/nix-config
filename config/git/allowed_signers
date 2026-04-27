@@ -1,0 +1,4 @@
+# Trusted SSH signing keys for `git log --show-signature` verification.
+# Format: <principal> <key-type> <base64-key>
+# `*` matches any signer principal, so this file just lists trusted keys.
+* ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJMlvaOxuBJl+zUK6Jl7KwlKCkjI7W8WQt6d64B1iRqm

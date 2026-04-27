@@ -790,6 +790,7 @@ in
         init.defaultBranch = "main";
         core.ignorecase = false;
         credential.helper = "cache --timeout=3600";
+        gpg.ssh.allowedSignersFile = "${config.xdg.configHome}/git/allowed_signers";
         include.path = "~/.gitconfig.local";
       };
     };
@@ -1592,6 +1593,9 @@ in
     # Config files
     configFile = {
       # AeroSpace is managed by programs.aerospace
+
+      # Git allowed signers (for `git log --show-signature` verification)
+      "git/allowed_signers".source = ../../config/git/allowed_signers;
 
       # JankyBorders
       "borders/bordersrc" = {
