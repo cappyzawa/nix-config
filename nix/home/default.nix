@@ -9,6 +9,7 @@
   tpm,
   sbarluaPkg,
   gh-ghq-cd-pkg,
+  gws-pkg,
   ...
 }:
 
@@ -155,6 +156,7 @@ in
       glow # Markdown renderer
       bacon # Rust background compiler
       codex # OpenAI Codex CLI
+      gws-pkg # Google Workspace CLI
 
       # Security and credentials
       aws-vault # AWS credential vault
