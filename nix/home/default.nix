@@ -758,6 +758,7 @@ in
     # Git
     git = {
       enable = true;
+      signing.format = "openpgp";
       ignores = [
         ".idea/*"
         ".envrc"
