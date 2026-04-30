@@ -1175,15 +1175,41 @@ in
               unit = "  ";
             };
           }
-          # Terraform
+          # HCL / Terraform
           {
-            name = "terraform";
+            name = "hcl";
             scope = "source.hcl";
-            grammar = "hcl";
+            language-id = "terraform";
+            injection-regex = "(hcl|tf|nomad)";
             file-types = [
-              "tf"
               "hcl"
+              "tf"
+              "nomad"
             ];
+            comment-token = "#";
+            block-comment-tokens = {
+              start = "/*";
+              end = "*/";
+            };
+            language-servers = [ "terraform-ls" ];
+            auto-format = true;
+            indent = {
+              tab-width = 2;
+              unit = "  ";
+            };
+          }
+          # Terraform variables
+          {
+            name = "tfvars";
+            scope = "source.tfvars";
+            language-id = "terraform-vars";
+            grammar = "hcl";
+            file-types = [ "tfvars" ];
+            comment-token = "#";
+            block-comment-tokens = {
+              start = "/*";
+              end = "*/";
+            };
             language-servers = [ "terraform-ls" ];
             auto-format = true;
             indent = {
