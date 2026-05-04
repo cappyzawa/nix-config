@@ -189,6 +189,6 @@
   "voiceEnabled": true,
   "statusLine": {
     "type": "command",
-    "command": "~/ghq/src/github.com/starship/starship/target/release/starship statusline claude-code"
+    "command": "starship statusline claude-code"
   }
 }
