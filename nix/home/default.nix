@@ -121,8 +121,8 @@ in
       gopls # Go
       yaml-language-server # YAML
       taplo # TOML
-      nodePackages.bash-language-server # Bash
-      nodePackages.typescript-language-server # TypeScript/JavaScript
+      bash-language-server # Bash
+      typescript-language-server # TypeScript/JavaScript
       vscode-langservers-extracted # JSON, HTML, CSS
       lua-language-server # Lua
       terraform-ls # Terraform
@@ -133,7 +133,7 @@ in
       shfmt # Shell
       shellcheck # Shell linter
       yamlfmt # YAML
-      nodePackages.prettier # Multi-format (JSON, Markdown, CSS, HTML)
+      prettier # Multi-format (JSON, Markdown, CSS, HTML)
       terraform # HCL formatter
 
       # Additional development tools
@@ -145,7 +145,7 @@ in
       kubernetes-helm # Kubernetes package manager
       kustomize # Kubernetes configuration customization
       nodejs # Node.js
-      nodePackages.pnpm # pnpm package manager
+      pnpm # pnpm package manager
       protobuf # Protocol Buffers compiler (protoc)
       grpcurl # gRPC client for testing
       uv # Python package manager (provides uvx)
