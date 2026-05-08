@@ -1442,6 +1442,10 @@ in
         # status bar
         set-option -g status-position top
 
+        # Clear default status-right (drops the date/time tmux ships with).
+        # tpm runs after this, so tmux-continuum re-injects its save trigger.
+        set-option -g status-right ""
+
         # vi mode
         set -g status-keys vi
 
