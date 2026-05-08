@@ -423,6 +423,10 @@ in
             "if"."app-id" = "md.obsidian";
             run = "move-node-to-workspace 8";
           }
+          {
+            "if"."app-id" = "com.amazon.Lassen";
+            run = "move-node-to-workspace 4";
+          }
         ];
 
         # Main binding mode
