@@ -177,6 +177,9 @@
         "logi-options+"
       ];
 
+      masApps = {
+        "Kindle" = 302584613;
+      };
     };
 
     # Enable Touch ID for sudo
