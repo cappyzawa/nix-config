@@ -45,6 +45,8 @@
 
 `codex` skill を別視点のレビュアーとして扱う。以下の条件に一致した場合、ユーザーから明示指示がなくても必ず codex review を実行すること。
 
+**codex 不在 host での fallback**: トリガーに入る前に `command -v codex` で存在確認すること。`codex` コマンドが無い host（例: ubie）では、以下の手順内に出てくる `codex` をすべて `devils-advocate` subagent（Agent tool で起動）に読み替える。fallback は同モデル由来の盲点があるが、独立コンテキストで反対側の視点を出させる。
+
 ### Plan checkpoint
 
 次のいずれかに当てはまるタスクでは plan を作り、実装前に checkpoint を通す:

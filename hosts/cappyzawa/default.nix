@@ -7,7 +7,10 @@
 }:
 {
   # Personal applications
-  homebrew.masApps = {
-    "LINE" = 539883307;
+  homebrew = {
+    casks = [ "codex" ]; # OpenAI Codex CLI (cask: prebuilt binary)
+    masApps = {
+      "LINE" = 539883307;
+    };
   };
 }
