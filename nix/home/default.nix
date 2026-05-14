@@ -253,6 +253,14 @@ in
           $DRY_RUN_CMD rustup component add rust-analyzer
         fi
       '';
+
+      # npm user config (~/.npmrc): upsert specific keys without touching
+      # auth tokens / scoped registries that external tools (e.g. gcloud
+      # google-artifactregistry-auth) write to the same file.
+      npmSecurityConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        $DRY_RUN_CMD ${pkgs.nodejs}/bin/npm config set min-release-age 7 --location=user
+        $DRY_RUN_CMD ${pkgs.nodejs}/bin/npm config set registry https://npm.flatt.tech --location=user
+      '';
     };
   };
 
@@ -1668,6 +1676,11 @@ in
       # Helix is managed by programs.helix + akari-theme module
 
       # Starship is managed by programs.starship + akari-theme module
+
+      # pnpm global config (supply-chain hardening via release cooldown)
+      "pnpm/rc".text = ''
+        minimumReleaseAge=10080
+      '';
 
       # Zsh config files
       "zsh/10_aliases.zsh".source = ../../config/zsh/10_aliases.zsh;
