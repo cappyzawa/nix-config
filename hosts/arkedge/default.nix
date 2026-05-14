@@ -14,7 +14,10 @@
       "kayac/tap"
       "fujiwara/tap"
     ];
-    casks = [ "twingate" ];
+    casks = [
+      "twingate"
+      "codex" # OpenAI Codex CLI (cask: prebuilt binary)
+    ];
     brews = [
       "ical-buddy"
       "sqldef/sqldef/psqldef"

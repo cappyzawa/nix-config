@@ -155,7 +155,6 @@ in
       goreleaser # Go release tool
       glow # Markdown renderer
       bacon # Rust background compiler
-      codex # OpenAI Codex CLI
       gws-pkg # Google Workspace CLI
 
       # Security and credentials
