@@ -12,12 +12,33 @@ Codex CLI に委譲してセカンドオピニオン・レビューを得るた�
 
 ## 起動コマンド
 
+長文プロンプト (plan レビュー / コードレビュー等) では **stdin 経由** で渡す:
+
 ```
-codex exec -s read-only --cd <project_directory> "<request>"
+codex exec -s read-only --cd <project_directory> - < /tmp/codex-prompt.txt
+```
+
+短いプロンプトは positional argument で OK:
+
+```
+codex exec -s read-only --cd <project_directory> "<short request>"
 ```
 
 - `<project_directory>` は対象プロジェクトの絶対パス。省略すると現在の作業ディレクトリ。
 - Bash の timeout は **600000 (10 分)** に設定する。Codex は応答までに時間がかかることがある。
+
+### なぜ stdin 経由を使うか
+
+`"$(cat <<'EOF' ... EOF)"` で長文プロンプトを positional argument に乗せると、codex が `Reading additional input from stdin...` から進まず **10 分以上 hang** する事例があった (`|` をエスケープしたテーブルやバックティック付き code block を含む plan 本文で再現)。symptom: PID は生きているが出力が数十バイトで停止、`ps` の argv に巨大な heredoc が見える。
+
+stdin 経由 (`- < file`) に切り替えると同じプロンプトが **20-30 秒** で完走する。`-` は「prompt を stdin から読む」を明示するための positional。
+
+### 手順 (長文の場合)
+
+1. Write tool でプロンプトを `/tmp/codex-prompt-<task>.txt` に書く
+2. `codex exec -s read-only --cd <dir> - < /tmp/codex-prompt-<task>.txt` を実行
+   - `run_in_background: true` + 出力先 (`tee` または harness の output file) で監視するのを推奨
+3. 完了後に出力ファイルを Read で読む
 
 ## プロンプトのルール
 
@@ -31,21 +52,41 @@ Codex に渡す依頼文には必ず以下のニュアンスを含める:
 
 ### Plan レビュー（`ExitPlanMode` 前）
 
-```
-codex exec -s read-only --cd <dir> "次の plan をレビューしてほしい。観点は (1) 設計上の見落とし・代替案 (2) 影響範囲とリスク (3) 実装難易度の見積もりの妥当性。確認や質問は不要、具体的な指摘と代替案を能動的に出してほしい。\n\n<plan 本文>"
+```bash
+# Step 1: prompt を file に書く (Write tool)
+#   /tmp/codex-prompt-plan-review.txt の内容例:
+#   ---
+#   次の plan をレビューしてほしい。観点は (1) 設計上の見落とし・代替案
+#   (2) 影響範囲とリスク (3) 実装難易度の見積もりの妥当性。
+#   確認や質問は不要、具体的な指摘と代替案を能動的に出してほしい。
+#
+#   <plan 本文>
+#   ---
+
+# Step 2: 実行
+codex exec -s read-only --cd <dir> - < /tmp/codex-prompt-plan-review.txt
 ```
 
 ### コードレビュー（commit 前）
 
-```
-codex exec -s read-only --cd <dir> "git diff HEAD（または対象ブランチとの diff）の変更をレビューしてほしい。観点は (1) バグ・エッジケースの見落とし (2) テストの過不足 (3) 命名・抽象化の妥当性 (4) パフォーマンス。確認や質問は不要、具体的な修正案とコード例を能動的に出してほしい。"
+```bash
+# Step 1: prompt を file に書く (diff も同じ file に貼る場合は大きいので必ず stdin 経由)
+# Step 2:
+codex exec -s read-only --cd <dir> - < /tmp/codex-prompt-code-review.txt
 ```
 
+内容例:
+> git diff HEAD（または対象ブランチとの diff）の変更をレビューしてほしい。観点は (1) バグ・エッジケースの見落とし (2) テストの過不足 (3) 命名・抽象化の妥当性 (4) パフォーマンス。確認や質問は不要、具体的な修正案とコード例を能動的に出してほしい。
+
 ### バグ調査のセカンドオピニオン（修正 2 回失敗後）
+
+短ければ positional でも可:
 
 ```
 codex exec -s read-only --cd <dir> "<バグの症状><試した修正案 1><試した修正案 2> について、原因の仮説と次に試すべき修正方針を能動的に提案してほしい。確認や質問は不要。"
 ```
+
+長い stack trace やログを含める場合は stdin 経由に切り替える。
 
 ### 設計判断・ベストプラクティス
 
@@ -57,5 +98,11 @@ codex exec -s read-only --cd <dir> "<質問内容>。確認や質問は不要、
 
 1. `~/.claude/CLAUDE.md` の「Codex レビュー」トリガー、またはユーザー要求に従って、codex に委譲する対象を特定する
 2. プロンプトに「確認や質問は不要。具体的な提案・修正案・コード例を能動的に出してほしい」を必ず付ける
-3. `codex exec -s read-only --cd <dir>` を Bash timeout 600000 で実行する
-4. Codex の指摘を要約してユーザーに報告する。即時対応する指摘と見送る指摘を分けて提示する
+3. プロンプトが長文 (plan / diff / コード片を含む) なら Write tool で `/tmp/codex-prompt-<task>.txt` に書き、stdin redirect で渡す。短ければ positional でも可
+4. `codex exec -s read-only --cd <dir>` を Bash timeout 600000 で実行する
+5. Codex の指摘を要約してユーザーに報告する。即時対応する指摘と見送る指摘を分けて提示する
+
+## 失敗時の切り分け
+
+- 出力が数十バイトで止まっている / 5 分以上動かない → positional argument で渡していないか確認。長文なら stdin redirect に切り替える
+- `Reading additional input from stdin...` が出力に見える → codex が stdin 待ち。`-` を positional に指定 + stdin から prompt を流す
