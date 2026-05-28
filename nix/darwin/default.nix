@@ -175,6 +175,7 @@
         "dropbox"
         "appcleaner"
         "logi-options+"
+        "superset"
       ];
 
       masApps = {
