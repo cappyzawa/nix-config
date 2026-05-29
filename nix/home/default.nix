@@ -1480,6 +1480,16 @@ in
         set-option -g window-status-format "#[fg=#9BABB9] #{E:@claude_agent_glyph}#[fg=#9BABB9]#I:#W "
         set-option -g window-status-current-format "#[bg=#3A3E40,bold] #{E:@claude_agent_glyph}#[fg=#E26A3B]#I:#W #[bg=#25231F,nobold]"
 
+        # prefix+w (choose-tree) reuses the same agent glyph in the window
+        # picker. choose-tree ignores window-status-format, so it needs an
+        # explicit -F; the window-row branch (#{?window_format,...}) injects
+        # #{E:@claude_agent_glyph}, which expands per-window just like the
+        # status line. The rest mirrors tmux's default tree layout (name,
+        # flags, pane/client counts, session summary). Caveat: the spinner
+        # does not animate live here (choose-tree renders a snapshot), but the
+        # static glyphs (frozen running frame / ✓ / ! / gear) and colors show.
+        bind-key w choose-tree -Zw -F "#{?pane_format,#{pane_current_command},#{?window_format,#{E:@claude_agent_glyph}#{window_name}#{window_flags}#{?#{==:#{window_panes},1},, (#{window_panes} panes)}#{?window_active_clients, (#{window_active_clients} clients),},#{session_windows} windows#{?session_attached, (attached),}}}"
+
         # Animate the running glyph: a background loop advances
         # @claude_spinner_frame while any window is running. Bound to this tmux
         # server via run-shell -b; single-instance via @claude_spinner_pid.
