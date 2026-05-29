@@ -1453,6 +1453,20 @@ in
         # tpm runs after this, so tmux-continuum re-injects its save trigger.
         set-option -g status-right ""
 
+        # Claude Code agent session status glyph in window-status.
+        # @claude_agent_status is set per-window by Claude Code hooks
+        # (running/waiting/attention) and unset on SessionEnd.
+        # Config commands apply in order, so these set-options run after
+        # akari's run-shell sourced its own format and win (verified via a
+        # fresh tmux server, not just a live reload).
+        # #{E:...} forces a second expansion so the nested #{?...} inside the
+        # user option is evaluated. akari colors are hardcoded since its
+        # %hidden palette vars are local to akari-night.conf; they match the
+        # night variant, so switching @akari_variant to dawn would mismatch.
+        set-option -g @claude_agent_glyph "#{?#{==:#{@claude_agent_status},running},#[fg=colour214]⚙ ,#{?#{==:#{@claude_agent_status},attention},#[fg=colour203]! ,#{?#{==:#{@claude_agent_status},waiting},#[fg=colour114]✓ ,}}}"
+        set-option -g window-status-format "#{E:@claude_agent_glyph}#[fg=#9BABB9] #I:#W "
+        set-option -g window-status-current-format "#{E:@claude_agent_glyph}#[bg=#3A3E40,fg=#E26A3B,bold] #I:#W #[bg=#25231F,nobold]"
+
         # vi mode
         set -g status-keys vi
 

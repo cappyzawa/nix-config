@@ -161,6 +161,17 @@
     "deny": ["Read(~/.zshrc.local)"]
   },
   "hooks": {
+    "UserPromptSubmit": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "( [ -n \"${TMUX:-}\" ] && [ -n \"${TMUX_PANE:-}\" ] && tmux set-option -qw -t \"$TMUX_PANE\" @claude_agent_status running ) >/dev/null 2>&1; true"
+          }
+        ]
+      }
+    ],
     "Notification": [
       {
         "matcher": "",
@@ -168,6 +179,15 @@
           {
             "type": "command",
             "command": "terminal-notifier -title \"Claude Code\" -subtitle \"$(tmux display-message -t \"$TMUX_PANE\" -p '#I #W' 2>/dev/null || basename $PWD)\" -message \"Done\" -activate org.alacritty"
+          }
+        ]
+      },
+      {
+        "matcher": "permission_prompt",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "( [ -n \"${TMUX:-}\" ] && [ -n \"${TMUX_PANE:-}\" ] && tmux set-option -qw -t \"$TMUX_PANE\" @claude_agent_status attention ) >/dev/null 2>&1; true"
           }
         ]
       }
@@ -178,7 +198,29 @@
         "hooks": [
           {
             "type": "command",
-            "command": "terminal-notifier -title \"Claude Code\" -subtitle \"$(tmux display-message -t \"$TMUX_PANE\" -p '#I #W' 2>/dev/null || basename $PWD)\" -message \"Stopped\" -activate org.alacritty"
+            "command": "( [ -n \"${TMUX:-}\" ] && [ -n \"${TMUX_PANE:-}\" ] && tmux set-option -qw -t \"$TMUX_PANE\" @claude_agent_status waiting ) >/dev/null 2>&1; terminal-notifier -title \"Claude Code\" -subtitle \"$(tmux display-message -t \"$TMUX_PANE\" -p '#I #W' 2>/dev/null || basename $PWD)\" -message \"Stopped\" -activate org.alacritty"
+          }
+        ]
+      }
+    ],
+    "StopFailure": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "( [ -n \"${TMUX:-}\" ] && [ -n \"${TMUX_PANE:-}\" ] && tmux set-option -qw -t \"$TMUX_PANE\" @claude_agent_status attention ) >/dev/null 2>&1; true"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "( [ -n \"${TMUX:-}\" ] && [ -n \"${TMUX_PANE:-}\" ] && tmux set-option -qwu -t \"$TMUX_PANE\" @claude_agent_status ) >/dev/null 2>&1; true"
           }
         ]
       }
