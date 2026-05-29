@@ -50,15 +50,6 @@ in
         "--enable-web-dashboard=false"
       ];
     };
-    filesystem = {
-      type = "stdio";
-      command = "npx";
-      args = [
-        "-y"
-        "@modelcontextprotocol/server-filesystem"
-        "\${HOME}/ghq/src"
-      ];
-    };
   };
 
   # Akari theme
