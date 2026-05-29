@@ -69,25 +69,18 @@
         };
       };
 
-      shared.claudeMcpServers =
-        let
-          awsProfiles = [
-            "Aegs-Staging"
-            "Aegs-Production"
-            "Satops-Staging"
-            "Satops-Production"
-          ];
-          mkAwsServer = profile: {
-            type = "stdio";
-            command = "uvx";
-            args = [ "awslabs.aws-api-mcp-server@latest" ];
-            env = {
-              AWS_PROFILE = profile;
-              READ_OPERATIONS_ONLY = "true";
-            };
-          };
-        in
-        lib.listToAttrs (map (p: lib.nameValuePair "aws-${lib.toLower p}" (mkAwsServer p)) awsProfiles);
+      # Single AWS MCP server; switch accounts/envs via `--profile` in call_aws.
+      # No AWS_PROFILE pinned here: profile is resolved by boto3's default
+      # credential chain. Credentials come from ~/.aws/config, which is managed
+      # manually outside this repo (aws-vault credential_process / SSO).
+      shared.claudeMcpServers.aws = {
+        type = "stdio";
+        command = "uvx";
+        args = [ "awslabs.aws-api-mcp-server@latest" ];
+        env = {
+          READ_OPERATIONS_ONLY = "true";
+        };
+      };
 
       programs = {
         # AeroSpace settings for external monitors
@@ -98,8 +91,8 @@
         ];
 
         # AWS configuration for work environment
+        # AWS_PROFILE default lives in ~/.zshrc.local (kept out of this public repo).
         zsh.sessionVariables = {
-          AWS_PROFILE = "Aegs-Staging";
           AWS_VAULT_BACKEND = "keychain";
         };
 
