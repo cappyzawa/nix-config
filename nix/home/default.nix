@@ -1463,9 +1463,23 @@ in
         # user option is evaluated. akari colors are hardcoded since its
         # %hidden palette vars are local to akari-night.conf; they match the
         # night variant, so switching @akari_variant to dawn would mismatch.
-        set-option -g @claude_agent_glyph "#{?#{==:#{@claude_agent_status},running},#[fg=colour214]⚙ ,#{?#{==:#{@claude_agent_status},attention},#[fg=colour203]! ,#{?#{==:#{@claude_agent_status},waiting},#[fg=colour114]✓ ,}}}"
-        set-option -g window-status-format "#{E:@claude_agent_glyph}#[fg=#9BABB9] #I:#W "
-        set-option -g window-status-current-format "#{E:@claude_agent_glyph}#[bg=#3A3E40,fg=#E26A3B,bold] #I:#W #[bg=#25231F,nobold]"
+        # running shows an animated spinner driven by @claude_spinner_frame
+        # (set by the claude-tmux-spinner background loop); falls back to the
+        # gear glyph until the loop produces a frame.
+        set-option -g @claude_agent_glyph "#{?#{==:#{@claude_agent_status},running},#[fg=colour214]#{?#{@claude_spinner_frame},#{@claude_spinner_frame},⚙} ,#{?#{==:#{@claude_agent_status},attention},#[fg=colour203]! ,#{?#{==:#{@claude_agent_status},waiting},#[fg=colour114]✓ ,}}}"
+        # Both formats place the glyph after one leading pad space, so its
+        # column is identical whether the window is current or not (the glyph
+        # must not shift horizontally when you select the window). On the
+        # current window the glyph also sits inside the active-bg block so the
+        # highlight reads as one block instead of leaving the glyph hanging in
+        # the default bg.
+        set-option -g window-status-format "#[fg=#9BABB9] #{E:@claude_agent_glyph}#[fg=#9BABB9]#I:#W "
+        set-option -g window-status-current-format "#[bg=#3A3E40,bold] #{E:@claude_agent_glyph}#[fg=#E26A3B]#I:#W #[bg=#25231F,nobold]"
+
+        # Animate the running glyph: a background loop advances
+        # @claude_spinner_frame while any window is running. Bound to this tmux
+        # server via run-shell -b; single-instance via @claude_spinner_pid.
+        run-shell -b "~/.config/scripts/claude-tmux-spinner.sh"
 
         # vi mode
         set -g status-keys vi
@@ -1719,6 +1733,10 @@ in
       # Scripts
       "scripts/set-wallpaper.py" = {
         source = ../../config/scripts/set-wallpaper.py;
+        executable = true;
+      };
+      "scripts/claude-tmux-spinner.sh" = {
+        source = ../../config/scripts/claude-tmux-spinner.sh;
         executable = true;
       };
     };
