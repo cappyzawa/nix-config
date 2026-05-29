@@ -249,7 +249,7 @@
     ]
   },
   "language": "Japanese",
-  "effortLevel": "high",
+  "effortLevel": "xhigh",
   "voiceEnabled": true,
   "statusLine": {
     "type": "command",
