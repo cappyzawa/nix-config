@@ -61,6 +61,10 @@ while tmux has-session 2>/dev/null; do
       tmux set -gu @claude_spinner_frame 2>/dev/null
       tmux refresh-client -S 2>/dev/null
     fi
+    # Re-check every iteration while idle (the 0.3s loop is cheap), so a window
+    # that starts running is picked up promptly. The check counter only throttles
+    # list-windows during the fast running phase.
+    check=0
     sleep 0.3
   fi
   was_running=$running
