@@ -12,6 +12,7 @@
     "pr": "🤖 Generated with Claude Code"
   },
   "permissions": {
+    "defaultMode": "auto",
     "allow": [
       "Bash(cargo check:*)",
       "Bash(cargo clippy:*)",

@@ -45,11 +45,11 @@ $ARGUMENTS の先頭トークンから判別する:
 
 - `--model <value>`: モデルを指定。指定がなければ `--model` 自体を付与しない（claude のデフォルトに委ねる）。
   - **モデル値は絶対に変換・補完しないこと**。ユーザーが指定した値をそのまま使う。
-- `--plan`: plan mode フラグ。存在する場合は `--permission-mode plan` を claude コマンドに追加する。
+- `--plan`: plan mode フラグ。permission mode はデフォルトで `auto`、`--plan` 指定時のみ `plan` に上書きする。
 
 ```bash
 MODEL_FLAG=""
-PLAN_FLAG=""
+PERM_FLAG="--permission-mode auto"
 ARGS="$ARGUMENTS"
 
 # Extract --model value as-is (do NOT normalize or alias the value)
@@ -59,14 +59,14 @@ if echo "$ARGS" | grep -q -- '--model '; then
   ARGS=$(echo "$ARGS" | sed 's/--model [^ ]*//' | xargs)
 fi
 
-# Extract --plan flag
+# Extract --plan flag (overrides the default auto permission mode)
 if echo "$ARGS" | grep -q -- '--plan'; then
-  PLAN_FLAG="--permission-mode plan"
+  PERM_FLAG="--permission-mode plan"
   ARGS=$(echo "$ARGS" | sed 's/--plan//' | xargs)
 fi
 ```
 
-以降の手順では `$ARGS` をプロンプトとして使い、`$MODEL_FLAG` をモデル指定に、`$PLAN_FLAG` を permission-mode オプションに使う。
+以降の手順では `$ARGS` をプロンプトとして使い、`$MODEL_FLAG` をモデル指定に、`$PERM_FLAG` を permission-mode オプションに使う。
 
 ### 2. Worktree を準備
 
@@ -115,10 +115,10 @@ EOF
 # Check tmux and launch (prep script runs first to ensure config files exist)
 if tmux list-sessions 2>/dev/null; then
     tmux new-window -n "<repo>/<worktree-name>"
-    tmux send-keys "bash /tmp/worktree-prep.sh && claude --worktree <worktree-name> --enable-auto-mode ${MODEL_FLAG} ${PLAN_FLAG} \"\$(cat /tmp/worktree-prompt.txt)\"" C-m
+    tmux send-keys "bash /tmp/worktree-prep.sh && claude --worktree <worktree-name> ${MODEL_FLAG} ${PERM_FLAG} \"\$(cat /tmp/worktree-prompt.txt)\"" C-m
 else
     echo "Not in tmux session. Run manually:"
-    echo "  bash /tmp/worktree-prep.sh && claude --worktree <worktree-name> --enable-auto-mode ${MODEL_FLAG} ${PLAN_FLAG}"
+    echo "  bash /tmp/worktree-prep.sh && claude --worktree <worktree-name> ${MODEL_FLAG} ${PERM_FLAG}"
 fi
 ```
 
