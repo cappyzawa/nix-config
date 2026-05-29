@@ -174,9 +174,13 @@ in
         fi
       '';
 
-      # Claude Code installation via official installer
+      # Claude Code installation via official installer.
+      # Install only when claude is missing; the CLI self-updates, so it must
+      # not be reinstalled on every switch. The installer now places the binary
+      # in ~/.local/bin (older builds used ~/.claude/bin), so probe PATH instead
+      # of a fixed path.
       installClaude = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-        if [ ! -f "$HOME/.claude/bin/claude" ]; then
+        if ! PATH="$HOME/.local/bin:$HOME/.claude/bin:$PATH" command -v claude >/dev/null 2>&1; then
           $DRY_RUN_CMD /usr/bin/curl -fsSL https://claude.ai/install.sh | PATH="/usr/bin:/bin:$PATH" bash
         fi
       '';
