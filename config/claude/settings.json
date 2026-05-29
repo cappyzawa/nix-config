@@ -172,6 +172,28 @@
         ]
       }
     ],
+    "PreToolUse": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "( [ -n \"${TMUX:-}\" ] && [ -n \"${TMUX_PANE:-}\" ] && tmux set-option -qw -t \"$TMUX_PANE\" @claude_agent_status running ) >/dev/null 2>&1; true"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "( [ -n \"${TMUX:-}\" ] && [ -n \"${TMUX_PANE:-}\" ] && tmux set-option -qw -t \"$TMUX_PANE\" @claude_agent_status running ) >/dev/null 2>&1; true"
+          }
+        ]
+      }
+    ],
     "Notification": [
       {
         "matcher": "",
