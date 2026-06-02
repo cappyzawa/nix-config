@@ -82,3 +82,18 @@ To add a new machine:
    };
    ```
 3. Bootstrap on the new machine: `make bootstrap NIXNAME={hostname}`
+
+## Per-host local overrides
+
+Some settings depend on machine-local paths (e.g. a tree-sitter grammar checked out in a sibling repo) and should not be committed to this public repo. Such overrides live outside the repo at:
+
+```
+~/.config/nix-config-local/{hostname}.nix
+```
+
+The Makefile detects this file and, when present, runs `darwin-rebuild` with `NIX_CONFIG_LOCAL=<path>` and `--impure`. The host module imports it via `builtins.getEnv "NIX_CONFIG_LOCAL"`. On hosts without an override file (and on CI / `nix flake check`) evaluation stays pure and the env var is empty, so the import is a no-op.
+
+To enable an override on a host whose `hosts/{hostname}/default.nix` opts in (e.g. `hosts/arkedge/default.nix`):
+
+1. Drop a module at `~/.config/nix-config-local/{hostname}.nix`. It receives the usual module args (`lib`, `currentUser`, `config`, ...).
+2. Run `make switch NIXNAME={hostname}` as usual. The Makefile prints `Using local override: ...` when it picks up the file.

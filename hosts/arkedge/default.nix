@@ -6,8 +6,17 @@
   currentUser,
   ...
 }:
+let
+  # Optional per-host override module loaded via NIX_CONFIG_LOCAL env var.
+  # `builtins.getEnv` returns "" without --impure, so pure evaluation always
+  # yields an empty imports list and the override is silently ignored.
+  localModulePath = builtins.getEnv "NIX_CONFIG_LOCAL";
+  localModules = lib.optionals (
+    localModulePath != "" && builtins.pathExists localModulePath
+  ) [ (import localModulePath) ];
+in
 {
-  imports = lib.optionals (builtins.pathExists ./local.nix) [ ./local.nix ];
+  imports = localModules;
 
   # Additional Homebrew packages for this machine
   homebrew = {

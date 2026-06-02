@@ -3,8 +3,14 @@
 # Host configuration file (persisted after first bootstrap)
 HOST_FILE := $(HOME)/.config/nix/host
 
-# Available hosts (derived from hosts/*.nix files)
-AVAILABLE_HOSTS := $(patsubst hosts/%.nix,%,$(wildcard hosts/*.nix))
+# Available hosts (derived from hosts/*/default.nix files)
+AVAILABLE_HOSTS := $(patsubst hosts/%/default.nix,%,$(wildcard hosts/*/default.nix))
+
+# Optional per-host local override module (not committed). When this file
+# exists, it is passed to nix evaluation via NIX_CONFIG_LOCAL + --impure so
+# the host module can `import` it. See README.md "Per-host local overrides".
+LOCAL_CONFIG_DIR ?= $(HOME)/.config/nix-config-local
+LOCAL_MODULE = $(LOCAL_CONFIG_DIR)/$(_NIXNAME).nix
 
 # Determine NIXNAME: CLI arg > file > error
 ifdef NIXNAME
@@ -32,19 +38,31 @@ define save_nixname
 	@echo "Saved host '$(_NIXNAME)' to $(HOST_FILE)"
 endef
 
+# Run a darwin-rebuild-style command, threading NIX_CONFIG_LOCAL + --impure
+# through sudo only when the per-host local override module is present.
+# `sudo env VAR=...` is required because plain sudo strips the environment.
+define run_with_local_override
+	@if [ -f "$(LOCAL_MODULE)" ]; then \
+		echo "Using local override: $(LOCAL_MODULE)"; \
+		sudo env NIX_CONFIG_LOCAL="$(LOCAL_MODULE)" $(1) --impure; \
+	else \
+		sudo $(1); \
+	fi
+endef
+
 bootstrap: ## First-time setup: bootstrap nix-darwin (NIXNAME=<host> required on first run)
 	$(call check_nixname,bootstrap)
-	sudo nix run nix-darwin -- switch --flake '.#$(_NIXNAME)'
+	$(call run_with_local_override,nix run nix-darwin -- switch --flake '.#$(_NIXNAME)')
 	$(call save_nixname)
 
 switch: ## Apply nix-darwin and home-manager configuration
 	$(call check_nixname,switch)
-	sudo /run/current-system/sw/bin/darwin-rebuild switch --flake '.#$(_NIXNAME)'
+	$(call run_with_local_override,/run/current-system/sw/bin/darwin-rebuild switch --flake '.#$(_NIXNAME)')
 
 update: ## Update flake inputs and apply
 	$(call check_nixname,update)
 	nix flake update
-	sudo /run/current-system/sw/bin/darwin-rebuild switch --flake '.#$(_NIXNAME)'
+	$(call run_with_local_override,/run/current-system/sw/bin/darwin-rebuild switch --flake '.#$(_NIXNAME)')
 
 rollback: ## Select a generation with fzf and switch to it
 	@gen=$$(sudo darwin-rebuild --list-generations | fzf --tac | awk '{print $$1}') && \
