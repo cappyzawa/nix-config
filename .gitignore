@@ -5,6 +5,9 @@ result
 !.claude/
 .claude/*.local.*
 
+# Per-host local overrides (not committed)
+hosts/*/local.nix
+
 # Ignore all skills, whitelist only repo-managed ones
 # (~/.claude -> config/claude/ symlink causes plugin-installed skills to appear here)
 config/claude/skills/*
