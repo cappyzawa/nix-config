@@ -142,6 +142,7 @@
       taps = [
         "FelixKratz/formulae"
         "k1LoW/tap"
+        "hashicorp/tap"
       ];
 
       brews = [
@@ -156,6 +157,8 @@
         "k1LoW/tap/mo"
         "agent-browser"
         "oven-sh/bun/bun"
+        "terraform-ls" # Terraform language server
+        "hashicorp/tap/terraform" # Terraform (BSL: prebuilt binary instead of slow Nix source build)
       ];
 
       casks = [

@@ -116,7 +116,6 @@ in
       typescript-language-server # TypeScript/JavaScript
       vscode-langservers-extracted # JSON, HTML, CSS
       lua-language-server # Lua
-      terraform-ls # Terraform
       zls # Zig
 
       # Formatters and linters (for Helix)
@@ -125,7 +124,6 @@ in
       shellcheck # Shell linter
       yamlfmt # YAML
       prettier # Multi-format (JSON, Markdown, CSS, HTML)
-      terraform # HCL formatter
 
       # Additional development tools
       colima # Container runtime
