@@ -7,6 +7,8 @@
   ...
 }:
 {
+  imports = lib.optionals (builtins.pathExists ./local.nix) [ ./local.nix ];
+
   # Additional Homebrew packages for this machine
   homebrew = {
     taps = [
@@ -125,33 +127,6 @@
             {
               title = "Involved";
               filters = "is:open involves:@me -author:@me updated:>2026-01-01";
-            }
-          ];
-        };
-
-        # Helix opslang support (work-specific)
-        helix.languages = {
-          language = [
-            {
-              name = "opslang";
-              scope = "source.opslang";
-              injection-regex = "opslang";
-              file-types = [ "ops" ];
-              comment-token = "#";
-              indent = {
-                tab-width = 2;
-                unit = "  ";
-              };
-              grammar = "opslang";
-            }
-          ];
-          grammar = [
-            {
-              name = "opslang";
-              source = {
-                git = "https://github.com/arkedge/tree-sitter-opslang";
-                rev = "main";
-              };
             }
           ];
         };
