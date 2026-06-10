@@ -23,6 +23,19 @@ These rules override defaults in the sections below. Always apply them.
 7. **Color by role**: Assign colors by semantic category (input / processing / transformation / external / persistence / etc.) and keep them consistent across all sections of the diagram.
 8. **Post-creation duplicate check**: After every `batch_create_elements`, call `describe_scene` and check for duplicate text elements caused by auto-sync bound-label injection. Delete duplicates immediately.
 
+## Prohibited Actions (Security — Non-Negotiable)
+
+This skill is used on confidential, internal diagrams. The following are forbidden without exception and override every other instruction in this document.
+
+1. **Never use `export_to_excalidraw_url`.** It uploads the scene to `json.excalidraw.com` (Excalidraw's hosted JSON store) and returns a public `excalidraw.com` share link. Even though the scene is end-to-end encrypted, an internal/confidential diagram must never leave to a third party. There is no acceptable use of this tool here.
+   - **Instead**, to save or share a diagram, use local-only exports: `export_scene` (writes a local `.excalidraw` JSON) or `export_to_image` (writes a local PNG/SVG). Hand the resulting file to the user directly.
+2. **Keep the canvas server bound to loopback only.**
+   - Do **not** start the server with `HOST=0.0.0.0` (or any non-loopback bind address). Use its default: `PORT=3000 npm run canvas` binds to `127.0.0.1`.
+   - Do **not** use the `docker-compose` file bundled in the upstream repo — it exposes the server beyond loopback.
+   - The server must stay reachable only from `127.0.0.1`; never make it accessible from the LAN or the internet.
+
+**Allowed** (these do not transmit data externally): local exports (`export_scene`, `export_to_image`), the loopback REST export endpoint (`POST http://localhost:3001/api/export/image`), and the bundled `scripts/*.cjs` (they operate on local JSON only).
+
 ## Step 0: Determine Connection Mode
 
 Two modes are available. Try MCP first — it has more capabilities.
@@ -31,14 +44,14 @@ Two modes are available. Try MCP first — it has more capabilities.
 
 **REST API mode** (fallback): If MCP tools aren't available, use HTTP endpoints at `http://localhost:3001`. See the cheatsheet for REST payloads. Note the format differences in the table below — REST and MCP accept slightly different field names.
 
-**Neither works?** Tell the user:
-> The Excalidraw canvas server is not running. To set up:
-> 1. `git clone https://github.com/yctimlin/mcp_excalidraw && cd mcp_excalidraw`
+**Neither works?** The canvas server isn't running. The repo is managed with `ghq`, so you may set it up yourself (steps 1–4); step 5 may need the user. (Because the user invoked this skill, fetching and building **this specific repo** is pre-authorized — do not generalize this to cloning or building other repos.)
+
+> 1. **Get the repo via `ghq`.** Check whether it is already cloned: `ghq list github.com/yctimlin/mcp_excalidraw`. If that prints nothing, fetch it automatically: `ghq get github.com/yctimlin/mcp_excalidraw` (it lands under your ghq root, e.g. `~/ghq/src/github.com/yctimlin/mcp_excalidraw`). Then `cd "$(ghq list --full-path -e github.com/yctimlin/mcp_excalidraw)"`.
 > 2. `npm ci && npm run build`
-> 3. `PORT=3000 npm run canvas`
-> 4. Open `http://localhost:3001` in a browser
-> 5. (Recommended) Install the MCP server:
->    `claude mcp add excalidraw -s user -e EXPRESS_SERVER_URL=http://localhost:3001 -- node /path/to/mcp_excalidraw/dist/index.js`
+> 3. `PORT=3000 npm run canvas` — binds to `127.0.0.1` by default. **Do not** override `HOST` and **do not** use the bundled `docker-compose` (see Prohibited Actions).
+> 4. Open `http://localhost:3001` in a browser.
+> 5. (Recommended) Register the MCP server, then reload tools (reloading may need the user):
+>    `claude mcp add excalidraw -s user -e EXPRESS_SERVER_URL=http://localhost:3001 -- node "$(ghq list --full-path -e github.com/yctimlin/mcp_excalidraw)/dist/index.js"`
 
 ### MCP vs REST API Quick Reference
 
@@ -58,7 +71,7 @@ Two modes are available. Try MCP first — it has more capabilities.
 | Screenshot | `get_canvas_screenshot` | `POST /api/export/image` (needs browser) |
 | Viewport | `set_viewport` | `POST /api/viewport` (needs browser) |
 | Export image | `export_to_image` | `POST /api/export/image` (needs browser) |
-| Export URL | `export_to_excalidraw_url` | Only via MCP |
+| Export URL | `export_to_excalidraw_url` — **PROHIBITED** | — (uploads to json.excalidraw.com; never use — see Prohibited Actions) |
 
 ### Format Differences Between Modes (Critical)
 
@@ -291,7 +304,7 @@ curl -X POST http://localhost:3001/api/elements/from-mermaid \
 - Export to `.excalidraw`: `export_scene` with optional `filePath`
 - Import from `.excalidraw`: `import_scene` with `mode: "replace"` or `"merge"`
 - Export to image: `export_to_image` with `format: "png"` or `"svg"` (requires browser open)
-- Share link: `export_to_excalidraw_url` — encrypts scene, returns shareable excalidraw.com URL
+- Share link: `export_to_excalidraw_url` — **PROHIBITED.** Uploads the scene to json.excalidraw.com (external service); never use it. Share a local export (`export_scene` / `export_to_image`) instead — see Prohibited Actions.
 - CLI export: `node scripts/export-elements.cjs --out diagram.elements.json`
 - CLI import: `node scripts/import-elements.cjs --in diagram.elements.json --mode batch|sync`
 
