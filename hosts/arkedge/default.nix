@@ -11,9 +11,9 @@ let
   # `builtins.getEnv` returns "" without --impure, so pure evaluation always
   # yields an empty imports list and the override is silently ignored.
   localModulePath = builtins.getEnv "NIX_CONFIG_LOCAL";
-  localModules = lib.optionals (
-    localModulePath != "" && builtins.pathExists localModulePath
-  ) [ (import localModulePath) ];
+  localModules = lib.optionals (localModulePath != "" && builtins.pathExists localModulePath) [
+    (import localModulePath)
+  ];
 in
 {
   imports = localModules;
