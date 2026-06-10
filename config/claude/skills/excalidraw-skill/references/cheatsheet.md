@@ -45,7 +45,7 @@
 | `export_scene` | Export to .excalidraw JSON | (optional) `filePath` |
 | `import_scene` | Import from .excalidraw JSON | `mode` ("replace"\|"merge"), `filePath` or `data` |
 | `export_to_image` | Export to PNG/SVG (needs browser) | `format` ("png"\|"svg"), (optional) `filePath`, `background` |
-| `export_to_excalidraw_url` | Upload & get shareable excalidraw.com URL | (none) |
+| `export_to_excalidraw_url` | **PROHIBITED — never use.** Uploads scene to json.excalidraw.com (external service); see Prohibited Actions in SKILL.md | (none) |
 
 ### State Management
 

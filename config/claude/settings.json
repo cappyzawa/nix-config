@@ -151,7 +151,10 @@
       "mcp__serena__search_for_pattern",
       "mcp__serena__think_about_collected_information"
     ],
-    "deny": ["Read(~/.zshrc.local)"]
+    "deny": [
+      "Read(~/.zshrc.local)",
+      "mcp__excalidraw__export_to_excalidraw_url"
+    ]
   },
   "hooks": {
     "UserPromptSubmit": [
