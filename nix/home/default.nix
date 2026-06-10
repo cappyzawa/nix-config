@@ -189,7 +189,8 @@ in
           ${pkgs.jq}/bin/jq -s '
             .[0] as $base | .[1] as $host |
             $base * $host |
-            .permissions.allow = ($base.permissions.allow + $host.permissions.allow)
+            .permissions.allow = ($base.permissions.allow + $host.permissions.allow) |
+            .permissions.deny = (($base.permissions.deny // []) + ($host.permissions.deny // []))
           ' "$REPO_ROOT/config/claude/settings.json" "$REPO_ROOT/hosts/$HOST/claude-settings.json" > "$tmp"
           $DRY_RUN_CMD mv "$tmp" "$CLAUDE_DIR/settings.json"
         else
