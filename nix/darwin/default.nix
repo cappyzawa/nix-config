@@ -137,6 +137,11 @@
         autoUpdate = true;
         upgrade = true;
         cleanup = "zap"; # Remove unlisted casks/formulas
+        # Homebrew now requires an explicit force flag for `bundle install --cleanup`.
+        # Workaround for https://github.com/nix-darwin/nix-darwin/issues/1787;
+        # remove once https://github.com/nix-darwin/nix-darwin/pull/1789 is merged
+        # and the nix-darwin input is updated past it.
+        extraFlags = [ "--force-cleanup" ];
       };
 
       taps = [
