@@ -9,6 +9,34 @@
   ...
 }:
 
+let
+  brewUser = config.homebrew.user; # = system.primaryUser
+  brewUserHome = lib.attrByPath [ brewUser "home" ] "/Users/${brewUser}" config.users.users;
+
+  # Homebrew 6.0 requires non-official taps to be trusted before their
+  # formulae/casks load. Trust every third-party tap this config references:
+  # explicitly declared taps plus the tap prefix of any fully-qualified
+  # ("user/repo/name") brew or cask. Custom-remote taps (clone_target) match by
+  # remote URL rather than "user/repo", so they are rejected by an assertion
+  # below instead of being silently mis-seeded here.
+  tapOfQualifiedPackage =
+    name:
+    let
+      parts = lib.splitString "/" name;
+    in
+    lib.optionalString (
+      builtins.length parts >= 3
+    ) "${builtins.elemAt parts 0}/${builtins.elemAt parts 1}";
+  packageTaps = builtins.filter (s: s != "") (
+    map (p: tapOfQualifiedPackage p.name) (config.homebrew.brews ++ config.homebrew.casks)
+  );
+  declaredTaps = map (t: t.name) config.homebrew.taps;
+  trustedTaps = lib.unique (map lib.toLower (declaredTaps ++ packageTaps));
+
+  homebrewTrust = (pkgs.formats.json { }).generate "homebrew-trust.json" {
+    trustedtaps = trustedTaps;
+  };
+in
 {
   imports = [
     ../modules/shared.nix
@@ -93,15 +121,27 @@
         };
       };
 
-      # Set desktop wallpaper to akari-night background color
-      activationScripts.extraActivation.text = ''
-        sudo -u ${username} /usr/bin/python3 /Users/${username}/.config/scripts/set-wallpaper.py || true
-      '';
+      activationScripts = {
+        # Seed Homebrew's tap trust store before `brew bundle` runs (the homebrew
+        # activation step runs after preActivation). brew aborts the whole
+        # activation on an untrusted tap, so the file must already exist.
+        preActivation.text = lib.mkBefore (
+          lib.optionalString config.homebrew.enable ''
+            /usr/bin/install -d -o ${lib.escapeShellArg brewUser} -m 0755 ${lib.escapeShellArg "${brewUserHome}/.config/homebrew"}
+            /usr/bin/install -o ${lib.escapeShellArg brewUser} -m 0600 ${lib.escapeShellArg "${homebrewTrust}"} ${lib.escapeShellArg "${brewUserHome}/.config/homebrew/trust.json"}
+          ''
+        );
 
-      # Apply settings without logout/login
-      activationScripts.postActivation.text = ''
-        sudo -u ${username} /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
-      '';
+        # Set desktop wallpaper to akari-night background color
+        extraActivation.text = ''
+          sudo -u ${username} /usr/bin/python3 /Users/${username}/.config/scripts/set-wallpaper.py || true
+        '';
+
+        # Apply settings without logout/login
+        postActivation.text = ''
+          sudo -u ${username} /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+        '';
+      };
     };
 
     # Disable nix-darwin's Nix management (using Determinate Nix)
@@ -129,6 +169,16 @@
       home = "/Users/${username}";
     };
 
+    # The tap trust seeding above keys on "user/repo"; custom-remote taps are
+    # matched by their clone URL instead, so fail loudly rather than seed a
+    # reference that Homebrew would never match.
+    assertions = [
+      {
+        assertion = lib.all (tap: tap.clone_target == null) config.homebrew.taps;
+        message = "Homebrew tap trust seeding does not support taps with clone_target.";
+      }
+    ];
+
     # Homebrew configuration
     homebrew = {
       enable = true;
@@ -142,6 +192,10 @@
         # remove once https://github.com/nix-darwin/nix-darwin/pull/1789 is merged
         # and the nix-darwin input is updated past it.
         extraFlags = [ "--force-cleanup" ];
+        # Pin the trust store location so `brew bundle` reads the same
+        # trust.json that preActivation seeds (activation runs without
+        # XDG_CONFIG_HOME, so brew would otherwise fall back to ~/.homebrew).
+        extraEnv.XDG_CONFIG_HOME = "${brewUserHome}/.config";
       };
 
       taps = [
