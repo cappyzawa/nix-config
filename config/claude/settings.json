@@ -152,8 +152,7 @@
       "mcp__serena__think_about_collected_information"
     ],
     "deny": [
-      "Read(~/.zshrc.local)",
-      "mcp__excalidraw__export_to_excalidraw_url"
+      "Read(~/.zshrc.local)"
     ]
   },
   "hooks": {
