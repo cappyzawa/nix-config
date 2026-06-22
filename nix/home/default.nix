@@ -16,6 +16,28 @@
 let
   fontFamily = config.shared.fonts.main;
   fontSize = config.shared.fonts.size;
+  # Local-only, hand-drawn-style diagram generator (drives the ponchi skill).
+  # Not in nixpkgs and has no flake, so build from source pinned to a release tag.
+  ponchi = pkgs.rustPlatform.buildRustPackage {
+    pname = "ponchi";
+    version = "0.2.0";
+    src = pkgs.fetchFromGitHub {
+      owner = "cappyzawa";
+      repo = "ponchi";
+      rev = "6212a4bb39910bcac17d9e32ebd4b4e7e169aaab"; # v0.2.0
+      hash = "sha256-BGlAz/3gkBN9JpqueeFeyfhV9Ig7sW7yj9nbbHUpw34=";
+    };
+    cargoHash = "sha256-8ftCdlgZsQrMTkPbON3vy5wUkXH3mzD1pN5ijFpTdmU=";
+    # Skip the build-time test suite: it exercises the local HTTP server /
+    # rendering and is slow (or hangs) in the Nix sandbox. We only need the binary.
+    doCheck = false;
+    meta = {
+      description = "Local-only, hand-drawn-style diagram generator for aligning AI agents and humans";
+      homepage = "https://github.com/cappyzawa/ponchi";
+      mainProgram = "ponchi";
+      platforms = lib.platforms.darwin;
+    };
+  };
   claudeMcpConfig =
     (pkgs.formats.json { }).generate "claude-mcp-config.json"
       config.shared.claudeMcpServers;
@@ -140,6 +162,7 @@ in
       uv # Python package manager (provides uvx)
       hyperfine # Benchmarking tool
       yq-go # YAML processor
+      ponchi # Hand-drawn-style diagram generator (ponchi skill)
       golangci-lint # Go linter
       goreleaser # Go release tool
       glow # Markdown renderer
