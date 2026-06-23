@@ -94,6 +94,19 @@ in
         };
       };
 
+      # esa.io official MCP server (stdio). The access token is referenced as a
+      # placeholder and expanded from the shell environment at MCP launch; the
+      # real token lives in ~/.zshrc.local (kept out of this public repo).
+      shared.claudeMcpServers.esa = {
+        type = "stdio";
+        command = "npx";
+        args = [ "@esaio/esa-mcp-server" ];
+        env = {
+          ESA_ACCESS_TOKEN = "\${ESA_ACCESS_TOKEN}";
+          LANG = "ja";
+        };
+      };
+
       programs = {
         # AeroSpace settings for external monitors
         aerospace.settings.gaps.outer.top = lib.mkForce [
