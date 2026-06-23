@@ -98,6 +98,11 @@ in
 
         # Keyboard shortcuts
         CustomUserPreferences = {
+          # Disable App Nap for Slack so huddle audio does not drop out when its
+          # window is moved off-screen by AeroSpace on inactive workspaces.
+          "com.tinyspeck.slackmacgap" = {
+            NSAppSleepDisabled = true;
+          };
           "com.apple.symbolichotkeys" = {
             AppleSymbolicHotKeys = {
               # Disable Spotlight search (Command + Space)
