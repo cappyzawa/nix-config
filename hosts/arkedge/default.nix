@@ -37,6 +37,7 @@ in
       "influxdb-cli"
       "awscurl"
       "ffmpeg"
+      "duckdb"
     ];
   };
 
