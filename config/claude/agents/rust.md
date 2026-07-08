@@ -61,19 +61,25 @@ Rust エンジニアとして、コードの分析・実装・リファクタリ
 - **「小さい main」自体を目的化しない**。狙いは main をテスト不能なまま放置しないこと。`#[tokio::main] fn main` はテストから呼べないので、ロジックは名前付き関数 (`run()` 等) やモジュールへ押し出し、テストが到達できる単位にする。main は wiring と委譲だけに絞る。
 - ただし `run()` が実 I/O (gRPC 接続・HTTP・signal 等) を張る場合、モジュール分割だけでは `run()` 自体はテスト不能なまま。純粋ロジック (計算・変換・状態遷移・batching・backoff 等) を副作用から切り離して隣接テストを付けるところまでが分割の効果で、`run()` までテストしたいなら依存注入 (forwarder/clock/signal を差し替え可能にする) が別途必要、という切り分けを持つ。
 - 「常に 3 行 main」は誤解。実在の Rust プロジェクトでも main.rs が数百行のことはある。重要なのは行数でなく、内部実装を facade の裏に閉じ込め公開表面を最小にすること。
+- **lib+bin 分割を既定にしない**。bin-only + よく切ったモジュール + `#[cfg(test)]` で `run()`/`run_with()` を含め十分テストできる (bin crate も `cfg(test)` でコンパイルされる)。別 crate がロジックを再利用する具体的見込みが出た時に lib へ切り出せばよく、retrofit は behavior-preserving で安い。公開 API が製品・複数 bin でロジック共有・ハウススタイル統一、のいずれかが理由になる時だけ先回りして lib+bin にする。
 
 ### テストの流儀
 
-成熟した crate によく見られる流儀。「必ずこうする」という規則ではなく方針として扱う。
+成熟した crate によく見られる流儀。「必ずこうする」規則ではなく方針として扱う。**多くが library / 公開 API 中心の crate 由来で、application / binary crate には対象が無い項目がある**。まず crate 種別によらず効くものを挙げ、次に公開 API を持つ crate 向けを分ける。
 
-- **観測可能な契約を利用者が見る高さでテストし、残りはコンパイラに検査させる** のが基本方針。型で保証できるものにテストを重ねない。
-- **誤用は compile-fail でテストする** (`trybuild` 等: `tests/ui/*.rs` + 正規化した `*.stderr` golden)。ただし何でも compile-fail にはしない。狙ったエラーメッセージ・誤用 UX に限定し、診断がどの span に出るか (誤った token の直下か、`call_site` に雑に出ていないか) まで契約とみなす。
-- **公開 API は外から叩く**。integration test (`tests/*.rs`) は各ファイルが別 crate としてコンパイルされるので黒箱性がある。大規模なら serde の `test_suite` のように専用 test package を切る。ただし「公開 API だけでテストできる = 契約が十分」とは言えない (内部不変条件・性能は別)。
-- **境界をモックせず実物を通す**。固定入力 + round-trip を優先する (serde は `serde_test` の Token 列でデータモデル契約を検証、cxx は実コンパイラ・実 FFI の e2e)。
-- **汎用モックや巨大 assertion DSL を避け、目的特化の小道具 + 手書き helper で契約を直接表現する**。依存を足さないという意味ではない。trybuild/serde_test のような特化ツールは積極的に使う。
-- **doctest で代表的な使い方を docs と同期させる**。ただしすべての doc block がテストである必要はない。
-- **環境差はコードに明示する**。no_std / feature / rustc version / miri / nightly を雑に吸収せず、`rustversion::attr(not(nightly), ignore = ...)` や `tests/no-std` のように条件をテストに書く。
-- **white-box な検証は in-crate に置く**。非同期の配線、時計/IO/シグナルの注入、内部カウンタの検査など公開 API では観測できない振る舞いは、公開表面を `pub` 汚染してまで `tests/` に出さず、`#[cfg(test)]` の in-crate テストに置く。テスト容易性のために公開 API を広げない。
+**crate 種別によらず効く**
+
+- **観測可能な契約を利用者が見る高さでテストし、残りはコンパイラに検査させる**。型で保証できるものにテストを重ねない。app/bin では「観測可能な契約」= 出力・ログ・exit code・副作用。
+- **境界をモックせず実物を通す**。固定入力を基本にする (encode/decode の対があれば round-trip)。統合の継ぎ目こそ実物で通す価値が高い。
+- **汎用モックや巨大 assertion DSL を避け、目的特化の小道具 + 手書き helper で契約を直接表現する**。依存ゼロの意味ではない (trybuild/serde_test のような特化ツールは積極的に使う)。
+- **環境差を黙って吸収せず明示する**。feature / OS の違い、時刻・ネットワーク・FS の非決定性を、条件としてコードやコメントに書く。
+- **white-box な検証は in-crate に置く**。非同期の配線、時計/IO/signal の注入、内部カウンタの検査など公開 API では観測できない振る舞いは、公開表面を `pub` 汚染してまで `tests/` に出さず、`#[cfg(test)]` の in-crate テストに置く。テスト容易性のために公開 API を広げない。
+
+**公開 API を持つ crate 向け (application / binary には対象が無いことが多い)**
+
+- **公開 API は外から叩く**。integration test (`tests/*.rs`) は各ファイルが別 crate としてコンパイルされるのでブラックボックス性がある。大規模なら serde の `test_suite` のように専用 test package を切る。ただし「公開 API だけでテストできる = 契約が十分」とは言えない (内部不変条件・性能は別)。**app/bin での対応物はプロセス e2e** — バイナリを起動して stdout/stderr/exit/副作用を見る (`assert_cmd` / `trycmd` 等)。
+- **誤用を compile-fail でテストする** (`trybuild`: `tests/ui/*.rs` + 正規化した `*.stderr` golden)。何でも compile-fail にはせず、狙ったエラーメッセージ・誤用 UX と診断の span 品質 (誤った token の直下に出るか) に限定する。**公開 API やマクロを持つ crate 用**。
+- **doctest で公開 API の代表例を docs と同期させる**。すべての doc block がテストである必要はない。**公開 API がある crate 用** — app/bin の使い方は `--help` / README に置く。
 
 ## 検証
 
