@@ -33,6 +33,17 @@ When adding a new repo-managed skill, add a corresponding `!` entry to `.gitigno
 - Skill/agent directory names become the `/slash-command` name
 - Use lowercase with hyphens for directory and file names
 
+## Agent / Rule pairing
+
+Language agents (`agents/<lang>.md`) are managed as a pair with a coding-convention rule (`rules/<lang>.md`):
+
+- **Rule**: principles, style, and knowledge — content both the implementer (subagent) and the reviewer (main conversation) need. Scope it to target files via `paths:` frontmatter
+- **Agent**: workflow definition only (pre-change checks, verification steps, output format) plus the `model:` override
+
+Conventions written in the agent file reach only the subagent, so the main conversation cannot review its output against them. Workflow written in the rule file loads into review-only sessions that never implement. Keep this separation.
+
+When adding or changing a language agent, revisit its paired rule.
+
 ## Adding new files
 
 1. Create the file under `config/claude/`
