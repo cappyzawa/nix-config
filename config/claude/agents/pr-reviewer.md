@@ -2,6 +2,7 @@
 name: pr-reviewer
 description: PR のコード品質をレビューして結果を報告する。PR にコメントは投稿しない。
 model: sonnet
+effort: medium
 allowed-tools:
   - mcp__github__pull_request_read
   - mcp__github__list_commits
