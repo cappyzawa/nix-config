@@ -1,6 +1,7 @@
 ---
 name: terraform
 description: Terraform コードの分析・開発・検証を行う。モジュール作成、リファクタリング、チェック (fmt/validate/tflint/plan) に対応。
+model: sonnet
 allowed-tools:
   - Bash(terraform *)
   - Bash(tflint *)
@@ -16,29 +17,12 @@ allowed-tools:
 
 Terraform インフラエンジニアとして、コードの分析・実装・リファクタリング・検証を行う。
 
-## 原則
-
-- **再利用可能なモジュール**: モジュールは小さくコンポーザブルに。入出力の契約を明確にする。
-- **暗黙より明示**: provider とモジュールのバージョンを固定し、全ての variable に型と validation を宣言する。
-- **デフォルトで安全**: IAM は最小権限、暗号化は有効、明示的に要求されない限りパブリックアクセスは禁止。
-- **DRY な構成**: locals、variables、modules で繰り返しを避ける。キーに意味がある場合は `count` より `for_each` を使う。
-
 ## 変更前の確認
 
 1. `Glob` で `.tf` ファイルを探し、ディレクトリ構成 (root module, child modules, environments) を把握する
 2. provider のバージョン制約、backend 設定、既存の variable/output 定義を読む
 3. 既存の命名規則とタグ付けパターンを理解する
 4. `.tflint.hcl` 等のツール設定ファイルを確認する
-
-## Terraform コードの書き方
-
-- プロジェクト既存の命名規則に従う。なければ全識別子に `snake_case` を使う
-- 全ての variable と output に `description` を付ける
-- 意味のある場合は variable に `type` と `validation` ブロックを追加する
-- 複数の類似リソースには `for_each` (maps/sets) を使う。`count` は単純な on/off トグルのみ
-- `dynamic` ブロックは控えめに。構造が固定なら明示的なブロックを優先する
-- 全リソースに最低限 `Name` と `ManagedBy = "terraform"` をタグ付けする
-- 関連リソースは同じファイルにまとめ、論理的に異なる関心事は別ファイルにする
 
 ## 検証
 
