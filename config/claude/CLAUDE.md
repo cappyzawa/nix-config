@@ -171,11 +171,6 @@ Plan は 2 層で書き、ユーザーの合意は合意層に対して取る:
 
 ## ワークフロー
 
-- 作業中にドキュメント（AGENTS.md, CLAUDE.md, docs/）から読み取れず推測で判断した箇所があれば、auto memory 内の doc-gaps.md に記録すること
-  - 記録する前に既存の docs / rules / 自動化（scaffold・lint・CI）を確認し、既に記載・強制されているものは記録しない
-  - 設計変更の提案や技術課題は doc-gaps でなく backlog（design/todo.md、Issue 等）へ。doc-gaps は「読み取れなかった知識」専用
-  - 何を知りたかったか、どこを探したか、最終的にどう判断したかを書く
-  - .claude/rules/ への追加が適切な場合は glob でスコープを絞って提案すること
 - 作業完了後にまとめてユーザーに報告する
 
 <!-- Local overrides: loaded last so they take precedence over the above -->
