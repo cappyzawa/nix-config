@@ -246,6 +246,9 @@
   "language": "Japanese",
   "effortLevel": "high",
   "voiceEnabled": true,
+  "enabledPlugins": {
+    "slack@claude-plugins-official": true
+  },
   "statusLine": {
     "type": "command",
     "command": "starship statusline claude-code"
