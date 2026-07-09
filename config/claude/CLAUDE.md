@@ -169,9 +169,6 @@ Plan は 2 層で書き、ユーザーの合意は合意層に対して取る:
 6. **Refactor** - コードを整理・改善する
 7. **Test (Green)** - リファクタ後もテストが通ることを確認する
 
-## ワークフロー
+## Local
 
-- 作業完了後にまとめてユーザーに報告する
-
-<!-- Local overrides: loaded last so they take precedence over the above -->
 @~/.claude/CLAUDE.local.md
