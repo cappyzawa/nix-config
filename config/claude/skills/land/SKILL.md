@@ -12,7 +12,7 @@ main セッション（control plane）で実行する。subagent 内では実�
 ## 0. 入力を揃える
 
 1. `git status --short` で untracked ファイルを確認し、新規ファイルは `git add -N <path>` して diff に含める（`git diff HEAD` だけだと untracked が対象から落ちる）
-2. plan のパスが会話・呼び出し元から渡されていればそれを読む。渡されていなければ `~/.claude/plans/` から該当 repo の plan を探す（branch から再計算しない — worktree で branch 名が変わっていることがある）
+2. plan のパスが会話・呼び出し元から渡されていればそれを読む。渡されていなければ `~/.claude/plans/` から探す: 自前命名（`<repo>-<branch>.md`）はファイル名で、plan mode 由来のランダム slug ファイルは更新日時と中身で特定する（branch から再計算しない — worktree で branch 名が変わっていることがある）
 3. **plan checkpoint 対象の変更なのに plan が見つからない場合は停止し**、ユーザーに確認して plan を復元してから続行する。「plan なし」として進めてよいのは、trivial な変更またはユーザーが plan なしを明示した変更のみ
 
 ## 1. code-review --fix

@@ -65,7 +65,10 @@
 2. 指摘を評価し、採用するものだけ plan に反映する
 3. 見送る指摘があれば理由を明記する
 4. ユーザーに plan（採否を含む）を提示し、明示的な合意を得る
-5. 合意した plan を `~/.claude/plans/<repo>-<branch>.md`（branch 名の `/` は `-` に置換）に書き出す。**repo 内には置かない**（誤 commit・untracked ノイズを避ける）。パスは書き出し時に一度だけ確定し、以後の subagent 委譲・codex レビュー・land にはそのパスを明示的に渡す。branch から再計算しない（worktree 等で branch 名が変わっても同じファイルを使い続ける）
+5. 合意した plan のファイルパスを確定する。**repo 内には置かない**（誤 commit・untracked ノイズを避ける）
+   - **plan mode を通った場合**: Claude Code が plan を `~/.claude/plans/<ランダム slug>.md` に自動保存している（非公開の内部挙動）。承認直後に `ls -t ~/.claude/plans | head -1` で特定し、そのファイルを plan ファイルとして使う。重複して書き直さない。harness 管理のファイルなので rename・削除もしない
+   - **plan mode を通っていない場合**（auto mode での checkpoint 等）: `~/.claude/plans/<repo>-<branch>.md`（branch 名の `/` は `-` に置換）に自分で書き出す
+   - どちらの場合もパスは確定後に再計算しない。以後の subagent 委譲・codex レビュー・land にはそのパスを明示的に渡す（worktree 等で branch 名が変わっても同じファイルを使い続ける）
 
 - Plan mode の場合は `ExitPlanMode` の前にこのフローを完了する
 - **auto mode でもこの checkpoint は省略しない**。harness の自動承認は「コマンド実行の承認」であり、「実装方針の承認」ではない。ユーザーが plan を明示的に承認するまで、コード編集・コミット・破壊的操作・新規実装に着手してはならない
