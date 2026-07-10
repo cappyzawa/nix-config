@@ -1,8 +1,23 @@
 ---
 paths:
   - "config/claude/**"
+  - ".claude/**"
   - ".gitignore"
 ---
+
+# config/claude/ vs .claude/
+
+Two `claude` directories with the same name but different roles. Do not merge them.
+
+| | `config/claude/` | `.claude/` (repo root) |
+|---|---|---|
+| Role | **Distribution source** deployed to `~/.claude/` | **This repo's own project-local config** |
+| Scope | All of the user's projects (global) | Only when working on nix-config |
+| Deployed? | Yes — `setupClaude` copies/symlinks it (e.g. `~/.claude/rules -> config/claude/rules`) | No — stays inside this repo |
+| `rules/` holds | Language coding conventions (`nix.md`, `rust.md`, `terraform.md`, `typescript.md`) | This repo's own docs (`architecture.md`, `build-commands.md`, `nix-patterns.md`, this file) |
+| Read via | `~/.claude/CLAUDE.md` (global) | Root `CLAUDE.md`, which points at `.claude/rules/` |
+
+Neither is redundant: deleting `config/claude/` wipes the global `~/.claude/` setup; deleting `.claude/` drops the conventions Claude reads while editing nix-config. See `claude-code-config.md` (the `setupClaude` rules) for how `config/claude/` is deployed.
 
 # config/claude/ directory conventions
 
