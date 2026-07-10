@@ -13,5 +13,6 @@ config/claude/skills/*
 !config/claude/skills/codex/
 !config/claude/skills/empirical-prompt-tuning/
 !config/claude/skills/japanese-tech-writing/
+!config/claude/skills/land/
 !config/claude/skills/ponchi/
 !config/claude/skills/worktree/
