@@ -38,6 +38,7 @@ in
       "awscurl"
       "ffmpeg"
       "duckdb"
+      "poppler"
     ];
   };
 
