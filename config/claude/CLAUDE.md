@@ -160,7 +160,7 @@ Plan は 2 層で書き、ユーザーの合意は合意層に対して取る:
 - 委譲プロンプトには Plan の該当スライス（契約・対象ファイル・合格基準）を明示的に含める。subagent はここまでの会話を見ていない
 - 実行層の依存関係に従い、独立なスライスは単一メッセージで複数の実装 agent を並列起動する。同一ファイルに触れる恐れがあるスライス同士だけ `isolation: worktree` で分離する（Agent tool のパラメータ。人間向けの並行セッションを起動する worktree skill とは別物）
 - 実装 agent の model は既定 sonnet（契約が固まっていれば十分で、レビュー側に強いモデルを残す構図）。契約外の判断が多く残りそうな難しいスライスだけ、Agent tool 呼び出し時の `model` 指定で上位モデルに上げる（呼び出し時指定が agent 定義の frontmatter より優先される）
-- 委譲を起動するときは、実効の model が分かる名前を Agent tool の `name` に付ける（例: `nix-slice1-sonnet`, `explore-deps-haiku`）。effort も明示指定したときは名前に含める（例: `verify-contract-opus-high`）。session 継承のままの値は省略してよい。既定の層から変えた場合は、その理由だけ visible text で 1 行添える
+- 委譲を起動するときの Agent tool の `name` は `<役割>-<model>-<effort>` の固定形式にする（例: `nix-slice1-sonnet-inh`, `verify-contract-opus-high`）。model は解決した実効値（呼び出し時指定 > agent 定義の frontmatter > session 継承）を常に書く。effort は明示指定した値、未指定なら `inh`（session 継承）と書く。全項目必須なので、形式を欠く名前は「書き忘れ」と判別できる。既定の層から変えた場合は理由を visible text で 1 行添える
 
 ## 開発手法
 
