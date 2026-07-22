@@ -20,14 +20,14 @@ let
   # Not in nixpkgs and has no flake, so build from source pinned to a release tag.
   ponchi = pkgs.rustPlatform.buildRustPackage {
     pname = "ponchi";
-    version = "0.2.0";
+    version = "0.3.0";
     src = pkgs.fetchFromGitHub {
       owner = "cappyzawa";
       repo = "ponchi";
-      rev = "6212a4bb39910bcac17d9e32ebd4b4e7e169aaab"; # v0.2.0
-      hash = "sha256-BGlAz/3gkBN9JpqueeFeyfhV9Ig7sW7yj9nbbHUpw34=";
+      rev = "37f668d9ae72b91722999117708963375d4ad873"; # v0.3.0
+      hash = "sha256-zh32lJC4z9Xz0wBYnejueisPTbKCsWNVrvSsJPmzYsQ=";
     };
-    cargoHash = "sha256-8ftCdlgZsQrMTkPbON3vy5wUkXH3mzD1pN5ijFpTdmU=";
+    cargoHash = "sha256-EYp0QlT/mL/U4/v9way9t0bMjhef+Z/Fxq+GMQU3byc=";
     # Skip the build-time test suite: it exercises the local HTTP server /
     # rendering and is slow (or hangs) in the Nix sandbox. We only need the binary.
     doCheck = false;
