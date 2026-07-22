@@ -14,8 +14,9 @@
 - 全ての Commit は署名すること
   - `git commit -s`
 - Commit Message は英語で記述すること
-  - コミットメッセージでは GitHub の予約語（Fixes, Closes, Resolves など）を使用しないこと（意図せず Issue が閉じられるため）
-    - PR description では使用して構わない
+  - コミットメッセージには GitHub の予約語（Fixes, Closes, Resolves など）と Issue/PR への参照（`#N`, `org/repo#N`, URL）を書かないこと
+    - 予約語は意図せず Issue を閉じ、`#N` 参照は commit が push されるたび Issue/PR 側タイムラインに無駄な backlink を生む
+    - Issue/PR への参照は PR body に置く（下記 PR description 参照）
   - コミットメッセージは変更内容（Why/What）のみを記述し、How の箇条書きは不要
 
 ## Language
@@ -36,6 +37,7 @@
 - 読み手は human レビュアー。merge 判断に必要な情報だけを書き、記録媒体として使わないこと
 - 分量は diff の行数ではなくレビュアーの判断負荷に比例させる。機械的な大量変更は短く、微妙な数行の変更こそ厚く書く
 - 書くこと: 動機（1〜3 文）、アプローチの要約（1 段落、per-file ではなく）、検証内容（実行したコマンドと結果）、特に見てほしい箇所、non-goals / follow-up
+- 関連 Issue/PR へのリンクと GitHub の予約語（Closes 等）は PR body ではむしろ推奨。参照は `org/repo#N` のように org/repo まで明示し、番号だけの `#N` による取り違えを防ぐ
 - 書かないこと: ファイル別の変更列挙（diff の言い直し）、作業過程の物語（「まず調査し…」）、テンプレートに無い装飾や N/A 埋めの boilerplate
 - 情報は寿命で置き場所を振り分ける。PR body に書いてよいのは merge 後に価値が消える情報のみ:
   - コードの特定箇所に紐づく非自明な Why → コードコメント（PR body で繰り返さない）
