@@ -15,7 +15,7 @@ Codex CLI に委譲してセカンドオピニオン・レビューを得るた�
 長文プロンプト (plan レビュー / コードレビュー等) では **stdin 経由** で渡す:
 
 ```
-codex exec -s read-only --cd <project_directory> - < /tmp/codex-prompt.txt
+codex exec -s read-only --cd <project_directory> - < <prompt-file>
 ```
 
 短いプロンプトは positional argument で OK:
@@ -25,6 +25,7 @@ codex exec -s read-only --cd <project_directory> "<short request>"
 ```
 
 - `<project_directory>` は対象プロジェクトの絶対パス。省略すると現在の作業ディレクトリ。
+- `<prompt-file>` は scratchpad 配下の `codex-prompt-<task>.txt`。scratchpad が無い環境では `/tmp` に置く。
 - Bash の timeout は **600000 (10 分)** に設定する。Codex は応答までに時間がかかることがある。
 
 ### なぜ stdin 経由を使うか
@@ -35,8 +36,8 @@ stdin 経由 (`- < file`) に切り替えると同じプロンプトが **20-30 
 
 ### 手順 (長文の場合)
 
-1. Write tool でプロンプトを `/tmp/codex-prompt-<task>.txt` に書く
-2. `codex exec -s read-only --cd <dir> - < /tmp/codex-prompt-<task>.txt` を実行
+1. Write tool でプロンプトを `<prompt-file>` に書く
+2. `codex exec -s read-only --cd <dir> - < <prompt-file>` を実行
    - `run_in_background: true` + 出力先 (`tee` または harness の output file) で監視するのを推奨
 3. 完了後に出力ファイルを Read で読む
 
@@ -54,7 +55,7 @@ Codex に渡す依頼文には必ず以下のニュアンスを含める:
 
 ```bash
 # Step 1: prompt を file に書く (Write tool)
-#   /tmp/codex-prompt-plan-review.txt の内容例:
+#   codex-prompt-plan-review.txt の内容例:
 #   ---
 #   次の plan をレビューしてほしい。観点は (1) 設計上の見落とし・代替案
 #   (2) 影響範囲とリスク (3) 実装難易度の見積もりの妥当性。
@@ -64,7 +65,7 @@ Codex に渡す依頼文には必ず以下のニュアンスを含める:
 #   ---
 
 # Step 2: 実行
-codex exec -s read-only --cd <dir> - < /tmp/codex-prompt-plan-review.txt
+codex exec -s read-only --cd <dir> - < <prompt-file>
 ```
 
 ### コードレビュー（commit 前）
@@ -72,7 +73,7 @@ codex exec -s read-only --cd <dir> - < /tmp/codex-prompt-plan-review.txt
 ```bash
 # Step 1: prompt を file に書く (diff も同じ file に貼る場合は大きいので必ず stdin 経由)
 # Step 2:
-codex exec -s read-only --cd <dir> - < /tmp/codex-prompt-code-review.txt
+codex exec -s read-only --cd <dir> - < <prompt-file>
 ```
 
 内容例:
@@ -106,7 +107,7 @@ codex exec -s read-only --cd <dir> "<質問内容>。確認や質問は不要、
 
 1. `~/.claude/CLAUDE.md` の「Codex レビュー」トリガー、またはユーザー要求に従って、codex に委譲する対象を特定する
 2. プロンプトに「確認や質問は不要。具体的な提案・修正案・コード例を能動的に出してほしい」を必ず付ける
-3. プロンプトが長文 (plan / diff / コード片を含む) なら Write tool で `/tmp/codex-prompt-<task>.txt` に書き、stdin redirect で渡す。短ければ positional でも可
+3. プロンプトが長文 (plan / diff / コード片を含む) なら Write tool で `<prompt-file>` に書き、stdin redirect で渡す。短ければ positional でも可
 4. `codex exec -s read-only --cd <dir>` を Bash timeout 600000 で実行する
 5. Codex の指摘を要約してユーザーに報告する。即時対応する指摘と見送る指摘を分けて提示する
 
