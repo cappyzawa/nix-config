@@ -224,6 +224,20 @@ in
           ln -sfn "$REPO_ROOT/config/claude/$dir" "$CLAUDE_DIR/$dir"
         done
 
+        # agent-browser ships its skill with the CLI so the two stay version-matched.
+        # Point at the brew-managed stable path, not `agent-browser skills path`
+        # (that returns a version-pinned Cellar path and goes stale on upgrade).
+        AB_SKILL="/opt/homebrew/opt/agent-browser/libexec/lib/node_modules/agent-browser/skills/agent-browser"
+        AB_LINK="$REPO_ROOT/config/claude/skills/agent-browser"
+        if [ -d "$AB_SKILL" ]; then
+          # Never touch a real directory: an older commit still tracks files here
+          if [ ! -e "$AB_LINK" ] || [ -L "$AB_LINK" ]; then
+            $DRY_RUN_CMD ln -sfn "$AB_SKILL" "$AB_LINK"
+          fi
+        elif [ -L "$AB_LINK" ]; then
+          $DRY_RUN_CMD rm -f "$AB_LINK"
+        fi
+
         # agents - merge if host-specific exists, otherwise symlink
         if [ -d "$REPO_ROOT/hosts/$HOST/claude-agents" ]; then
           rm -rf "$CLAUDE_DIR/agents"
