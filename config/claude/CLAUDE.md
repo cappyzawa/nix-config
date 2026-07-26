@@ -5,7 +5,7 @@
 - 会話は基本的に日本語で行うこと
   - 全角と半角の間には半角スペースを入れること
   - 会話が日本語であれば構わないため、Thinking は英語でも問題ない
-- 絵文字の使用は不要
+- 絵文字は使わない。機構が必須とするもの（Artifact の favicon など）は対象外
 - コードコメントは英語で記述すること
 
 ## Git
@@ -65,7 +65,7 @@
 
 **このセクションのトリガーは main セッション（control plane）専用**。subagent として動作している場合は、条件に一致しても codex / devils-advocate を自分で起動しないこと。レビューが必要・判断に迷うと感じたら、その旨を結果報告に含めて main セッションに差し戻す。レビューの起動と指摘の裁定は main セッションの責務。
 
-**codex 不在 host での fallback**: トリガーに入る前に `command -v codex` で存在確認すること。`codex` コマンドが無い host（例: ubie）では、以下の手順内に出てくる `codex` をすべて `devils-advocate` subagent（Agent tool で起動）に読み替える。fallback は同モデル由来の盲点があるが、独立コンテキストで反対側の視点を出させる。
+**codex 不在 host での fallback**: トリガーに入る前に `command -v codex` で存在確認すること。`codex` コマンドが無い host では、以下の手順内に出てくる `codex` をすべて `devils-advocate` subagent（Agent tool で起動）に読み替える。fallback は同モデル由来の盲点があるが、独立コンテキストで反対側の視点を出させる。
 
 ### Plan checkpoint
 
@@ -148,6 +148,8 @@ UI・画面が絡む plan では、実行層を固める前に「こんな感じ
 - 設計判断が絡む変更・新規ロジック追加・既存挙動を変える修正では原則スキップしない（実装後レビューのフルパス: code-review --fix → codex → verify）
 
 ## サブエージェントへの委譲
+
+Agent tool の起動に、起動ごとのユーザー確認は要らない。自動起動させたくない skill は frontmatter の `disable-model-invocation: true` で個別に止める。
 
 メイン会話は control plane として計画・レビュー・統合に徹し、作業本体は subagent に委譲する。tool 出力（ファイルダンプ・検索結果）をメイン context に溜めず、結論だけ受け取ることが目的:
 
