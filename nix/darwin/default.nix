@@ -201,6 +201,16 @@ in
         # trust.json that preActivation seeds (activation runs without
         # XDG_CONFIG_HOME, so brew would otherwise fall back to ~/.homebrew).
         extraEnv.XDG_CONFIG_HOME = "${brewUserHome}/.config";
+        # Homebrew 6.0 defaults HOMEBREW_UPGRADE_AUTO_UPDATES_CASKS to true, so
+        # `brew upgrade` now targets `auto_updates true` casks whenever the app
+        # bundle version differs from the tap version. Self-updating apps trail
+        # the tap during staged rollouts (Chrome via Keystone), so activation
+        # would re-download the cask and force-quit the running app, only to be
+        # overwritten by the app's own updater. Restore the pre-6.0 behaviour and
+        # let those casks update themselves; `brew upgrade --cask --greedy` still
+        # works for one-off manual upgrades. Homebrew treats any non-empty value
+        # as "set", so this can only be disabled by removing the line.
+        extraEnv.HOMEBREW_NO_UPGRADE_AUTO_UPDATES_CASKS = "1";
       };
 
       taps = [
