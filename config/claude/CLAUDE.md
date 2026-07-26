@@ -89,12 +89,18 @@
 3. 見送る指摘があれば理由を明記する
 4. ユーザーに plan の合意層（codex 指摘の採否を含む）を提示し、明示的な合意を得る。実行層は会話に貼らず、ユーザーから求められたときにだけ見せる
 5. 合意した plan のファイルパスを確定する。**repo 内には置かない**（誤 commit・untracked ノイズを避ける）
-   - **plan mode を通った場合**: Claude Code が plan を `~/.claude/plans/<ランダム slug>.md` に自動保存している（非公開の内部挙動）。承認直後に `ls -t ~/.claude/plans | head -1` で特定し、そのファイルを plan ファイルとして使う。重複して書き直さない。harness 管理のファイルなので rename・削除もしない
-   - **plan mode を通っていない場合**（auto mode での checkpoint 等）: `~/.claude/plans/<repo>-<branch>.md`（branch 名の `/` は `-` に置換）に自分で書き出す
-   - どちらの場合もパスは確定後に再計算しない。以後の subagent 委譲・codex レビュー・land にはそのパスを明示的に渡す（worktree 等で branch 名が変わっても同じファイルを使い続ける）
+   - **既定（plan mode を通らない）**: `~/.claude/plans/<repo>-<task>.md` に自分で書き出す。合意層と実行層を 1 ファイルに収める
+     - `<task>` は課題の識別子。Jira キー（`webmg-1038`）、Issue 番号（`issue-506`）、どちらも無ければ目的を表す短い kebab slug（`event-payload-typing-mechanism`）
+     - **branch 名は使わない**。checkpoint は branch を切る前に通すので、命名したい時点では feature branch がまだ無く `main` にしか居ない。branch をキーにすると main で立てた plan が全部衝突する
+   - **ユーザーが plan mode に入れた場合**: plan ファイルは harness が plan mode のシステムメッセージで指定するパス（`~/.claude/plans/<ランダム slug>.md`）。**そこに直接 2 層とも書き、自分用の plan ファイルを別に作らない**。harness 管理のファイルなので rename・削除もしない
+     - `ExitPlanMode` は plan 内容を引数に取らず、**plan ファイルの全文**を承認画面に出す（提示範囲を絞る手段が無い）。この経路では「会話に提示するのは合意層のみ」が成立しないので、実行層まで表示される前提で合意層をファイル冒頭に置く
+   - **plan ファイルは常に 1 本**。2 本あると、subagent にも codex にも自動では渡らない（fresh な subagent は prompt しか受け取らない）ため、下流に渡る中身がその場の選択で分岐する
+   - どちらの場合もパスは確定後に再計算しない。以後の subagent 委譲・codex レビュー・land にはそのパスを明示的に渡す（task 単位なので branch を切っても worktree に移っても同じファイルを使い続ける）
 
 - plan mode には Claude から入らない（`EnterPlanMode` を自発的に使わない）。checkpoint は通常 mode のまま plan 提示と合意で通す。plan mode の扱いはユーザーが自分で plan mode に入れた場合にのみ適用し、その場合は `ExitPlanMode` の前にこのフローを完了する
-- **auto mode でもこの checkpoint は省略しない**。harness の自動承認は「コマンド実行の承認」であり、「実装方針の承認」ではない。ユーザーが plan を明示的に承認するまで、コード編集・コミット・破壊的操作・新規実装に着手してはならない
+- **auto mode でもこの checkpoint は省略しない**。harness の自動承認は「コマンド実行の承認」であり、「実装方針の承認」ではない
+  - plan mode に入らない＝ファイル編集の機構的ブロックが無いので、代わりに役割で縛る: **checkpoint 前のメインは read / 調査のみ。実装は承認後に subagent へ委譲する**。「承認前か後か」を判定し続ける時間ルールより、「書くのはメインの仕事ではない」という役割ルールの方が違反が自明で破れにくい
+  - コミット・破壊的操作は承認前に行わない
 - 要件・優先順位がまだ揺れている場合は、先にユーザーへ選択肢を提示して方向性の合意を取ってから codex review に進む（順序の例外）
 
 #### Plan の構成
