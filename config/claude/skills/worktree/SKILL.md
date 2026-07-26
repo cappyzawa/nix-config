@@ -73,10 +73,12 @@ fi
 `claude --worktree` は `<repo>/.claude/worktrees/<name>` に worktree を作成し、ブランチ名は `worktree-<name>` となる。
 ただし CLAUDE.md や .claude/ が git 未追跡の場合、新規 worktree にはこれらが含まれない。
 
-事前に worktree を作成し、未追跡の Claude 設定ファイルをコピーする prep スクリプトを `/tmp/worktree-prep.sh` に書き出す。
+事前に worktree を作成し、未追跡の Claude 設定ファイルをコピーする prep スクリプトを `/tmp/worktree-prep-<worktree-name>.sh` に書き出す。
+
+一時ファイル名に worktree 名を入れるのは、`tmux send-keys` が返った後に起動先の shell がこれらを読むため。固定パスだと連続起動時に後発の実行が先発の内容を上書きし、先に開いた window が別の worktree・別のプロンプトで起動する。
 
 ```bash
-cat > /tmp/worktree-prep.sh << 'PREP'
+cat > /tmp/worktree-prep-<worktree-name>.sh << 'PREP'
 #!/bin/bash
 set -euo pipefail
 REPO_ROOT=$(git rev-parse --show-toplevel)
@@ -90,7 +92,7 @@ git worktree add "$WORKTREE_DIR" -b "worktree-${WNAME}" 2>/dev/null || true
 [ -e "$REPO_ROOT/CLAUDE.md" ] && cp -f "$REPO_ROOT/CLAUDE.md" "$WORKTREE_DIR/CLAUDE.md"
 [ -d "$REPO_ROOT/.claude" ] && rsync -a --exclude='worktrees' "$REPO_ROOT/.claude/" "$WORKTREE_DIR/.claude/"
 PREP
-chmod +x /tmp/worktree-prep.sh
+chmod +x /tmp/worktree-prep-<worktree-name>.sh
 ```
 
 ### 3. tmux で起動
@@ -108,17 +110,17 @@ repository 名は `basename $(git rev-parse --show-toplevel)` で取得する。
 
 ```bash
 # Write prompt to temp file (use $ARGS with --model stripped)
-cat > /tmp/worktree-prompt.txt << EOF
+cat > /tmp/worktree-prompt-<worktree-name>.txt << EOF
 $ARGS
 EOF
 
 # Check tmux and launch (prep script runs first to ensure config files exist)
 if tmux list-sessions 2>/dev/null; then
     tmux new-window -n "<repo>/<worktree-name>"
-    tmux send-keys "bash /tmp/worktree-prep.sh && claude --worktree <worktree-name> ${MODEL_FLAG} ${PERM_FLAG} \"\$(cat /tmp/worktree-prompt.txt)\"" C-m
+    tmux send-keys "bash /tmp/worktree-prep-<worktree-name>.sh && claude --worktree <worktree-name> ${MODEL_FLAG} ${PERM_FLAG} \"\$(cat /tmp/worktree-prompt-<worktree-name>.txt)\"" C-m
 else
     echo "Not in tmux session. Run manually:"
-    echo "  bash /tmp/worktree-prep.sh && claude --worktree <worktree-name> ${MODEL_FLAG} ${PERM_FLAG}"
+    echo "  bash /tmp/worktree-prep-<worktree-name>.sh && claude --worktree <worktree-name> ${MODEL_FLAG} ${PERM_FLAG}"
 fi
 ```
 
