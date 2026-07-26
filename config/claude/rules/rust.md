@@ -63,3 +63,7 @@ paths:
 - **公開 API は外から叩く**。integration test (`tests/*.rs`) は各ファイルが別 crate としてコンパイルされるのでブラックボックス性がある。大規模なら serde の `test_suite` のように専用 test package を切る。ただし「公開 API だけでテストできる = 契約が十分」とは言えない (内部不変条件・性能は別)。**app/bin での対応物はプロセス e2e** — バイナリを起動して stdout/stderr/exit/副作用を見る (`assert_cmd` / `trycmd` 等)。
 - **誤用を compile-fail でテストする** (`trybuild`: `tests/ui/*.rs` + 正規化した `*.stderr` golden)。何でも compile-fail にはせず、狙ったエラーメッセージ・誤用 UX と診断の span 品質 (誤った token の直下に出るか) に限定する。**公開 API やマクロを持つ crate 用**。
 - **doctest で公開 API の代表例を docs と同期させる**。すべての doc block がテストである必要はない。**公開 API がある crate 用** — app/bin の使い方は `--help` / README に置く。
+
+## 検証
+
+- コードを変更したら `cargo clippy --all-targets --all-features -- -D warnings` で指摘が無いことを確認する
