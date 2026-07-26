@@ -48,13 +48,6 @@ in
   ];
 
   shared.claudeMcpServers = {
-    github = {
-      type = "http";
-      url = "https://api.githubcopilot.com/mcp/";
-      headers = {
-        Authorization = "Bearer \${GITHUB_AUTH_TOKEN}";
-      };
-    };
     context7 = {
       type = "http";
       url = "https://mcp.context7.com/mcp";
@@ -1605,9 +1598,6 @@ in
 
         # Direnv (deferred)
         zsh-defer eval "$(direnv hook zsh)"
-
-        # GitHub token for MCP server
-        export GITHUB_AUTH_TOKEN="$(gh auth token)"
 
         # Source local config files
         for config_file ("''${XDG_CONFIG_HOME:-$HOME/.config}"/zsh/*.zsh(N)); do

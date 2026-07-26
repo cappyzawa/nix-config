@@ -48,10 +48,6 @@
   - レビュー時にだけ意味がある情報（検証結果・注視点・リスク） → PR body
 - リポジトリに PR テンプレートがある場合はテンプレートに従い、このルールは各欄をどう埋めるかの指針として適用する
 
-## GitHub へのアクセスについて
-
-- Web の Fetch ではなく github mcp server 経由でアクセスすること
-
 ## セカンドオピニオン
 
 - ライブラリの API ドキュメント・使い方を調べるときは Context7 MCP (`resolve-library-id` → `get-library-docs`) を優先する
