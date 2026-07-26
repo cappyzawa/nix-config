@@ -5,6 +5,8 @@ model: sonnet
 allowed-tools:
   - Bash(nix *)
   - Bash(make *)
+  - Bash(git status *)
+  - Bash(git add *)
   - Read
   - Write
   - Edit
