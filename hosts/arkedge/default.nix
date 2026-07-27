@@ -82,19 +82,6 @@ in
         };
       };
 
-      # Single AWS MCP server; switch accounts/envs via `--profile` in call_aws.
-      # No AWS_PROFILE pinned here: profile is resolved by boto3's default
-      # credential chain. Credentials come from ~/.aws/config, which is managed
-      # manually outside this repo (aws-vault credential_process / SSO).
-      shared.claudeMcpServers.aws = {
-        type = "stdio";
-        command = "uvx";
-        args = [ "awslabs.aws-api-mcp-server@latest" ];
-        env = {
-          READ_OPERATIONS_ONLY = "true";
-        };
-      };
-
       # esa.io official MCP server (stdio). The access token is referenced as a
       # placeholder and expanded from the shell environment at MCP launch; the
       # real token lives in ~/.zshrc.local (kept out of this public repo).

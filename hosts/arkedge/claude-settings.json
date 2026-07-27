@@ -1,8 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "mcp__aws__suggest_aws_commands",
-      "mcp__aws__call_aws"
-    ]
-  }
-}
