@@ -9,7 +9,8 @@
   "vim": true,
   "attribution": {
     "commit": "Co-Authored-By: Claude <noreply@anthropic.com>",
-    "pr": "🤖 Generated with Claude Code"
+    "pr": "🤖 Generated with Claude Code",
+    "sessionUrl": false
   },
   "permissions": {
     "defaultMode": "auto",
