@@ -91,6 +91,18 @@ git worktree add "$WORKTREE_DIR" -b "worktree-${WNAME}" 2>/dev/null || true
 # Sync Claude config files (handles both tracked and untracked)
 [ -e "$REPO_ROOT/CLAUDE.md" ] && cp -f "$REPO_ROOT/CLAUDE.md" "$WORKTREE_DIR/CLAUDE.md"
 [ -d "$REPO_ROOT/.claude" ] && rsync -a --exclude='worktrees' "$REPO_ROOT/.claude/" "$WORKTREE_DIR/.claude/"
+
+# Symlink per-directory CLAUDE.local.md into the worktree. These are untracked
+# (globally gitignored) so git worktree does not carry them, and they are
+# discovered under cwd only, so nesting under the repo does not help either.
+# Symlink instead of copy: copies go stale as soon as the main checkout edits
+# the file. Root CLAUDE.local.md is excluded (-mindepth 2) because the
+# worktree lives inside the repo and directory walk-up already loads it.
+(cd "$REPO_ROOT" && find . -mindepth 2 -name 'CLAUDE.local.md' -not -path './.claude/worktrees/*' -print0) |
+  while IFS= read -r -d '' f; do
+    mkdir -p "$WORKTREE_DIR/$(dirname "$f")"
+    ln -sfn "$REPO_ROOT/${f#./}" "$WORKTREE_DIR/${f#./}"
+  done
 PREP
 chmod +x /tmp/worktree-prep-<worktree-name>.sh
 ```
