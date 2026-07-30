@@ -24,6 +24,10 @@
     - 予約語は意図せず Issue を閉じ、`#N` 参照は commit が push されるたび Issue/PR 側タイムラインに無駄な backlink を生む
     - Issue/PR への参照は PR body に置く（§PR description 参照）
   - コミットメッセージは変更内容（Why/What）のみを記述し、How の箇条書きは不要
+- **commit は squash されずそのまま main に載る粒度に保つ**。1 commit = 1 つの理由で、それ単体でビルドとテストが通る状態にする
+  - 判定するのはレビューに出す時点の履歴。作業中は fixup を積んでよく、ready にする前に整えれば足りる
+  - ready 後の修正は force-push で履歴を書き換えず commit を足す（レビュアーが自分のレビュー以降の差分を追えるようにする）
+  - PR の粒度は「やりたいことが 1 つにまとまっているか」（§Pull Request）、その中の分割単位が commit。隣接する修正を PR に含めるときは 1 commit に混ぜず理由ごとに分ける
 
 ## Issue
 
