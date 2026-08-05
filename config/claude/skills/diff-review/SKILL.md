@@ -21,11 +21,13 @@ diff が空なら何もせず報告して終わる。
 
 ## 2. 規約ファイルの場所を集める
 
-Haiku agent（`review-scan-haiku-inh`）に、**内容ではなくパスだけ**を列挙させる: リポジトリ root の `CLAUDE.md` / `AGENTS.md`、変更されたファイルのディレクトリにある `CLAUDE.md`、`.claude/rules/*.md` のうち `paths:` frontmatter が変更ファイルに一致するもの。
+`model: "haiku"` の agent（`review-scan-haiku-inh`）に、**内容ではなくパスだけ**を列挙させる: リポジトリ root の `CLAUDE.md` / `AGENTS.md`、変更されたファイルのディレクトリにある `CLAUDE.md`、`.claude/rules/*.md` のうち `paths:` frontmatter が変更ファイルに一致するもの。
 
 ## 3. 5 つの観点で並列レビューする
 
-5 つの Sonnet agent を**単一メッセージで並列起動**する。各 agent に diff、step 2 のパス一覧、ユーザー要求と non-goals を渡す。
+5 つの agent を `model: "sonnet"` / `subagent_type: "general-purpose"` で**単一メッセージから並列起動**する。各 agent に diff、step 2 のパス一覧、ユーザー要求と non-goals を渡す。
+
+`model` を省略すると session のモデルを継承するので、上位モデルのセッションではレビュアー 5 本がそれになる。下表の name は実効モデルを含む形（CLAUDE.md §サブエージェントへの委譲）なので、モデルを変えるなら name も変える。
 
 | agent name | 観点 |
 |---|---|
@@ -41,7 +43,7 @@ Haiku agent（`review-scan-haiku-inh`）に、**内容ではなくパスだけ**
 
 ## 4. 確信度で絞る
 
-指摘ごとに Haiku agent を並列起動し、0〜100 で採点させる。ルーブリックはそのまま渡す:
+指摘ごとに `model: "haiku"` の agent（`score-<観点>-haiku-inh`）を並列起動し、0〜100 で採点させる。ルーブリックはそのまま渡す:
 
 - **0**: 軽く検証すれば崩れる誤検出、または変更前から存在する問題
 - **25**: 実在するかもしれないが検証できていない。規約由来なら該当規約に明示されていない
