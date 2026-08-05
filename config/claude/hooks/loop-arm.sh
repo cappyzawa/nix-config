@@ -80,6 +80,24 @@ set -e
 printf '%s\n' "$baseline_out" | tail -n 20
 echo "現在値: exit $baseline"
 
+# Refuse when the oracle cannot produce a current value at all. A gap you cannot
+# measure is not yet a stop condition, and arming anyway spends every iteration
+# on a command that was never going to run.
+case "$baseline" in
+  126 | 127)
+    echo "" >&2
+    echo "oracle が実行できない (exit ${baseline})。現在値が出せないものは終了条件にならない。" >&2
+    echo "コマンド名・PATH・実行権限を確かめてから arm し直すこと。" >&2
+    exit 1
+    ;;
+  142)
+    echo "" >&2
+    echo "oracle が ${DEFAULT_TIMEOUT}s で終わらない。ターン終了ごとに走るので oracle には使えない。" >&2
+    echo "対象を絞った速い check を選び直すこと。" >&2
+    exit 1
+    ;;
+esac
+
 mkdir -p "$dir"
 jq -n \
   --arg check "$check" \

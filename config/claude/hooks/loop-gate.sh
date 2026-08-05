@@ -85,6 +85,17 @@ if [ "$status" -eq 0 ]; then
   exit 0
 fi
 
+# An oracle that stopped being runnable is no longer measuring anything, so it
+# would spend every remaining iteration on the same error.
+case "$status" in
+  126 | 127)
+    disarm_and_say "$(
+      printf 'oracle (%s) が実行できない (exit %s)。測れないものは停止条件にならないのでループを解除した。\n\n--- 出力 ---\n%s\n---\n\n実行可能な oracle を選んで loop-arm.sh で arm し直すか、なぜ arm できないかを述べて終われ。' \
+        "$check" "$status" "$(printf '%s\n' "$output" | tail -n 10)"
+    )"
+    ;;
+esac
+
 # Bail if the bump cannot be persisted. Continuing would re-read the same
 # iteration every turn, never reach the cutoff, and block until the harness cap
 # ends the turn with an empty result.
