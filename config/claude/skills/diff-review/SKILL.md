@@ -1,6 +1,6 @@
 ---
 name: diff-review
-description: 作業ツリーの diff を複数の観点で並列レビューし、確信度で絞った指摘を返す。commit / PR の前、land skill のレビュー step で使う。bundled の /code-review はモデルから起動できないため、その位置をこれが埋める。
+description: 作業ツリーの diff を複数の観点で並列レビューし、確信度で絞った指摘を返す。commit / PR の前、land skill のレビュー step で使う。
 ---
 
 # Diff Review

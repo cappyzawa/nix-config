@@ -1,6 +1,6 @@
 ---
 name: codex
-description: OpenAI Codex にタスクを委譲する。plan レビュー / コードレビュー / セカンドオピニオン / 別視点での調査に使う。
+description: OpenAI Codex にタスクを委譲する。コードレビュー / セカンドオピニオン / 別視点での調査に使う。
 allowed-tools: Bash(codex exec -s read-only:*)
 ---
 
@@ -30,7 +30,7 @@ codex exec -s read-only --cd <project_directory> "<short request>"
 
 ### なぜ stdin 経由を使うか
 
-`"$(cat <<'EOF' ... EOF)"` で長文プロンプトを positional argument に乗せると、codex が `Reading additional input from stdin...` から進まず **10 分以上 hang** する事例があった (`|` をエスケープしたテーブルやバックティック付き code block を含む plan 本文で再現)。symptom: PID は生きているが出力が数十バイトで停止、`ps` の argv に巨大な heredoc が見える。
+`"$(cat <<'EOF' ... EOF)"` で長文プロンプトを positional argument に乗せると、codex が `Reading additional input from stdin...` から進まず **10 分以上 hang** する事例があった（`|` をエスケープしたテーブルやバックティック付き code block を含む長文で再現）。symptom: PID は生きているが出力が数十バイトで停止、`ps` の argv に巨大な heredoc が見える。
 
 stdin 経由 (`- < file`) に切り替えると同じプロンプトが **20-30 秒** で完走する。`-` は「prompt を stdin から読む」を明示するための positional。
 
@@ -51,18 +51,6 @@ Codex に渡す依頼文には必ず以下のニュアンスを含める:
 
 ## 主な用途と例
 
-### Plan レビュー（`ExitPlanMode` 前）
-
-**plan 本文はプロンプトに埋めず、plan ファイルの絶対パスを渡して codex に読ませる**:
-
-```bash
-codex exec -s read-only --cd <dir> "<plan ファイルの絶対パス> を読んでレビューしてほしい。観点は (1) 設計上の見落とし・代替案 (2) 影響範囲とリスク (3) 実装難易度の見積もりの妥当性。確認や質問は不要、具体的な指摘と代替案を能動的に出してほしい。"
-```
-
-plan レビューは plan mode 中に走るので、プロンプトファイルを作る手段が無い（plan mode の Write は plan ファイル以外に通らない）。`-s read-only` は書き込みだけを禁じるサンドボックスで `--cd` 外の読み取りは通るため、`~/.claude/plans/` 配下のパスをそのまま渡せる。plan 本文を埋めないので positional でも hang しない（本文には表や code block が入り、それが hang の再現条件だった）。
-
-観点はここに挙げた 3 つに限らない。`~/.claude/CLAUDE.md` の「Plan の品質基準」が求める観点（未検証の仮定・実装者が誤解しそうなステップ）も併せてプロンプトに書く。
-
 ### コードレビュー（commit 前）
 
 ```bash
@@ -72,12 +60,12 @@ codex exec -s read-only --cd <dir> - < <prompt-file>
 ```
 
 内容例:
-> 以下の diff をレビューしてほしい。読んで見つかる誤りのレビュー (diff-review) は実施済みなので主目的にしなくてよいが、correctness / security / data loss に関わる問題は実施済みの観点に見えても必ず指摘してほしい。観点は (1) 同梱した plan の契約・仕様との乖離 (2) 設計判断の誤り (3) エッジケースの見落とし (4) テストの過不足。確認や質問は不要、具体的な修正案とコード例を能動的に出してほしい。
+> 以下の diff をレビューしてほしい。読んで見つかる誤りのレビュー (diff-review) は実施済みなので主目的にしなくてよいが、correctness / security / data loss に関わる問題は実施済みの観点に見えても必ず指摘してほしい。観点は (1) 同梱したユーザー要求・合格基準との乖離 (2) 設計判断の誤り (3) エッジケースの見落とし (4) テストの過不足。確認や質問は不要、具体的な修正案とコード例を能動的に出してほしい。
 
 プロンプトに含めるもの:
 
 - **diff**: レビュー前に `git status --short` を確認し、untracked の新規ファイルがあれば `git add -N <path>` してから diff を取る（`git diff HEAD` だけだと untracked が対象から落ちる）
-- **plan の実行層**: 契約・non-goals・合格基準。codex は会話を見ていないので、これが無いと「契約との乖離」を判定できない。plan が無い変更では「plan なし」と明記し、ユーザー要求・既存挙動との乖離を観点にする
+- **ユーザー要求・non-goals・合格基準**（§証明の形を決める で作った check）。codex は会話を見ていないので、これが無いと「要求との乖離」を判定できない
 - **diff-review で適用した修正の要約**（実施した場合）
 
 diff-review を通していない diff（スコープ判断で省略した場合等）では、従来どおり (1) バグ・エッジケースの見落とし (2) テストの過不足 (3) 命名・抽象化の妥当性 を観点にする。
@@ -102,7 +90,7 @@ codex exec -s read-only --cd <dir> "<質問内容>。確認や質問は不要、
 
 1. `~/.claude/CLAUDE.md` の「Codex レビュー」トリガー、またはユーザー要求に従って、codex に委譲する対象を特定する
 2. プロンプトに「確認や質問は不要。具体的な提案・修正案・コード例を能動的に出してほしい」を必ず付ける
-3. plan レビューは plan ファイルの絶対パスを渡す。それ以外で長文 (diff / コード片を含む) になるなら Write tool で `<prompt-file>` に書き、stdin redirect で渡す。短ければ positional でも可
+3. 長文 (diff / コード片を含む) は Write tool で `<prompt-file>` に書き、stdin redirect で渡す。短ければ positional でも可
 4. `codex exec -s read-only --cd <dir>` を Bash timeout 600000 で実行する
 5. Codex の指摘を要約してユーザーに報告する。即時対応する指摘と見送る指摘を分けて提示する
 

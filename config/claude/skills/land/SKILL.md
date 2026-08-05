@@ -27,11 +27,10 @@ main セッション（control plane）で実行する。subagent 内では実�
 
 `diff-review` skill を実行する。5 観点の並列レビューと確信度での絞り込みは skill 側が持つ。
 
-bundled の `/code-review` はモデルから起動できない（`disable-model-invocation`）ため、ここには使わない。公式 plugin 版は起動できるが PR を対象にしてコメントを書くだけなので、commit 前のこの位置には合わない。
-
 - 指摘の裁定は CLAUDE.md「指摘事項の扱い」に従う。仕様・API・依存・テスト期待値を変える修正は、契約自体の誤りとして扱いユーザーに戻す
 - 適用した修正の要約を控える（step 3 で codex に同梱する）
 - **修正が入ったら step 1 の該当する検証を回し直す**（レビュー対応の変更が未検証で残るのを防ぐ）
+- **レビュー後に足した変更は、レビュー自体にもう一度かける。** verify を回し直すだけでは足りない。裁定で入れた修正そのものがバグを持ち込んだ実測が複数ある（fail-open 化が再試行を潰した / 分類と書き戻しの 2 修正の相互作用 / 修正バッチに no-op CSS が混入 / レビュー後に足した機能が契約違反）。**未レビューの diff を codex まで持ち込まない**
 - `simplify` で代替しない。品質改善専門でバグを探さないので、この層のカバレッジが落ちる
 
 ## 3. codex レビュー
@@ -50,12 +49,12 @@ bundled の `/code-review` はモデルから起動できない（`disable-model
 step 1〜3 で critical な問題（バグ・契約違反・セキュリティ）が見つかった場合、`~/.claude/retro/flow.md` に 1 行追記する（ファイル・ディレクトリが無ければ作る）:
 
 ```
-- <YYYY-MM-DD> repo:<repo> found-by:<verify|gate|code-review|codex|empirical-tuning|pr-ai|pr-human> should-have:<verify|code-review|codex|scope|none> kind:<bug|contract|security|test-gap> — <一言>
+- <YYYY-MM-DD> repo:<repo> found-by:<verify|gate|diff-review|codex|empirical-tuning|pr-ai|pr-human> should-have:<verify|diff-review|codex|scope|none> kind:<bug|contract|security|test-gap> — <一言>
 ```
 
-`found-by` の `pr-ai` / `pr-human` は land 実行後の PR レビューで取り逃しが発覚したときに使う（CLAUDE.md「指摘事項の扱い」参照）。`found-by:gate` は Stop hook の completion gate が捕まえたケース。`code-review` は読んで見つける層（現在の実装は `diff-review` skill）。`should-have:scope` は「スコープ判断で codex を省略していたのが誤りだった」ケース、`should-have:none` は既存のどの層も所有していなかったケース（層の追加・拡張が要るという信号）。
+`found-by` の `pr-ai` / `pr-human` は land 実行後の PR レビューで取り逃しが発覚したときに使う（CLAUDE.md「指摘事項の扱い」参照）。`found-by:gate` は Stop hook の completion gate が捕まえたケース。`should-have:scope` は「スコープ判断で codex を省略していたのが誤りだった」ケース、`should-have:none` は既存のどの層も所有していなかったケース（層の追加・拡張が要るという信号）。
 
-**既存の行は書き換えない**（履歴なので、過去の `should-have:plan` はそのまま残す）。
+**既存の行の判定を書き換えない**（履歴なので、撤去された層を指す過去の `should-have:plan` もそのまま残す）。層の改名にともなう語彙の一括置換だけは、判定を変えないので行ってよい。
 
 スタイル・文面レベルの指摘は記録しない。集計と層調整の提案は `/chore flow-retro` が行う。
 
