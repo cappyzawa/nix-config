@@ -12,7 +12,7 @@ Codex CLI に委譲してセカンドオピニオン・レビューを得るた�
 
 ## 起動コマンド
 
-長文プロンプト (plan レビュー / コードレビュー等) では **stdin 経由** で渡す:
+長文プロンプト (コードレビュー等) では **stdin 経由** で渡す:
 
 ```
 codex exec -s read-only --cd <project_directory> - < <prompt-file>
@@ -53,20 +53,15 @@ Codex に渡す依頼文には必ず以下のニュアンスを含める:
 
 ### Plan レビュー（`ExitPlanMode` 前）
 
-```bash
-# Step 1: prompt を file に書く (Write tool)
-#   codex-prompt-plan-review.txt の内容例:
-#   ---
-#   次の plan をレビューしてほしい。観点は (1) 設計上の見落とし・代替案
-#   (2) 影響範囲とリスク (3) 実装難易度の見積もりの妥当性。
-#   確認や質問は不要、具体的な指摘と代替案を能動的に出してほしい。
-#
-#   <plan 本文>
-#   ---
+**plan 本文はプロンプトに埋めず、plan ファイルの絶対パスを渡して codex に読ませる**:
 
-# Step 2: 実行
-codex exec -s read-only --cd <dir> - < <prompt-file>
+```bash
+codex exec -s read-only --cd <dir> "<plan ファイルの絶対パス> を読んでレビューしてほしい。観点は (1) 設計上の見落とし・代替案 (2) 影響範囲とリスク (3) 実装難易度の見積もりの妥当性。確認や質問は不要、具体的な指摘と代替案を能動的に出してほしい。"
 ```
+
+plan レビューは plan mode 中に走るので、プロンプトファイルを作る手段が無い（plan mode の Write は plan ファイル以外に通らない）。`-s read-only` は書き込みだけを禁じるサンドボックスで `--cd` 外の読み取りは通るため、`~/.claude/plans/` 配下のパスをそのまま渡せる。plan 本文を埋めないので positional でも hang しない（本文には表や code block が入り、それが hang の再現条件だった）。
+
+観点はここに挙げた 3 つに限らない。`~/.claude/CLAUDE.md` の「Plan の品質基準」が求める観点（未検証の仮定・実装者が誤解しそうなステップ）も併せてプロンプトに書く。
 
 ### コードレビュー（commit 前）
 
@@ -107,7 +102,7 @@ codex exec -s read-only --cd <dir> "<質問内容>。確認や質問は不要、
 
 1. `~/.claude/CLAUDE.md` の「Codex レビュー」トリガー、またはユーザー要求に従って、codex に委譲する対象を特定する
 2. プロンプトに「確認や質問は不要。具体的な提案・修正案・コード例を能動的に出してほしい」を必ず付ける
-3. プロンプトが長文 (plan / diff / コード片を含む) なら Write tool で `<prompt-file>` に書き、stdin redirect で渡す。短ければ positional でも可
+3. plan レビューは plan ファイルの絶対パスを渡す。それ以外で長文 (diff / コード片を含む) になるなら Write tool で `<prompt-file>` に書き、stdin redirect で渡す。短ければ positional でも可
 4. `codex exec -s read-only --cd <dir>` を Bash timeout 600000 で実行する
 5. Codex の指摘を要約してユーザーに報告する。即時対応する指摘と見送る指摘を分けて提示する
 
