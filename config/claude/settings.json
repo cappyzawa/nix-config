@@ -184,6 +184,15 @@
             "command": "( [ -n \"${TMUX:-}\" ] && [ -n \"${TMUX_PANE:-}\" ] && tmux set-option -qw -t \"$TMUX_PANE\" @claude_agent_status waiting ) >/dev/null 2>&1; terminal-notifier -title \"Claude Code\" -subtitle \"$(tmux display-message -t \"$TMUX_PANE\" -p '#I #W' 2>/dev/null || basename $PWD)\" -message \"Stopped\" -activate org.alacritty"
           }
         ]
+      },
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "変更が検証されずに終わろうとしていないかを判定する。順に見る。(1) 入力の stop_hook_active が true なら {\"ok\": true} を返す（既に一度促したので繰り返さない）。(2) このセッションで Write / Edit / NotebookEdit が成功していなければ {\"ok\": true}。(3) 成功している場合、その変更を動かしたコマンド（テスト・ビルド・実行・lint）の出力が会話にあれば {\"ok\": true}。「書いた」「PASS するはず」という記述は証拠に数えない。(4) 出力が無くても、検証を試みて実行できなかった事実（権限拒否・依存不足・環境エラー）が会話にあれば {\"ok\": true}。(5) それ以外は {\"ok\": false, \"reason\": \"<変更したファイル>を動かして確かめていない。検証コマンドを実行し、できないなら理由を述べて終われ\"}。ユーザーが要求したスコープの一部を黙って落としている場合も (5) と同様に扱う。"
+          }
+        ]
       }
     ],
     "StopFailure": [
