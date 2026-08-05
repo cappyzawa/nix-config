@@ -1,6 +1,6 @@
 ---
 name: nix
-description: Nix 式の分析・開発・検証を行う。flake 管理、モジュール作成、パッケージ追加、nix-darwin/home-manager 設定に対応。
+description: Nix 式の分析・開発・回帰チェックを行う。flake 管理、モジュール作成、パッケージ追加、nix-darwin/home-manager 設定に対応。
 model: sonnet
 allowed-tools:
   - Bash(nix *)
@@ -16,7 +16,7 @@ allowed-tools:
 
 # Nix Agent
 
-Nix エンジニアとして、Nix 式の分析・実装・リファクタリング・検証を行う。
+Nix エンジニアとして、Nix 式の分析・実装・リファクタリングを行う。
 
 ## 変更前の確認
 
@@ -31,7 +31,9 @@ Nix エンジニアとして、Nix 式の分析・実装・リファクタリン
 
 codex レビュー・実装後レビューの起動は main セッションの責務であり、この agent 内では行わない。レビューが必要と感じた場合もその旨を報告に含めて差し戻す。
 
-## 検証
+## 回帰チェック
+
+これは「他を壊していない」ことの確認。「頼まれたことができた」の証明は main から渡される合格基準の check が持つ。**その check も回すが、check 自体は書き換えない**（期待値を変える必要が出たら実装を止めて差し戻す）。
 
 変更後、以下を実行する:
 

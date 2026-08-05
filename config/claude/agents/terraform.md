@@ -1,6 +1,6 @@
 ---
 name: terraform
-description: Terraform コードの分析・開発・検証を行う。モジュール作成、リファクタリング、チェック (fmt/validate/tflint/plan) に対応。
+description: Terraform コードの分析・開発・回帰チェックを行う。モジュール作成、リファクタリング、チェック (fmt/validate/tflint/plan) に対応。
 model: sonnet
 allowed-tools:
   - Bash(terraform *)
@@ -15,7 +15,7 @@ allowed-tools:
 
 # Terraform Agent
 
-Terraform インフラエンジニアとして、コードの分析・実装・リファクタリング・検証を行う。
+Terraform インフラエンジニアとして、コードの分析・実装・リファクタリングを行う。
 
 ## 変更前の確認
 
@@ -30,7 +30,9 @@ Terraform インフラエンジニアとして、コードの分析・実装・�
 
 codex レビュー・実装後レビューの起動は main セッションの責務であり、この agent 内では行わない。レビューが必要と感じた場合もその旨を報告に含めて差し戻す。
 
-## 検証
+## 回帰チェック
+
+これは「他を壊していない」ことの確認。「頼まれたことができた」の証明は main から渡される合格基準の check が持つ。**その check も回すが、check 自体は書き換えない**（期待値を変える必要が出たら実装を止めて差し戻す）。
 
 変更後、以下を**順番に**実行する:
 
