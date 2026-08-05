@@ -49,10 +49,10 @@ main セッション（control plane）で実行する。subagent 内では実�
 step 1〜3 で critical な問題（バグ・契約違反・セキュリティ）が見つかった場合、`~/.claude/retro/flow.md` に 1 行追記する（ファイル・ディレクトリが無ければ作る）。**追記だけで、既存行を読む必要はない**（flow.md は未処理キュー、処理済み履歴は `archive.md`。どちらも context に載せない）:
 
 ```
-- <YYYY-MM-DD> repo:<repo> found-by:<verify|gate|diff-review|codex|empirical-tuning|pr-ai|pr-human> should-have:<verify|diff-review|codex|scope|none> kind:<bug|contract|security|test-gap> — <一言>
+- <YYYY-MM-DD> repo:<repo> found-by:<verify|gate|diff-review|codex|empirical-tuning|user|pr-ai|pr-human> should-have:<verify|diff-review|codex|scope|none> kind:<bug|contract|security|test-gap> — <一言>
 ```
 
-`found-by` の `pr-ai` / `pr-human` は land 実行後の PR レビューで取り逃しが発覚したときに使う（CLAUDE.md「指摘事項の扱い」参照）。`found-by:gate` は Stop hook の completion gate が捕まえたケース。`should-have:scope` は「スコープ判断で codex を省略していたのが誤りだった」ケース、`should-have:none` は既存のどの層も所有していなかったケース（層の追加・拡張が要るという信号）。
+`found-by` の `pr-ai` / `pr-human` は land 実行後の PR レビューで取り逃しが発覚したときに使う（CLAUDE.md「指摘事項の扱い」参照）。`found-by:gate` は Stop hook の completion gate が捕まえたケース、`found-by:user` は使っていてユーザーが気づいたケース（PR レビューではないので `pr-human` に入れない）。`should-have:scope` は「スコープ判断で codex を省略していたのが誤りだった」ケース、`should-have:none` は既存のどの層も所有していなかったケース（層の追加・拡張が要るという信号）。
 
 `archive.md` の既存行の判定は書き換えない（履歴なので、撤去された層を指す過去の `should-have:plan` もそのまま残す）。層の改名にともなう語彙の一括置換だけは、判定を変えないので行ってよい。
 
