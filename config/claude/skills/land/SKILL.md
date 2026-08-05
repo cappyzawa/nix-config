@@ -49,10 +49,10 @@ bundled の `/code-review` はモデルから起動できない（`disable-model
 step 1〜3 で critical な問題（バグ・契約違反・セキュリティ）が見つかった場合、`~/.claude/retro/flow.md` に 1 行追記する（ファイル・ディレクトリが無ければ作る）:
 
 ```
-- <YYYY-MM-DD> repo:<repo> found-by:<verify|code-review|codex|pr-ai|pr-human> should-have:<verify|code-review|codex|scope> kind:<bug|contract|security|test-gap> — <一言>
+- <YYYY-MM-DD> repo:<repo> found-by:<verify|gate|code-review|codex|empirical-tuning|pr-ai|pr-human> should-have:<verify|code-review|codex|scope|none> kind:<bug|contract|security|test-gap> — <一言>
 ```
 
-`found-by` の `pr-ai` / `pr-human` は land 実行後の PR レビューで取り逃しが発覚したときに使う（CLAUDE.md「指摘事項の扱い」参照）。`should-have:scope` は「スコープ判断で codex を省略していたのが誤りだった」ケース。
+`found-by` の `pr-ai` / `pr-human` は land 実行後の PR レビューで取り逃しが発覚したときに使う（CLAUDE.md「指摘事項の扱い」参照）。`found-by:gate` は Stop hook の completion gate が捕まえたケース。`should-have:scope` は「スコープ判断で codex を省略していたのが誤りだった」ケース、`should-have:none` は既存のどの層も所有していなかったケース（層の追加・拡張が要るという信号）。
 
 **既存の行は書き換えない**（履歴なので、過去の `should-have:plan` はそのまま残す）。
 
