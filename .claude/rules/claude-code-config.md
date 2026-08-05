@@ -29,6 +29,7 @@ activation ブロック (`nix/home/default.nix`):
 | `~/.claude/CLAUDE.md` | `config/claude/CLAUDE.md` (+ `hosts/<host>/claude-memory.md`) | 連結してコピー |
 | `~/.claude/rules` | `config/claude/rules` | ディレクトリ symlink |
 | `~/.claude/skills` | `config/claude/skills` | ディレクトリ symlink |
+| `~/.claude/hooks` | `config/claude/hooks` | ディレクトリ symlink |
 | `~/.claude/agents` | `config/claude/agents` (+ `hosts/<host>/claude-agents`) | host 固有があれば個別ファイルを symlink でマージ、無ければディレクトリ symlink |
 
 ## settings.json のマージ規則
@@ -41,6 +42,6 @@ activation ブロック (`nix/home/default.nix`):
 
 ## このプロジェクトの規約
 
-- 設定ファイルは `config/claude/` 配下に置く（rules / skills / agents / settings.json / CLAUDE.md）
+- 設定ファイルは `config/claude/` 配下に置く（rules / skills / agents / hooks / settings.json / CLAUDE.md）
 - 新規ディレクトリ・ファイルを作った場合は `git add` してから `make check` すること（flake が未追跡パスを参照できないため）
 - host 固有の上書きは `hosts/<host>/` に置く（`claude-settings.json` / `claude-memory.md` / `claude-agents/`）

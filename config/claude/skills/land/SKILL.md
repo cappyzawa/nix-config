@@ -1,6 +1,6 @@
 ---
 name: land
-description: 実装完了後の品質パス（verify → code-review --fix → codex レビュー → retro 記録）を順に実行し、commit / PR 作成に進める状態にする。非自明な変更の完了報告・commit / PR 作成の前に使う。
+description: 実装完了後の品質パス（verify → diff-review → codex レビュー → retro 記録）を順に実行し、commit / PR 作成に進める状態にする。非自明な変更の完了報告・commit / PR 作成の前に使う。
 ---
 
 # Land
@@ -23,14 +23,15 @@ main セッション（control plane）で実行する。subagent 内では実�
 - 実行できなかった検証は理由を残す
 - 数行の typo やコメント修正を除き、この step はスキップしない（スコープ判断のゲート対象外）
 
-## 2. code-review --fix
+## 2. diff-review
 
-bundled の `/code-review` はモデルから起動できない（`disable-model-invocation`）。ユーザーに `/code-review --fix` の実行を依頼し、結果を受け取ってから step 3 へ進む。依頼時にレビュー対象（branch / staged diff）と、完了後に step 3 以降を続けることを伝える。
+`diff-review` skill を実行する。5 観点の並列レビューと確信度での絞り込みは skill 側が持つ。
 
-- 適用された修正が委譲時の契約を変えていないか確認する。仕様・API・依存・テスト期待値に触る変更が入っていたら戻し、指摘として記録してユーザーに返す
+bundled の `/code-review` はモデルから起動できない（`disable-model-invocation`）ため、ここには使わない。公式 plugin 版は起動できるが PR を対象にしてコメントを書くだけなので、commit 前のこの位置には合わない。
+
+- 指摘の裁定は CLAUDE.md「指摘事項の扱い」に従う。仕様・API・依存・テスト期待値を変える修正は、契約自体の誤りとして扱いユーザーに戻す
 - 適用した修正の要約を控える（step 3 で codex に同梱する）
 - **修正が入ったら step 1 の該当する検証を回し直す**（レビュー対応の変更が未検証で残るのを防ぐ）
-- 対象がコードを含まない diff（ドキュメント・設定の文面のみ）ならスキップしてよい
 - `simplify` で代替しない。品質改善専門でバグを探さないので、この層のカバレッジが落ちる
 
 ## 3. codex レビュー
@@ -52,7 +53,7 @@ step 1〜3 で critical な問題（バグ・契約違反・セキュリティ�
 - <YYYY-MM-DD> repo:<repo> found-by:<verify|gate|code-review|codex|empirical-tuning|pr-ai|pr-human> should-have:<verify|code-review|codex|scope|none> kind:<bug|contract|security|test-gap> — <一言>
 ```
 
-`found-by` の `pr-ai` / `pr-human` は land 実行後の PR レビューで取り逃しが発覚したときに使う（CLAUDE.md「指摘事項の扱い」参照）。`found-by:gate` は Stop hook の completion gate が捕まえたケース。`should-have:scope` は「スコープ判断で codex を省略していたのが誤りだった」ケース、`should-have:none` は既存のどの層も所有していなかったケース（層の追加・拡張が要るという信号）。
+`found-by` の `pr-ai` / `pr-human` は land 実行後の PR レビューで取り逃しが発覚したときに使う（CLAUDE.md「指摘事項の扱い」参照）。`found-by:gate` は Stop hook の completion gate が捕まえたケース。`code-review` は読んで見つける層（現在の実装は `diff-review` skill）。`should-have:scope` は「スコープ判断で codex を省略していたのが誤りだった」ケース、`should-have:none` は既存のどの層も所有していなかったケース（層の追加・拡張が要るという信号）。
 
 **既存の行は書き換えない**（履歴なので、過去の `should-have:plan` はそのまま残す）。
 

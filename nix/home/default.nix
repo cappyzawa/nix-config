@@ -211,8 +211,8 @@ in
           $DRY_RUN_CMD cp -f "$REPO_ROOT/config/claude/CLAUDE.md" "$CLAUDE_DIR/CLAUDE.md"
         fi
 
-        # rules, skills - symlink directories
-        for dir in rules skills; do
+        # rules, skills, hooks - symlink directories
+        for dir in rules skills hooks; do
           rm -rf "$CLAUDE_DIR/$dir"
           ln -sfn "$REPO_ROOT/config/claude/$dir" "$CLAUDE_DIR/$dir"
         done

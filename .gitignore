@@ -10,6 +10,7 @@ result
 config/claude/skills/*
 !config/claude/skills/chore/
 !config/claude/skills/codex/
+!config/claude/skills/diff-review/
 !config/claude/skills/empirical-prompt-tuning/
 !config/claude/skills/japanese-tech-writing/
 !config/claude/skills/land/
