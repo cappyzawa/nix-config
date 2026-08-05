@@ -39,9 +39,22 @@ git diff HEAD --stat
 |---|---|
 | `review-rules-sonnet-inh` | 規約遵守。step 2 のファイルを読み、diff が違反していないか。**CLAUDE.md はコードを書く側への指示なので、レビュー時には当てはまらない項目がある**ことを前提にする |
 | `review-bugs-sonnet-inh` | diff 本体だけを読んで明らかなバグを探す。周辺コードまで読み広げない。大きいものに絞り、nitpick は出さない。誤検出らしいものは出さない |
-| `review-history-sonnet-inh` | 変更箇所の `git log -p` / `git blame`、および**それらのファイルに触った過去 PR のレビューコメント**（`gh pr list` → `gh pr view --comments`）を読み、当時の指摘が今回にも当てはまらないか。一度直した問題の再導入、意図があって書かれた形の破壊 |
+| `review-history-sonnet-inh` | 変更箇所の `git log -p` / `git blame` と、**同じファイルに触った過去 PR のレビューコメント**（下記手順）を読み、当時の指摘が今回にも当てはまらないか。一度直した問題の再導入、意図があって書かれた形の破壊 |
 | `review-deletion-sonnet-inh` | **diff で消えた記述・分岐・検証が運んでいた義務**に引き受け先があるか。ユーザー要求のうち diff に現れていないものが無いか。失われた義務は不在なので diff に現れず、他の観点では出ない |
 | `review-intent-sonnet-inh` | 変更されたファイル内のコメント・型・命名が述べている制約と、diff の整合。コメントが嘘になっていないか |
+
+`review-history` に渡す過去 PR の手繰り方。**現在の変更に PR は無くてよい**（読むのは同じファイルに触った過去のマージ済み PR）:
+
+```bash
+# squash merge の subject に載る (#N) から番号を得る。gh pr list は path で絞れない
+git log --format='%s%n%b' -50 -- <変更されたパス> | grep -oE '#[0-9]+' | tr -d '#' | sort -un |
+while read -r n; do
+  gh pr view "$n" --json title,reviews,comments
+  gh api "repos/{owner}/{repo}/pulls/$n/comments"   # inline コメントは pr view に出ない
+done
+```
+
+番号が取れない（直 commit の履歴）か、取れても全部 0 件のリポジトリはある。そのときは**「過去 PR のコメントは無い」と明示させる**（黙って 0 件にすると、観点が走ったのか判別できない）。
 
 各 agent には指摘ごとに「ファイル:行 / 何が問題か / なぜ挙げたか（規約遵守・バグ・履歴のどれか）」を返させる。**根拠を引用できないものは指摘にしない。** 末尾に `SendMessage({to: "main"})` で結論を送らせる。
 
