@@ -150,6 +150,7 @@ in
       # Security and credentials
       aws-vault # AWS credential vault
       awscli2 # AWS CLI
+      google-cloud-sdk # Google Cloud CLI (gcloud command)
       gnupg # GnuPG (gpg command)
       _1password-cli # 1Password CLI (op command)
     ];
