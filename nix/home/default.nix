@@ -146,6 +146,7 @@ in
       goreleaser # Go release tool
       glow # Markdown renderer
       bacon # Rust background compiler
+      herdr # Agent multiplexer (persistent sessions for coding agents)
 
       # Security and credentials
       aws-vault # AWS credential vault
