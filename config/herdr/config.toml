@@ -29,17 +29,17 @@ split_horizontal = "prefix+minus"
 # worktree), so the tmux window keys drive workspaces, not tabs.
 # tmux: bind c (new-window; new_cwd = "follow" keeps the -c '#{pane_current_path}' behavior)
 new_workspace = "prefix+c"
-# tmux: bind C-l / C-h (select-window +1/-1)
-next_workspace = "prefix+ctrl+l"
-previous_workspace = "prefix+ctrl+h"
-# tmux: bind 1..9 (select-window, baseIndex 1)
-switch_workspace = "prefix+1..9"
+# tmux: bind C-l / C-h (select-window +1/-1); ctrl+j/k added because the
+# spaces sidebar is vertical, so down/up reads more naturally than next/prev
+next_workspace = ["prefix+ctrl+l", "prefix+ctrl+j"]
+previous_workspace = ["prefix+ctrl+h", "prefix+ctrl+k"]
 # tmux default: bind , (rename-window)
 rename_workspace = "prefix+comma"
 
-# Tabs give up their defaults that the workspace bindings above take over
+# Tabs give up prefix+c to new_workspace; switch_tab keeps its 1..9
+# default (workspaces show no number in the sidebar, so indexed
+# workspace jumps are not usable)
 new_tab = "prefix+shift+c"
-switch_tab = ""
 
 # tmux: bind h/j/k/l (select-pane)
 focus_pane_left = "prefix+h"
