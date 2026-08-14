@@ -39,6 +39,11 @@ previous_tab = "prefix+ctrl+h"
 # tmux default: bind , (rename-window)
 rename_workspace = "prefix+comma"
 
+# Worktree-backed workspaces group under their repo in the sidebar;
+# create is a herdr default, open has no default binding
+new_worktree = "prefix+shift+g"
+open_worktree = "prefix+shift+o"
+
 # Tabs give up prefix+c to new_workspace; switch_tab keeps its 1..9
 # default (workspaces show no number in the sidebar, so indexed
 # workspace jumps are not usable)
