@@ -13,7 +13,7 @@ paths:
 - **型に仕事をさせる**: 型はドキュメントではなくロジックである。型レベルで制約を表現し、不正な状態をコンパイルエラーにする。
 - **推論を信頼する**: TypeScript の型推論は強力。明示的な型注釈は公開 API の境界と、推論が不十分な箇所にのみ書く。内部コードに冗長な型注釈を付けない。
 - **`any` は型システムの穴**: `unknown` + type guard で代替する。どうしても避けられない場合は理由付きで `// eslint-disable` を付ける。
-- **常に strict モード**: tsconfig.json の `strict: true` は必須。
+- **常に strict モード**: tsconfig.json の `strict: true` は必須。新規に tsconfig を書くときは `noUncheckedIndexedAccess` と `verbatimModuleSyntax` も検討する (どちらも `strict` に含まれず、前者が無いと index アクセスの `undefined` が型から消える)。
 
 ## 型設計
 
@@ -41,6 +41,8 @@ paths:
 
 - プロジェクト既存のパターン (imports、エラーハンドリング、モジュール構成) に従う
 - 拡張される可能性のあるオブジェクト型には `interface` を、union・intersection・computed 型には `type` を使う
+- `enum` は使わず、string literal union か `as const` オブジェクトで代替する (enum は型消去だけでは JS にならない構文で、Node の type stripping や `erasableSyntaxOnly` と衝突する)
+- 型としてだけ使う import は `import type` で書く (単一ファイル transpiler は import が型か値か判別できず、消すべき import が runtime に残る。`verbatimModuleSyntax` 無しではコンパイラも落とさない)
 - キーが動的な場合はプレーンオブジェクトより `Map`/`Set` を優先する
 - type guard 関数 (`x is T`) を使い、型の絞り込みを再利用可能にする
 - オーバーロードより union 引数 + conditional return type を検討する。型推論との相性が良い

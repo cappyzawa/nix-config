@@ -24,6 +24,7 @@ paths:
 - `mkEnableOption` と `mkOption` で宣言的なインターフェースを作る
 - `lib.mkDefault` で上書き可能なデフォルト値を設定し、host 固有の設定で `lib.mkForce` なしに変更できるようにする
 - `with lib;` のスコープは最小限に。何がどこから来ているか追えなくなる
+- 条件付きの config は `if-then-else` ではなく `lib.mkIf` で書く (if は条件の評価を option の解決より先に強制し、infinite recursion の典型因になる)
 - `let ... in` で中間値に意味のある名前を付け、ネストを浅く保つ
 - リスト操作には `map`, `filter`, `genAttrs`, `listToAttrs` を活用する。手続き的に組み立てない
 
@@ -38,6 +39,7 @@ paths:
 
 - フォーマットは `nix fmt` (nixfmt) に任せる。手動で整形しない
 - `inherit` を使って冗長な `x = x;` を避ける
+- `rec` attrset を避ける。`mkDerivation` では `finalAttrs:` パターン、それ以外は `let ... in` を使う (`rec` の自己参照は `overrideAttrs` の上書きに追従せず古い値を掴む)
 - アトリビュートセットは関連するものをまとめ、空行で論理グループを区切る
 
 ## よくあるトラブルシューティング
