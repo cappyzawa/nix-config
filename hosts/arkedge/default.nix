@@ -39,6 +39,7 @@ in
       "ffmpeg"
       "duckdb"
       "poppler"
+      "googleworkspace-cli" # Google Workspace CLI (installs `gws` binary)
     ];
   };
 
