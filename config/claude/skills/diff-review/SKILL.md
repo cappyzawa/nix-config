@@ -23,7 +23,7 @@ git diff HEAD --stat
 
 ## 2. 規約ファイルの場所を集める
 
-`model: "haiku"` の agent（`review-scan-haiku-inh`）に、**内容ではなくパスだけ**を列挙させる: リポジトリ root の `CLAUDE.md` / `AGENTS.md`、変更されたファイルのディレクトリにある `CLAUDE.md`、`.claude/rules/*.md` のうち `paths:` frontmatter が変更ファイルに一致するもの。
+`model: "haiku"` の agent（`review-scan-haiku-inh`）に、**内容ではなくパスだけ**を列挙させる: リポジトリ root の `CLAUDE.md` / `AGENTS.md`、変更されたファイルのディレクトリにある `CLAUDE.md`、`.claude/rules/*.md` と `~/.claude/rules/*.md` のうち `paths:` frontmatter が変更ファイルに一致するもの（言語コーディング規約はグローバル側にあり、これを外すと `review-rules` が言語プラクティス準拠を見ない）。
 
 ## 3. 変更の要約を作る
 
