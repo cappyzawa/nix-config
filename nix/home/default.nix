@@ -9,7 +9,6 @@
   tpm,
   sbarluaPkg,
   gh-ghq-cd-pkg,
-  gws-pkg,
   ...
 }:
 
@@ -147,7 +146,6 @@ in
       goreleaser # Go release tool
       glow # Markdown renderer
       bacon # Rust background compiler
-      gws-pkg # Google Workspace CLI
 
       # Security and credentials
       aws-vault # AWS credential vault

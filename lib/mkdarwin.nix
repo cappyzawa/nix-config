@@ -80,7 +80,6 @@ inputs.nix-darwin.lib.darwinSystem {
           currentUser = user;
           username = user;
           gh-ghq-cd-pkg = inputs.gh-ghq-cd.packages.${system}.gh-ghq-cd;
-          gws-pkg = inputs.googleworkspace-cli.packages.${system}.default;
         };
         users.${user} = import ../nix/home;
       };
