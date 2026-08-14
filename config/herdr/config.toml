@@ -29,10 +29,13 @@ split_horizontal = "prefix+minus"
 # worktree), so the tmux window keys drive workspaces, not tabs.
 # tmux: bind c (new-window; new_cwd = "follow" keeps the -c '#{pane_current_path}' behavior)
 new_workspace = "prefix+c"
-# tmux: bind C-l / C-h (select-window +1/-1); ctrl+j/k added because the
-# spaces sidebar is vertical, so down/up reads more naturally than next/prev
-next_workspace = ["prefix+ctrl+l", "prefix+ctrl+j"]
-previous_workspace = ["prefix+ctrl+h", "prefix+ctrl+k"]
+# Cycling keys follow the on-screen layout, not the tmux originals:
+# the spaces sidebar is a vertical list (ctrl+j/k), the tab bar is
+# horizontal (ctrl+h/l)
+next_workspace = "prefix+ctrl+j"
+previous_workspace = "prefix+ctrl+k"
+next_tab = "prefix+ctrl+l"
+previous_tab = "prefix+ctrl+h"
 # tmux default: bind , (rename-window)
 rename_workspace = "prefix+comma"
 
