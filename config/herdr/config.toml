@@ -25,18 +25,21 @@ prefix = "ctrl+t"
 split_vertical = "prefix+backslash"
 split_horizontal = "prefix+minus"
 
-# tmux: bind c (new-window)
-new_tab = "prefix+c"
-
+# A tmux window maps to a herdr workspace (one workspace per repo /
+# worktree), so the tmux window keys drive workspaces, not tabs.
+# tmux: bind c (new-window; new_cwd = "follow" keeps the -c '#{pane_current_path}' behavior)
+new_workspace = "prefix+c"
 # tmux: bind C-l / C-h (select-window +1/-1)
-next_tab = "prefix+ctrl+l"
-previous_tab = "prefix+ctrl+h"
-
-# tmux default: bind , (rename-window)
-rename_tab = "prefix+comma"
-
+next_workspace = "prefix+ctrl+l"
+previous_workspace = "prefix+ctrl+h"
 # tmux: bind 1..9 (select-window, baseIndex 1)
-switch_tab = "prefix+1..9"
+switch_workspace = "prefix+1..9"
+# tmux default: bind , (rename-window)
+rename_workspace = "prefix+comma"
+
+# Tabs give up their defaults that the workspace bindings above take over
+new_tab = "prefix+shift+c"
+switch_tab = ""
 
 # tmux: bind h/j/k/l (select-pane)
 focus_pane_left = "prefix+h"
