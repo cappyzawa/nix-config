@@ -24,6 +24,11 @@
       url = "github:cappyzawa/gh-ghq-cd";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # Pinned to a release tag; nixpkgs lags herdr releases
+    herdr = {
+      url = "github:herdrdev/herdr/v0.8.0";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =

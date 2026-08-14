@@ -80,6 +80,7 @@ inputs.nix-darwin.lib.darwinSystem {
           currentUser = user;
           username = user;
           gh-ghq-cd-pkg = inputs.gh-ghq-cd.packages.${system}.gh-ghq-cd;
+          herdr-pkg = inputs.herdr.packages.${system}.default;
         };
         users.${user} = import ../nix/home;
       };

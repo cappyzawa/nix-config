@@ -9,6 +9,7 @@
   tpm,
   sbarluaPkg,
   gh-ghq-cd-pkg,
+  herdr-pkg,
   ...
 }:
 
@@ -146,7 +147,7 @@ in
       goreleaser # Go release tool
       glow # Markdown renderer
       bacon # Rust background compiler
-      herdr # Agent multiplexer (persistent sessions for coding agents)
+      herdr-pkg # Agent multiplexer (persistent sessions for coding agents)
 
       # Security and credentials
       aws-vault # AWS credential vault
@@ -1340,7 +1341,9 @@ in
           args = [
             "-l"
             "-c"
-            "tmux new-session -AD -s zzz"
+            # Store path, not bare "herdr": PATH may resolve to a stale
+            # manual install, and version skew aborts the client
+            "exec ${lib.getExe herdr-pkg}"
           ];
         };
         window = {
@@ -1740,6 +1743,9 @@ in
         source = ../../config/karabiner/karabiner.json;
         force = true;
       };
+
+      # Herdr (agent multiplexer, the Alacritty entry point)
+      "herdr/config.toml".source = ../../config/herdr/config.toml;
 
       # TPM (Tmux Plugin Manager)
       "tmux/plugins/tpm" = {

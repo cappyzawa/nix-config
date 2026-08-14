@@ -1,0 +1,58 @@
+# Keybindings mirror programs.tmux in nix/home/default.nix (prefix C-t,
+# vi-style pane movement). Bindings that carry tmux muscle memory are
+# pinned explicitly even when they equal current herdr defaults, so an
+# upstream default change cannot silently remap them.
+# tmux binds with no herdr 0.8.0 equivalent are dropped: resize H/J/K/L
+# (use resize_mode, prefix+r), swap-window [ ], select-layout =,
+# synchronize-panes a, man m, and the tmux-fzf clipboard picker p.
+
+# This file is a read-only nix store symlink, so herdr cannot write back
+# in-app choices (onboarding completion, theme picks). Declare them here.
+onboarding = false
+
+[theme]
+# Follow the outer terminal palette (Alacritty carries the akari theme).
+name = "terminal"
+
+[terminal]
+default_shell = "/bin/zsh"
+shell_mode = "login"
+
+[keys]
+prefix = "ctrl+t"
+
+# tmux: bind \ (split-window -h, opens right) / bind - (split-window -v, opens down)
+split_vertical = "prefix+backslash"
+split_horizontal = "prefix+minus"
+
+# tmux: bind c (new-window)
+new_tab = "prefix+c"
+
+# tmux: bind C-l / C-h (select-window +1/-1)
+next_tab = "prefix+ctrl+l"
+previous_tab = "prefix+ctrl+h"
+
+# tmux default: bind , (rename-window)
+rename_tab = "prefix+comma"
+
+# tmux: bind 1..9 (select-window, baseIndex 1)
+switch_tab = "prefix+1..9"
+
+# tmux: bind h/j/k/l (select-pane)
+focus_pane_left = "prefix+h"
+focus_pane_down = "prefix+j"
+focus_pane_up = "prefix+k"
+focus_pane_right = "prefix+l"
+
+# tmux: bind w (choose-tree)
+workspace_picker = "prefix+w"
+
+# tmux defaults: bind x (kill-pane) / bind z (resize-pane -Z)
+close_pane = "prefix+x"
+zoom = "prefix+z"
+
+# tmux default: bind d (detach-client)
+detach = "prefix+d"
+
+# tmux: bind v (copy-mode)
+copy_mode = "prefix+v"
