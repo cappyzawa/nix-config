@@ -231,6 +231,8 @@ in
         "k1LoW/tap/mo"
         "agent-browser"
         "oven-sh/bun/bun"
+        "typst"
+        "marp-cli"
         "terraform-ls" # Terraform language server
         "hashicorp/tap/terraform" # Terraform (BSL: prebuilt binary instead of slow Nix source build)
       ];
