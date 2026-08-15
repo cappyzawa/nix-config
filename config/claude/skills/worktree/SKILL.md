@@ -28,8 +28,16 @@ worktree-backed workspace として起動する。workspace は sidebar で repo
 ## 手順
 
 以降の shell snippet 中のプレースホルダ `<worktree-name>` は手順 1 で決めた WNAME、
-`<repo-root>` は `git rev-parse --show-toplevel` の値（main checkout の絶対パス）で、
-実行前に文字列置換すること。
+`<repo-root>` は main checkout の絶対パスで、実行前に文字列置換すること。
+
+`<repo-root>` は次で解決する。`git rev-parse --show-toplevel` は worktree 内から
+呼ばれると worktree 自身を返し、入れ子の worktree 作成と worktree の branch からの
+派生を招く。common-dir 経由なら常に main checkout に解決され、herdr create の
+`--cwd` にこれを渡すことで新 branch は main checkout の HEAD から派生する（実測済み）。
+
+```bash
+REPO_ROOT=$(dirname "$(git rev-parse --path-format=absolute --git-common-dir)")
+```
 
 ### 1. worktree 名を生成
 
