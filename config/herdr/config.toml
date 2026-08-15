@@ -19,6 +19,11 @@ name = "terminal"
 default_shell = "/bin/zsh"
 shell_mode = "login"
 
+[ui]
+# Most workspaces run a single tab; reclaim the tab row until a second
+# tab actually exists
+hide_tab_bar_when_single_tab = true
+
 [keys]
 prefix = "ctrl+t"
 
