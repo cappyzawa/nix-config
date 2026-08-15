@@ -24,17 +24,36 @@ DRY_RUN="${DRY_RUN:-0}"
 
 plan() { echo "PLAN: $*"; }
 
-for dep in tmux herdr jq; do
+for dep in herdr jq; do
   command -v "$dep" > /dev/null || { echo "missing dependency: $dep" >&2; exit 1; }
 done
-tmux has-session -t "$SESSION" 2>/dev/null || { echo "no tmux session: $SESSION" >&2; exit 1; }
+
+# make switch removes tmux from PATH while the old server keeps running,
+# and that is exactly when this script runs. Fall back to store binaries
+# and keep the one that can actually talk to the server.
+resolve_tmux() {
+  if command -v tmux > /dev/null 2>&1 && tmux has-session -t "$SESSION" 2>/dev/null; then
+    echo tmux
+    return 0
+  fi
+  local c
+  for c in /nix/store/*-tmux-*/bin/tmux; do
+    [ -x "$c" ] || continue
+    if "$c" has-session -t "$SESSION" 2>/dev/null; then
+      echo "$c"
+      return 0
+    fi
+  done
+  return 1
+}
+TMUX_BIN=$(resolve_tmux) || { echo "no tmux client can reach session '$SESSION' (server stopped, or binaries garbage-collected)" >&2; exit 1; }
 if [ "$DRY_RUN" != 1 ]; then
   herdr status server 2>/dev/null | grep -q "status: running" || { echo "herdr server not running (open a herdr terminal first)" >&2; exit 1; }
 fi
 
 INV=$(mktemp)
 trap 'rm -f "$INV" "$CWDCOUNT"' EXIT
-tmux list-panes -s -t "$SESSION" -F '#{window_index}	#{pane_index}	#{pane_current_command}	#{pane_current_path}' > "$INV"
+"$TMUX_BIN" list-panes -s -t "$SESSION" -F '#{window_index}	#{pane_index}	#{pane_current_command}	#{pane_current_path}' > "$INV"
 
 # claude pane count per cwd decides --continue vs --resume
 CWDCOUNT=$(mktemp)
@@ -79,7 +98,7 @@ open_workspace() {
   printf '%s' "$out" | jq -r '.result.root_pane.pane_id // empty'
 }
 
-tmux list-windows -t "$SESSION" -F '#{window_index}	#{window_name}' |
+"$TMUX_BIN" list-windows -t "$SESSION" -F '#{window_index}	#{window_name}' |
 while IFS=$'\t' read -r widx wname; do
   root_pane=""
   first=1
