@@ -203,6 +203,9 @@ herdr pane run "$PANE" "bash $RUN_DIR/launch.sh"
 
 ## 注意事項
 
+- claude を一度も起動したことがない repo では workspace trust 未承認で `claude --worktree` が
+  "Workspace trust not yet accepted" で失敗する。その場合は同じ pane で worktree ディレクトリに
+  cd して素の `claude` にプロンプトを渡して起動し、trust ダイアログを承認してもらう
 - `--worktree` はセッション終了時に変更がなければ自動削除、変更があれば確認される
 - 自動削除後は workspace の cwd が消えるため、`herdr workspace close <workspace-id>` でその workspace を閉じる
 - 一覧は `herdr worktree list --cwd <repo-root>`（git 側は `git worktree list`）で確認可能
