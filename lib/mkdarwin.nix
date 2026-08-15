@@ -75,7 +75,6 @@ inputs.nix-darwin.lib.darwinSystem {
         ];
         extraSpecialArgs = {
           inherit inputs sbarluaPkg;
-          inherit (inputs) tpm;
           configName = name;
           currentUser = user;
           username = user;

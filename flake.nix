@@ -12,10 +12,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     akari-theme.url = "github:cappyzawa/akari-theme";
-    tpm = {
-      url = "github:tmux-plugins/tpm";
-      flake = false;
-    };
     sbarlua = {
       url = "github:FelixKratz/SbarLua";
       flake = false;

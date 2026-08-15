@@ -6,7 +6,6 @@
   configName,
   currentUser,
   username,
-  tpm,
   sbarluaPkg,
   gh-ghq-cd-pkg,
   herdr-pkg,
@@ -58,10 +57,6 @@ in
   akari = {
     enable = true;
     variant = "night";
-    tmux = {
-      iconNormal = "󱥸";
-      iconPrefix = "";
-    };
   };
   home = {
     inherit username;
@@ -1087,7 +1082,6 @@ in
               { glob = ".bash_profile"; }
               { glob = ".bash_login"; }
               { glob = ".profile"; }
-              { glob = ".tmux.conf"; }
             ];
             shebangs = [
               "sh"
@@ -1363,192 +1357,6 @@ in
       };
     };
 
-    # Tmux
-    tmux = {
-      enable = true;
-      prefix = "C-t";
-      keyMode = "vi";
-      escapeTime = 0;
-      baseIndex = 1;
-      mouse = true;
-      terminal = "screen-256color";
-      historyLimit = 2000;
-
-      extraConfig = ''
-        # Remove session flags so new windows get fresh environment from /etc/zshenv
-        set-environment -gu __HM_SESS_VARS_SOURCED
-        set-environment -gu __HM_ZSH_SESS_VARS_SOURCED
-        set-environment -gu __ETC_ZSHENV_SOURCED
-        set-environment -gu __NIX_DARWIN_SET_ENVIRONMENT_DONE
-
-        setenv LANG en_US.UTF-8
-
-        # Nested tmux (F12 to toggle local tmux on/off)
-        bind -T root F12 \
-          set prefix None \; set key-table off \; refresh-client -S
-        bind -T off F12 \
-          set -u prefix \; set -u key-table \; refresh-client -S
-
-        set-option -g default-shell /bin/zsh
-        set-option -g default-command "exec arch -arch arm64 /bin/zsh --login"
-        set-option -g focus-events on
-
-        # Split window from current path
-        bind-key \\ split-window -hf -c '#{pane_current_path}'
-        bind-key | split-window -hfb -c '#{pane_current_path}'
-
-        # Vertical split window from current path
-        bind-key - split-window -v -c '#{pane_current_path}'
-        bind-key _ split-window -vb -l 40% -c '#{pane_current_path}'
-
-        # Rebalance pane layout
-        bind-key = select-layout -E
-
-        # New Window
-        bind-key c new-window -c '#{pane_current_path}'
-
-        # Swap & Select window in order
-        bind-key ] swap-window -t +1\; select-window -t +1
-        bind-key [ swap-window -t -1\; select-window -t -1
-
-        # Move window in order
-        bind-key C-l select-window -t +1
-        bind-key C-h select-window -t -1
-
-        # Custom mouse settings
-        unbind-key -T root MouseDown1Pane
-        unbind-key -T root MouseDown3Pane
-
-        # Allow applications to use OSC 52 to access clipboard
-        set -g set-clipboard on
-        set -g allow-passthrough on
-
-        # Window settings
-        set-option -g renumber-windows on
-        set-window-option -g pane-base-index 1
-
-        # Pane selection timeout (for prefix + q)
-        set -g display-panes-time 3000
-
-        # Pane Title
-        set-option -g pane-border-status top
-        bind-key C-t run-shell 'status=$(tmux show-window-option -v pane-border-status); if [ "$status" = "top" ]; then tmux setw pane-border-status off; else tmux setw pane-border-status top; fi'
-        bind-key : command-prompt -p "(rename-pane)" "select-pane -T %%"
-
-        # Resize pane
-        bind-key -r H resize-pane -L 5
-        bind-key -r J resize-pane -D 5
-        bind-key -r K resize-pane -U 5
-        bind-key -r L resize-pane -R 5
-
-        # Change active pane
-        bind-key h select-pane -L
-        bind-key j select-pane -D
-        bind-key k select-pane -U
-        bind-key l select-pane -R
-
-        # Reload config file
-        bind-key r source-file ~/.config/tmux/tmux.conf\; display-message "[tmux] config reloaded!"
-
-        # sync
-        bind a setw synchronize-panes \; display "synchronize-panes #{?pane_synchronized,on,off}"
-
-        # Look up in a man-page
-        bind-key m command-prompt -p "Man:" "split-window 'man %%'"
-
-        # terminal overrides
-        set-option -ga terminal-overrides ",xterm-256color:Tc"
-
-        # status bar
-        set-option -g status-position top
-
-        # Clear default status-right (drops the date/time tmux ships with).
-        # tpm runs after this, so tmux-continuum re-injects its save trigger.
-        set-option -g status-right ""
-
-        # Claude Code agent session status glyph in window-status.
-        # @claude_agent_status is set per-window by Claude Code hooks
-        # (running/waiting/attention) and unset on SessionEnd.
-        # Config commands apply in order, so these set-options run after
-        # akari's run-shell sourced its own format and win (verified via a
-        # fresh tmux server, not just a live reload).
-        # #{E:...} forces a second expansion so the nested #{?...} inside the
-        # user option is evaluated. akari colors are hardcoded since its
-        # %hidden palette vars are local to akari-night.conf; they match the
-        # night variant, so switching @akari_variant to dawn would mismatch.
-        # running shows an animated spinner driven by @claude_spinner_frame
-        # (set by the claude-tmux-spinner background loop); falls back to the
-        # gear glyph until the loop produces a frame.
-        set-option -g @claude_agent_glyph "#{?#{==:#{@claude_agent_status},running},#[fg=colour214]#{?#{@claude_spinner_frame},#{@claude_spinner_frame},⚙} ,#{?#{==:#{@claude_agent_status},attention},#[fg=colour203]! ,#{?#{==:#{@claude_agent_status},waiting},#[fg=colour114]✓ ,}}}"
-        # Both formats place the glyph after one leading pad space, so its
-        # column is identical whether the window is current or not (the glyph
-        # must not shift horizontally when you select the window). On the
-        # current window the glyph also sits inside the active-bg block so the
-        # highlight reads as one block instead of leaving the glyph hanging in
-        # the default bg.
-        set-option -g window-status-format "#[fg=#9BABB9] #{E:@claude_agent_glyph}#[fg=#9BABB9]#I:#W "
-        set-option -g window-status-current-format "#[bg=#3A3E40,bold] #{E:@claude_agent_glyph}#[fg=#E26A3B]#I:#W #[bg=#25231F,nobold]"
-
-        # prefix+w (choose-tree) reuses the same agent glyph in the window
-        # picker. choose-tree ignores window-status-format, so it needs an
-        # explicit -F; the window-row branch (#{?window_format,...}) injects
-        # #{E:@claude_agent_glyph}, which expands per-window just like the
-        # status line. The rest mirrors tmux's default tree layout (name,
-        # flags, pane/client counts, session summary). Caveat: the spinner
-        # does not animate live here (choose-tree renders a snapshot), but the
-        # static glyphs (frozen running frame / ✓ / ! / gear) and colors show.
-        bind-key w choose-tree -Zw -F "#{?pane_format,#{pane_current_command},#{?window_format,#{E:@claude_agent_glyph}#{window_name}#{window_flags}#{?#{==:#{window_panes},1},, (#{window_panes} panes)}#{?window_active_clients, (#{window_active_clients} clients),},#{session_windows} windows#{?session_attached, (attached),}}}"
-
-        # Animate the running glyph: a background loop advances
-        # @claude_spinner_frame while any window is running. Bound to this tmux
-        # server via run-shell -b; single-instance via @claude_spinner_pid.
-        run-shell -b "~/.config/scripts/claude-tmux-spinner.sh"
-
-        # vi mode
-        set -g status-keys vi
-
-        bind-key v copy-mode \; display "Copy mode!"
-
-        bind-key p run-shell -b "~/.config/tmux/plugins/tmux-fzf/scripts/clipboard.sh buffer"
-
-        bind-key -T edit-mode-vi Up send-keys -X history-up
-        bind-key -T edit-mode-vi Down send-keys -X history-down
-        unbind-key -T copy-mode-vi Space
-
-        bind-key -T copy-mode-vi v send-keys -X begin-selection
-        bind-key -T copy-mode-vi V send-keys -X select-line
-        bind-key -T copy-mode-vi C-v send-keys -X rectangle-toggle
-        bind-key -T copy-mode-vi c send-keys -X clear-selection
-        bind-key -T copy-mode-vi H send-keys -X start-of-line
-        bind-key -T copy-mode-vi L send-keys -X end-of-line
-        bind-key -T copy-mode-vi Enter send-keys -X copy-pipe-and-cancel "pbcopy"
-        bind-key -T copy-mode-vi y send-keys -X copy-pipe-and-cancel "pbcopy"
-        bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel "pbcopy"
-
-        TMUX_FZF_SED="/usr/local/opt/gnu-sed/libexec/gnubin/sed"
-
-        # List of plugins
-        set -g @plugin 'tmux-plugins/tpm'
-        set -g @plugin 'tmux-plugins/tmux-open'
-        set -g @plugin 'sainnhe/tmux-fzf'
-        set -g @plugin 'tmux-plugins/tmux-resurrect'
-        set -g @resurrect-capture-pane-contents 'on'
-        set -g @plugin 'tmux-plugins/tmux-continuum'
-        set -g @continuum-restore 'on'
-        set -g @continuum-save-interval '10'
-        # akari-tmux is now managed by akari-theme module
-        set -g @plugin 'cappyzawa/tmux-popups'
-        set -g @popup_g 'lazygit'
-        set -g @popup_l 'gh cd -p 1'
-        set -g @popup_c 'gh cd -p 1 -c claude'
-        set -g @popup_d 'gh dash'
-        set -g @popup_f 'hx .'
-
-        # Initialize TMUX plugin manager (keep this line at the very bottom)
-        run -b '~/.config/tmux/plugins/tpm/tpm'
-      '';
-    };
-
     # Zsh
     zsh = {
       enable = true;
@@ -1747,19 +1555,9 @@ in
       # Herdr (agent multiplexer, the Alacritty entry point)
       "herdr/config.toml".source = ../../config/herdr/config.toml;
 
-      # TPM (Tmux Plugin Manager)
-      "tmux/plugins/tpm" = {
-        source = tpm;
-        recursive = true;
-      };
-
       # Scripts
       "scripts/set-wallpaper.py" = {
         source = ../../config/scripts/set-wallpaper.py;
-        executable = true;
-      };
-      "scripts/claude-tmux-spinner.sh" = {
-        source = ../../config/scripts/claude-tmux-spinner.sh;
         executable = true;
       };
     };
