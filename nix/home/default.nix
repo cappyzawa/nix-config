@@ -57,6 +57,8 @@ in
   akari = {
     enable = true;
     variant = "night";
+    # Cascades on from akari.enable; tmux is gone (herdr took over)
+    tmux.enable = false;
   };
   home = {
     inherit username;
