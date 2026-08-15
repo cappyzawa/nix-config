@@ -1,7 +1,8 @@
-# Keybindings mirror programs.tmux in nix/home/default.nix (prefix C-t,
-# vi-style pane movement). Bindings that carry tmux muscle memory are
-# pinned explicitly even when they equal current herdr defaults, so an
-# upstream default change cannot silently remap them.
+# Keybindings carry over the tmux setup this repo used before herdr
+# (prefix C-t, vi-style pane movement; the "tmux: bind ..." comments
+# below cite those historical binds). They are pinned explicitly even
+# when they equal current herdr defaults, so an upstream default change
+# cannot silently remap them.
 # tmux binds with no herdr 0.8.0 equivalent are dropped: resize H/J/K/L
 # (use resize_mode, prefix+r), swap-window [ ], select-layout =,
 # synchronize-panes a, man m, and the tmux-fzf clipboard picker p.

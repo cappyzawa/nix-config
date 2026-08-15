@@ -1427,6 +1427,9 @@ in
       # Zsh options and environment variables
       # LG_CONFIG_FILE is managed by akari-theme module
       sessionVariables = {
+        # herdr panes inherit the server env, which has no LANG (the old
+        # tmux config carried this via setenv); zshenv sets it unguarded
+        LANG = "en_US.UTF-8";
         KEYTIMEOUT = "20";
         EDITOR = "hx";
         VISUAL = "hx";
