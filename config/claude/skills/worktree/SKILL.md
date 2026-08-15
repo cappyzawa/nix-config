@@ -94,7 +94,12 @@ herdr が無ければインストールを案内して止まり、server が無�
 ```bash
 command -v herdr > /dev/null || { echo "herdr is not installed. Run: make switch (in nix-config)" >&2; exit 1; }
 if ! herdr status server 2>/dev/null | grep -q "status: running"; then
-  nohup herdr server > /dev/null 2>&1 &
+  # Rebuild a clean login env for the server: a bare start from a Claude
+  # session leaks CLAUDE_CODE_CHILD_SESSION etc. into every pane, which
+  # silently disables transcript saving for claude launched there
+  nohup env -i HOME="$HOME" USER="$USER" LOGNAME="$USER" SHELL=/bin/zsh TERM=xterm-256color \
+    PATH=/usr/bin:/bin:/usr/sbin:/sbin \
+    /bin/zsh -l -c 'exec herdr server' > /dev/null 2>&1 &
   for _ in $(seq 1 20); do
     herdr status server 2>/dev/null | grep -q "status: running" && break
     /bin/sleep 0.5
