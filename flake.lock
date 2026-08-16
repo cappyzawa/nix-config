@@ -68,11 +68,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1768269798,
-        "narHash": "sha256-/4NSAJs7cCMEVbdhZo6Hgu9ZXgh2t1O8Y4bzL3h4WFc=",
+        "lastModified": 1786803090,
+        "narHash": "sha256-ita3P+l2WFF5ZgBkkNV+DiVzJbHRsnSwkEoFpTtVSsw=",
         "owner": "cappyzawa",
         "repo": "gh-ghq-cd",
-        "rev": "998d364fc4b6e4f5840fc9a126c1b637fce99034",
+        "rev": "da91698e8c0e976011a4d149b9b392b18b0188fe",
         "type": "github"
       },
       "original": {
