@@ -1367,6 +1367,16 @@ in
       syntaxHighlighting.enable = true;
       defaultKeymap = "viins"; # Start in vi insert mode
 
+      # LANG cannot live in sessionVariables: home-manager emits those behind a
+      # __HM_ZSH_SESS_VARS_SOURCED once-guard (from .zprofile for login shells,
+      # which is what herdr panes are), and the long-lived herdr server hands
+      # panes that flag without the variables it protects, leaving them in the
+      # C locale where ZLE mangles multibyte input. Keyed on LANG being absent
+      # rather than exported unconditionally, so `LANG=xx zsh -c ...` wins.
+      envExtra = ''
+        [[ -n "$LANG" ]] || export LANG="en_US.UTF-8"
+      '';
+
       history = {
         size = 50000;
         save = 50000;
@@ -1429,9 +1439,6 @@ in
       # Zsh options and environment variables
       # LG_CONFIG_FILE is managed by akari-theme module
       sessionVariables = {
-        # herdr panes inherit the server env, which has no LANG (the old
-        # tmux config carried this via setenv); zshenv sets it unguarded
-        LANG = "en_US.UTF-8";
         KEYTIMEOUT = "20";
         EDITOR = "hx";
         VISUAL = "hx";
