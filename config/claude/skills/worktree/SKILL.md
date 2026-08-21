@@ -132,10 +132,21 @@ WORKTREE_DIR="${REPO_ROOT}/.claude/worktrees/<worktree-name>"
 # (globally gitignored) so git worktree does not carry them, and they are
 # discovered under cwd only, so nesting under the repo does not help either.
 # Symlink instead of copy: copies go stale as soon as the main checkout edits
-# the file. Root CLAUDE.local.md is excluded (-mindepth 2) because the
-# worktree lives inside the repo and directory walk-up already loads it.
-(cd "$REPO_ROOT" && find . -mindepth 2 -name 'CLAUDE.local.md' -not -path './.claude/worktrees/*' -print0) |
+# the file.
+#
+# `-prune` rather than `-not -path`: the latter only filters what gets PRINTED,
+# so find still descends into every sibling worktree's node_modules. That walk
+# exits non-zero when a directory vanishes under it (a parallel session running
+# pnpm), and under `set -euo pipefail` that aborted prep before `exec claude`,
+# leaving a worktree with no session in it. `|| true` keeps any remaining
+# traversal hiccup from doing that again.
+(cd "$REPO_ROOT" && find . \
+    \( -name node_modules -o -name .git -o -path './.claude/worktrees' \) -prune -o \
+    -name 'CLAUDE.local.md' -print0 || true) |
   while IFS= read -r -d '' f; do
+    # The repo root's own file needs no link: the worktree lives inside the
+    # repo, so the directory walk-up already loads it.
+    [ "$f" = "./CLAUDE.local.md" ] && continue
     mkdir -p "$WORKTREE_DIR/$(dirname "$f")"
     ln -sfn "$REPO_ROOT/${f#./}" "$WORKTREE_DIR/${f#./}"
   done
