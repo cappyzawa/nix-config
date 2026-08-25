@@ -225,6 +225,7 @@
   "effortLevel": "high",
   "remoteControlAtStartup": true,
   "voiceEnabled": true,
+  "agentPushNotifEnabled": true,
   "enabledPlugins": {
     "slack@claude-plugins-official": true
   },
