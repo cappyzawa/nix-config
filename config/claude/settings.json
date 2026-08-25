@@ -159,15 +159,6 @@
     ],
     "Notification": [
       {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "terminal-notifier -title \"Claude Code\" -subtitle \"$(herdr workspace get \"${HERDR_WORKSPACE_ID:-}\" 2>/dev/null | jq -er \".result.workspace.label | strings | select(length > 0)\" 2>/dev/null || basename \"$PWD\")\" -message \"Done\" -activate org.alacritty"
-          }
-        ]
-      },
-      {
         "matcher": "permission_prompt",
         "hooks": [
           {
@@ -183,7 +174,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "( [ -n \"${HERDR_PANE_ID:-}\" ] && herdr pane report-agent \"$HERDR_PANE_ID\" --source claude-hooks --agent claude --state idle ) >/dev/null 2>&1; terminal-notifier -title \"Claude Code\" -subtitle \"$(herdr workspace get \"${HERDR_WORKSPACE_ID:-}\" 2>/dev/null | jq -er \".result.workspace.label | strings | select(length > 0)\" 2>/dev/null || basename \"$PWD\")\" -message \"Stopped\" -activate org.alacritty"
+            "command": "( [ -n \"${HERDR_PANE_ID:-}\" ] && herdr pane report-agent \"$HERDR_PANE_ID\" --source claude-hooks --agent claude --state idle ) >/dev/null 2>&1; true"
           }
         ]
       },
