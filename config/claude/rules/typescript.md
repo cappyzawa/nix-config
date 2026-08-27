@@ -10,7 +10,9 @@ paths:
 
 ## 原則
 
-- **型に仕事をさせる**: 型はドキュメントではなくロジックである。型レベルで制約を表現し、不正な状態をコンパイルエラーにする。
+- **型に仕事をさせる**: 型はドキュメントではなくロジックである。不正な状態をコンパイルエラーにする。
+- **不変条件ごとに一番安いエンフォース手段を選ぶ**: 階段は「変更が別の力で抑止されているなら何もしない → コメント / 命名 → eslint / tsconfig で機械的に落とす → 境界の parse 関数 (schema 検証) → discriminated union で不正状態を表現不能に → branded type → module 境界で非公開 → 型レベルプログラミング」。下の段で足りる不変条件に上の段を使わない。
+- **parse, don't validate**: TS の型は erase されるため、直列化境界 (API 応答・JSON・env・form data) を越えてきた値について型は何も証明していない。境界で一度 parse (schema 検証) して `unknown` から型に落とし、以降は型を信じる。`as` キャストは「検証したふりの witness」であり parse の代替にしない。失敗しない total な変換に throw や Result を付けて parser に偽装しない。
 - **推論を信頼する**: TypeScript の型推論は強力。明示的な型注釈は公開 API の境界と、推論が不十分な箇所にのみ書く。内部コードに冗長な型注釈を付けない。
 - **`any` は型システムの穴**: `unknown` + type guard で代替する。どうしても避けられない場合は理由付きで `// eslint-disable` を付ける。
 - **常に strict モード**: tsconfig.json の `strict: true` は必須。新規に tsconfig を書くときは `noUncheckedIndexedAccess` と `verbatimModuleSyntax` も検討する (どちらも `strict` に含まれず、前者が無いと index アクセスの `undefined` が型から消える)。
@@ -25,6 +27,8 @@ paths:
 
 ### 型レベルプログラミング
 
+エンフォース階段の最上段。zod / tRPC のような「型を提供する側」のコードでは正当化されるが、アプリケーションコードの不変条件はまず下の段 (parse 関数・discriminated union) で足りるか確認する。使う場合の道具:
+
 - template literal types でリテラル文字列を型レベルで操作する (`type EventName<T extends string> = \`on${Capitalize<T>}\``)
 - conditional types と `infer` で型から情報を抽出する
 - mapped types で型の変換を宣言的に表現する (`{ [K in keyof T]: ... }`)
@@ -32,7 +36,7 @@ paths:
 
 ### 型の精度を上げる
 
-- ドメイン識別子には branded type (`type UserId = string & { readonly __brand: unique symbol }`) を使い、`string` との混同を防ぐ
+- 取り違えが実害になるドメイン識別子 (同じ primitive に複数の意味が同居する場合) には branded type (`type UserId = string & { readonly __brand: unique symbol }`) を使い、`string` との混同を防ぐ。brand はコンパイル時だけの witness で `as` で破れるため、実行時保証が要る値では境界の parse と併用する
 - `satisfies` でリテラル型を保持しつつ型の整合性を検証する。`as` によるキャストより安全
 - `as const` でリテラルタプル・オブジェクトの widen を防ぐ
 - `readonly` で不変性を型レベルで保証する。プロパティ、パラメータ、配列に適用する
