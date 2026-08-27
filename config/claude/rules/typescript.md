@@ -12,7 +12,7 @@ paths:
 
 - **型に仕事をさせる**: 型はドキュメントではなくロジックである。不正な状態をコンパイルエラーにする。
 - **不変条件ごとに一番安いエンフォース手段を選ぶ**: 階段は「変更が別の力で抑止されているなら何もしない → コメント / 命名 → eslint / tsconfig で機械的に落とす → 境界の parse 関数 (schema 検証) → discriminated union で不正状態を表現不能に → branded type → module 境界で非公開 → 型レベルプログラミング」。下の段で足りる不変条件に上の段を使わない。
-- **parse, don't validate**: TS の型は erase されるため、直列化境界 (API 応答・JSON・env・form data) を越えてきた値について型は何も証明していない。境界で一度 parse (schema 検証) して `unknown` から型に落とし、以降は型を信じる。`as` キャストは「検証したふりの witness」であり parse の代替にしない。失敗しない total な変換に throw や Result を付けて parser に偽装しない。
+- **parse, don't validate**: 検査は boolean を返さず、検査済みであることを表す狭い型の値を返す。validate は検査した知識が呼び出し元に残らないため、後段で `!` や再検査を強いる。parse なら知識が型に載り、失われない。TS の型は erase されるので直列化境界 (API 応答・JSON・env・form data) では特にこれが効く — 境界で一度 parse (schema 検証) して `unknown` から型に落とし、以降は型を信じる。`as` キャストは「検証したふりの witness」であり parse の代替にしない。失敗しない total な変換に throw や Result を付けて parser に偽装しない。
 - **推論を信頼する**: TypeScript の型推論は強力。明示的な型注釈は公開 API の境界と、推論が不十分な箇所にのみ書く。内部コードに冗長な型注釈を付けない。
 - **`any` は型システムの穴**: `unknown` + type guard で代替する。どうしても避けられない場合は理由付きで `// eslint-disable` を付ける。
 - **常に strict モード**: tsconfig.json の `strict: true` は必須。新規に tsconfig を書くときは `noUncheckedIndexedAccess` と `verbatimModuleSyntax` も検討する (どちらも `strict` に含まれず、前者が無いと index アクセスの `undefined` が型から消える)。
