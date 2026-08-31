@@ -5,6 +5,7 @@ approvals_reviewer = "auto_review"
 sandbox_mode = "workspace-write"
 project_doc_fallback_filenames = ["CLAUDE.md"]
 web_search = "live"
+service_tier = "default"
 
 [features]
 hooks = true
