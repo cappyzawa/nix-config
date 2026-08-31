@@ -26,7 +26,8 @@ activation ブロック (`nix/home/default.nix`):
 | 対象 | ソース | 反映方法 |
 |---|---|---|
 | `~/.claude/settings.json` | `config/claude/settings.json` (+ `hosts/<host>/claude-settings.json`) | jq マージ後、書き込み可能な実ファイルとしてコピー（symlink ではない） |
-| `~/.claude/CLAUDE.md` | `config/claude/CLAUDE.md` (+ `hosts/<host>/claude-memory.md`) | 連結してコピー |
+| `~/.claude/CLAUDE.md` | `config/claude/CLAUDE.md` symlink経由の`config/agents/AGENTS.md` (+ `hosts/<host>/claude-memory.md`) | 連結し、Claude専用の `@~/.claude/CLAUDE.local.md` importを末尾へ付けてコピー |
+| `~/.agents/rules/*.md` | `config/agents/rules/*.md` | Claude/Codex 共通本文を個別 symlink |
 | `~/.claude/rules` | `config/claude/rules` | ディレクトリ symlink |
 | `~/.claude/skills` | `config/claude/skills` | ディレクトリ symlink |
 | `~/.claude/hooks` | `config/claude/hooks` | ディレクトリ symlink |
@@ -42,6 +43,6 @@ activation ブロック (`nix/home/default.nix`):
 
 ## このプロジェクトの規約
 
-- 設定ファイルは `config/claude/` 配下に置く（rules / skills / agents / hooks / settings.json / CLAUDE.md）
+- 共通instructions、rule本文、共通skillは`config/agents/`に置く。Claude固有のrule wrapperと設定は`config/claude/`配下に置く
 - 新規ディレクトリ・ファイルを作った場合は `git add` してから `make check` すること（flake が未追跡パスを参照できないため）
 - host 固有の上書きは `hosts/<host>/` に置く（`claude-settings.json` / `claude-memory.md` / `claude-agents/`）

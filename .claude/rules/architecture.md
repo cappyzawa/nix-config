@@ -16,7 +16,7 @@ This is a Nix Flake-based configuration for macOS using nix-darwin and Home Mana
 ├── hosts/             # Machine-specific configuration (per-host directories)
 │   ├── arkedge/
 │   │   ├── default.nix        # Work Mac settings
-│   │   └── claude-memory.md   # Host-specific CLAUDE.md additions
+│   │   └── claude-memory.md   # Host-specific agent instruction additions
 │   ├── cappyzawa/
 │   │   └── default.nix        # Personal Mac settings
 │   └── ubie/
@@ -29,6 +29,9 @@ This is a Nix Flake-based configuration for macOS using nix-darwin and Home Mana
 │   └── modules/       # Shared modules
 │       └── shared.nix
 └── config/            # Static configuration files (shared across hosts)
+    ├── agents/        # Cross-agent instructions, rule bodies, and compatible skills
+    ├── claude/        # Claude Code-specific configuration
+    ├── codex/         # Codex-specific configuration
     ├── borders/
     ├── sketchybar/
     └── ...

@@ -40,6 +40,27 @@ let
   claudeMcpConfig =
     (pkgs.formats.json { }).generate "claude-mcp-config.json"
       config.shared.claudeMcpServers;
+  codexMcpServers = lib.mapAttrs (
+    _: server:
+    let
+      serverEnv = server.env or { };
+      inheritedEnvVars = lib.attrNames (
+        lib.filterAttrs (name: value: builtins.isString value && value == "\${${name}}") serverEnv
+      );
+      literalEnv = lib.filterAttrs (
+        name: value: !(builtins.isString value && value == "\${${name}}")
+      ) serverEnv;
+    in
+    builtins.removeAttrs server [
+      "type"
+      "env"
+    ]
+    // lib.optionalAttrs (literalEnv != { }) { env = literalEnv; }
+    // lib.optionalAttrs (inheritedEnvVars != [ ]) { env_vars = inheritedEnvVars; }
+  ) config.shared.claudeMcpServers;
+  codexMcpConfig = (pkgs.formats.toml { }).generate "codex-mcp-config.toml" {
+    mcp_servers = codexMcpServers;
+  };
 in
 {
   imports = [
@@ -179,9 +200,16 @@ in
       setupClaude = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
         REPO_ROOT="${config.home.homeDirectory}/ghq/src/github.com/cappyzawa/nix-config"
         CLAUDE_DIR="$HOME/.claude"
+        SHARED_RULES_DIR="$HOME/.agents/rules"
         HOST="${configName}"
 
-        mkdir -p "$CLAUDE_DIR"
+        $DRY_RUN_CMD mkdir -p "$CLAUDE_DIR" "$SHARED_RULES_DIR"
+
+        # Agent-neutral rule bodies. Claude wrappers import these with @path;
+        # Codex custom agents read the same files directly.
+        for f in "$REPO_ROOT/config/agents/rules"/*.md; do
+          $DRY_RUN_CMD ln -sfn "$f" "$SHARED_RULES_DIR/$(basename "$f")"
+        done
 
         # settings.json - copied as a writable file (not a symlink) so Claude Code can
         # persist toggle states (e.g. voiceEnabled) without dirtying the git working tree
@@ -198,16 +226,15 @@ in
           $DRY_RUN_CMD cp -f "$REPO_ROOT/config/claude/settings.json" "$CLAUDE_DIR/settings.json"
         fi
 
-        # CLAUDE.md - common + host-specific (build atomically to respect dry-run)
+        # CLAUDE.md - common + host-specific + Claude-only local import.
+        tmp=$(mktemp)
+        cat "$REPO_ROOT/config/claude/CLAUDE.md" > "$tmp"
         if [ -f "$REPO_ROOT/hosts/$HOST/claude-memory.md" ]; then
-          tmp=$(mktemp)
-          cat "$REPO_ROOT/config/claude/CLAUDE.md" > "$tmp"
           printf '\n' >> "$tmp"
           cat "$REPO_ROOT/hosts/$HOST/claude-memory.md" >> "$tmp"
-          $DRY_RUN_CMD mv "$tmp" "$CLAUDE_DIR/CLAUDE.md"
-        else
-          $DRY_RUN_CMD cp -f "$REPO_ROOT/config/claude/CLAUDE.md" "$CLAUDE_DIR/CLAUDE.md"
         fi
+        printf '\n\n## Local\n\n@~/.claude/CLAUDE.local.md\n' >> "$tmp"
+        $DRY_RUN_CMD mv "$tmp" "$CLAUDE_DIR/CLAUDE.md"
 
         # rules, skills, hooks - symlink directories
         for dir in rules skills hooks; do
@@ -242,6 +269,68 @@ in
           rm -rf "$CLAUDE_DIR/agents"
           ln -sfn "$REPO_ROOT/config/claude/agents" "$CLAUDE_DIR/agents"
         fi
+      '';
+
+      # Setup Codex config while preserving runtime-managed state such as
+      # trusted projects, plugin toggles, and migration notices.
+      setupCodex = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        REPO_ROOT="${config.home.homeDirectory}/ghq/src/github.com/cappyzawa/nix-config"
+        CODEX_DIR="$HOME/.codex"
+        HOST="${configName}"
+
+        $DRY_RUN_CMD mkdir -p "$CODEX_DIR" "$CODEX_DIR/agents" "$CODEX_DIR/rules" "$CODEX_DIR/skills"
+
+        runtime_json=$(mktemp)
+        base_json=$(mktemp)
+        mcp_json=$(mktemp)
+        host_json=$(mktemp)
+        merged_json=$(mktemp)
+        merged_toml=$(mktemp)
+
+        if [ -f "$CODEX_DIR/config.toml" ]; then
+          ${pkgs.yq-go}/bin/yq -p toml -o json "$CODEX_DIR/config.toml" > "$runtime_json"
+        else
+          printf '{}\n' > "$runtime_json"
+        fi
+        ${pkgs.yq-go}/bin/yq -p toml -o json "$REPO_ROOT/config/codex/config.toml" > "$base_json"
+        ${pkgs.yq-go}/bin/yq -p toml -o json ${codexMcpConfig} > "$mcp_json"
+        if [ -f "$REPO_ROOT/hosts/$HOST/codex-config.toml" ]; then
+          ${pkgs.yq-go}/bin/yq -p toml -o json "$REPO_ROOT/hosts/$HOST/codex-config.toml" > "$host_json"
+        else
+          printf '{}\n' > "$host_json"
+        fi
+
+        ${pkgs.jq}/bin/jq -s '
+          .[0] as $runtime | .[1] as $base | .[2] as $mcp | .[3] as $host |
+          ($runtime * $base * $host) | .mcp_servers = $mcp.mcp_servers
+        ' "$runtime_json" "$base_json" "$mcp_json" "$host_json" > "$merged_json"
+        ${pkgs.yq-go}/bin/yq -p json -o toml "$merged_json" > "$merged_toml"
+        $DRY_RUN_CMD mv "$merged_toml" "$CODEX_DIR/config.toml"
+        rm -f "$runtime_json" "$base_json" "$mcp_json" "$host_json" "$merged_json" "$merged_toml"
+
+        # AGENTS.md - common + host-specific context.
+        if [ -f "$REPO_ROOT/hosts/$HOST/claude-memory.md" ]; then
+          tmp=$(mktemp)
+          cat "$REPO_ROOT/config/codex/AGENTS.md" > "$tmp"
+          printf '\n' >> "$tmp"
+          cat "$REPO_ROOT/hosts/$HOST/claude-memory.md" >> "$tmp"
+          $DRY_RUN_CMD mv "$tmp" "$CODEX_DIR/AGENTS.md"
+        else
+          $DRY_RUN_CMD cp -fL "$REPO_ROOT/config/codex/AGENTS.md" "$CODEX_DIR/AGENTS.md"
+        fi
+
+        # Keep mutable or externally installed entries and replace only the
+        # names managed by this repository.
+        for f in "$REPO_ROOT/config/codex/agents"/*.toml; do
+          $DRY_RUN_CMD ln -sfn "$f" "$CODEX_DIR/agents/$(basename "$f")"
+        done
+        for f in "$REPO_ROOT/config/codex/rules"/*.rules; do
+          $DRY_RUN_CMD ln -sfn "$f" "$CODEX_DIR/rules/$(basename "$f")"
+        done
+        for f in "$REPO_ROOT/config/codex/skills"/*; do
+          $DRY_RUN_CMD ln -sfn "$f" "$CODEX_DIR/skills/$(basename "$f")"
+        done
+        $DRY_RUN_CMD ln -sfn "$REPO_ROOT/config/codex/hooks.json" "$CODEX_DIR/hooks.json"
       '';
 
       # SbarLua installation (symlink to expected location)

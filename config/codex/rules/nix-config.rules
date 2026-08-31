@@ -1,0 +1,17 @@
+# Workspace-local commands do not need entries because the workspace-write
+# sandbox handles them without escalation. Pushes stay behind auto-review so
+# branch, force, and deletion arguments are evaluated per invocation.
+
+prefix_rule(
+    pattern = ["gh", "pr", "view"],
+    decision = "allow",
+    justification = "Viewing pull requests is read-only.",
+    match = ["gh pr view 123"],
+)
+
+prefix_rule(
+    pattern = ["gh", "pr", "create", "--draft"],
+    decision = "allow",
+    justification = "The shared agent policy requires newly created pull requests to be drafts.",
+    match = ["gh pr create --draft --title example"],
+)
