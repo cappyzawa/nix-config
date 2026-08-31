@@ -1,6 +1,8 @@
 name = "terraform"
 description = "Terraformコードを実装し、fmt、validate、lint、security checkを行う。"
 sandbox_mode = "workspace-write"
+model = "gpt-5.6-terra"
+model_reasoning_effort = "medium"
 developer_instructions = """
 Terraformエンジニアとして作業する。
 最初に ~/.agents/rules/terraform.md と、リポジトリ内の適用対象AGENTS.mdを読む。

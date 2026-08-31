@@ -46,4 +46,6 @@ After the first deployment, and whenever `hooks.json` changes, open Codex and ap
 - Claude prompt hooks and the session-specific oracle loop are not linked into Codex because their event contract and session environment differ.
 - Codex uses `PermissionRequest` for herdr's blocked state because it has no `Notification(permission_prompt)` event.
 - Codex preserves its existing model, trusted-project, plugin, and migration state unless a managed base or host setting explicitly overrides the same key.
+- Model tiers map across the two agents as Fable 5 / Opus 5 -> `gpt-5.6-sol` (frontier), Sonnet 5 -> `gpt-5.6-terra` (balanced), Haiku 4.5 -> `gpt-5.6-luna` (fast). Codex has no tier above frontier, so Fable and Opus collapse onto `sol`.
+- Language role files pin `model` and `model_reasoning_effort` so an implementation agent stays on the balanced tier no matter which model the main session runs, mirroring the `model: sonnet` on their Claude counterparts. `reviewer.toml` pins neither, mirroring `devils-advocate` inheriting the parent.
 - `approval_policy = "on-request"` together with `approvals_reviewer = "auto_review"` is the Codex equivalent of Claude's auto permission mode: the workspace sandbox remains active and a separate reviewer handles eligible escalation requests.
