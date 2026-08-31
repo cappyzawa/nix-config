@@ -20,7 +20,7 @@ in
     claudeMcpServers = mkOption {
       type = types.attrsOf types.anything;
       default = { };
-      description = "MCP servers merged into ~/.claude.json at activation";
+      description = "MCP servers deployed to Claude Code and Codex at activation";
     };
   };
 }

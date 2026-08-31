@@ -2,7 +2,9 @@ result
 
 # Include CLAUDE.md (overrides global gitignore)
 !CLAUDE.md
+!AGENTS.md
 !.claude/
+!.codex/
 .claude/*.local.*
 
 # Ignore all skills, whitelist only repo-managed ones
@@ -12,8 +14,15 @@ config/claude/skills/*
 !config/claude/skills/codex/
 !config/claude/skills/diff-review/
 !config/claude/skills/empirical-prompt-tuning/
-!config/claude/skills/japanese-tech-writing/
+!config/claude/skills/japanese-tech-writing
 !config/claude/skills/land/
-!config/claude/skills/ponchi/
-!config/claude/skills/verify/
+!config/claude/skills/ponchi
+!config/claude/skills/verify
 !config/claude/skills/worktree/
+
+# Codex system/plugin-managed skills are linked into ~/.codex at activation;
+# only repository-managed Codex configuration belongs here.
+config/codex/skills/*
+!config/codex/skills/japanese-tech-writing
+!config/codex/skills/ponchi
+!config/codex/skills/verify

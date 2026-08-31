@@ -1,0 +1,65 @@
+{
+  "description": "Codex lifecycle integration for herdr.",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "( [ -n \"${HERDR_PANE_ID:-}\" ] && herdr pane report-agent \"$HERDR_PANE_ID\" --source codex-hooks --agent codex --state working ) >/dev/null 2>&1; true"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "( [ -n \"${HERDR_PANE_ID:-}\" ] && herdr pane report-agent \"$HERDR_PANE_ID\" --source codex-hooks --agent codex --state working ) >/dev/null 2>&1; true"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "( [ -n \"${HERDR_PANE_ID:-}\" ] && herdr pane report-agent \"$HERDR_PANE_ID\" --source codex-hooks --agent codex --state working ) >/dev/null 2>&1; true"
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "( [ -n \"${HERDR_PANE_ID:-}\" ] && herdr pane report-agent \"$HERDR_PANE_ID\" --source codex-hooks --agent codex --state blocked ) >/dev/null 2>&1; true"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "( [ -n \"${HERDR_PANE_ID:-}\" ] && herdr pane report-agent \"$HERDR_PANE_ID\" --source codex-hooks --agent codex --state idle ) >/dev/null 2>&1; true"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "( [ -n \"${HERDR_PANE_ID:-}\" ] && herdr pane release-agent \"$HERDR_PANE_ID\" --source codex-hooks --agent codex ) >/dev/null 2>&1; true"
+          }
+        ]
+      }
+    ]
+  }
+}

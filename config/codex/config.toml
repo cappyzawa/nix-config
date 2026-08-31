@@ -1,0 +1,24 @@
+#:schema https://developers.openai.com/codex/config-schema.json
+
+approval_policy = "on-request"
+approvals_reviewer = "auto_review"
+sandbox_mode = "workspace-write"
+project_doc_fallback_filenames = ["CLAUDE.md"]
+web_search = "live"
+
+[features]
+hooks = true
+memories = true
+
+[agents]
+enabled = true
+max_concurrent_threads_per_session = 4
+
+[sandbox_workspace_write]
+network_access = false
+
+[tui]
+vim_mode_default = true
+notifications = true
+notification_condition = "unfocused"
+status_line = ["model-with-reasoning", "context-remaining", "git-branch", "current-dir"]

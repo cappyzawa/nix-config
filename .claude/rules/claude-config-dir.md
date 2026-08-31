@@ -8,6 +8,7 @@ paths:
 # config/claude/ vs .claude/
 
 Two `claude` directories with the same name but different roles. Do not merge them.
+Global instructions are the exception: `config/claude/CLAUDE.md` is a symlink to the cross-agent canonical `config/agents/AGENTS.md`.
 
 | | `config/claude/` | `.claude/` (repo root) |
 |---|---|---|
@@ -40,8 +41,10 @@ When adding a new repo-managed skill, add a corresponding `!` entry to `.gitigno
 
 | Type    | Path                                       | Entry point  |
 |---------|--------------------------------------------|--------------|
-| Skills  | `config/claude/skills/<name>/`             | `SKILL.md`   |
-| Rules   | `config/claude/rules/<name>.md`            | -            |
+| Shared skills | `config/agents/skills/<name>/` with symlinks from both agent directories | `SKILL.md` |
+| Claude-only skills | `config/claude/skills/<name>/` | `SKILL.md` |
+| Shared rules | `config/agents/rules/<name>.md` | Imported by the Claude wrapper |
+| Claude rule wrappers | `config/claude/rules/<name>.md` | `paths:` plus `@~/.agents/rules/<name>.md` |
 | Agents  | `config/claude/agents/<name>/`             | `AGENT.md`   |
 | Hooks   | `config/claude/hooks/`                     | -            |
 
@@ -52,7 +55,8 @@ When adding a new repo-managed skill, add a corresponding `!` entry to `.gitigno
 
 Language agents (`agents/<lang>.md`) are managed as a pair with a coding-convention rule (`rules/<lang>.md`):
 
-- **Rule**: principles, style, and knowledge — content both the implementer (subagent) and the reviewer (main conversation) need. Scope it to target files via `paths:` frontmatter
+- **Rule body**: principles, style, and knowledge shared in `config/agents/rules/<lang>.md`
+- **Claude rule wrapper**: scopes the shared body via `paths:` frontmatter and imports it with `@~/.agents/rules/<lang>.md`
 - **Agent**: workflow definition only (pre-change checks, verification steps, output format) plus the `model:` override
 
 Conventions written in the agent file reach only the subagent, so the main conversation cannot review its output against them. Workflow written in the rule file loads into review-only sessions that never implement. Keep this separation.
@@ -61,6 +65,7 @@ When adding or changing a language agent, revisit its paired rule.
 
 ## Adding new files
 
-1. Create the file under `config/claude/`
+1. Put agent-neutral rule bodies and compatible skills under `config/agents/`; put Claude-only files under `config/claude/`
 2. `git add` the new file/directory before running `make check` (flake cannot reference untracked paths)
-3. If it's a skill, add a whitelist entry (`!config/claude/skills/<name>/`) to `.gitignore`
+3. For a shared skill, add symlinks from both `config/claude/skills/<name>` and `config/codex/skills/<name>` to its canonical directory
+4. If it appears under `config/claude/skills`, add a matching whitelist entry to `.gitignore`
