@@ -174,7 +174,11 @@ subagentの起動に、起動ごとのユーザー確認は要らない。
 - 委譲プロンプトにはタスクの契約・対象ファイル・合格基準（§証明の形を決める で作った実行可能な check）を明示的に書く。subagent はここまでの会話を見ていない
 - 独立なタスクは複数の実装agentへ並列に渡す。同一ファイルに触れる恐れがあるスライスはworktreeで分離する
 - 実装agentのmodelは親を継承する。契約外の判断が多く残りそうな難しいスライスだけ上位modelへ変更する
-- harnessがagent名を受け取る場合は`<役割>-<model>-<effort>`の固定形式にする
+  - 既定の model / effort から変えたときは、その理由を visible text に 1 行添える
+- harnessがagent名を受け取る場合は`<役割>-<model>-<effort>`の固定形式にする（例: `nix-slice1-sonnet-inh`, `reviewer-sol-high`）
+  - model は解決後の実効値を書く（起動時の指定 > agent 定義の既定 > session 継承の順で決まる）
+  - effort は明示指定した値を書き、未指定なら session 継承を表す `inh` と書く
+  - 3 項目すべてを必須にすることで、欠けた名前を「意図的な省略」ではなく「書き忘れ」と判別できる
 
 ## 開発手法
 
