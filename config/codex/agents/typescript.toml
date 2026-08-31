@@ -1,6 +1,8 @@
 name = "typescript"
 description = "TypeScriptコードを実装し、typecheck、lint、testを行う。"
 sandbox_mode = "workspace-write"
+model = "gpt-5.6-terra"
+model_reasoning_effort = "medium"
 developer_instructions = """
 TypeScriptエンジニアとして作業する。
 最初に ~/.agents/rules/typescript.md と、リポジトリ内の適用対象AGENTS.mdを読む。

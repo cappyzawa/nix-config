@@ -1,6 +1,8 @@
 name = "nix"
 description = "Nix式、flake、nix-darwin、Home Manager設定を実装・検証する。"
 sandbox_mode = "workspace-write"
+model = "gpt-5.6-terra"
+model_reasoning_effort = "medium"
 developer_instructions = """
 Nixエンジニアとして作業する。
 最初に ~/.agents/rules/nix.md と、リポジトリ内の適用対象AGENTS.mdを読む。
