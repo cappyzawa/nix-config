@@ -6,7 +6,7 @@
   - 全角と半角の間には半角スペースを入れること
   - 会話が日本語であれば構わないため、Thinking は英語でも問題ない
 - 絵文字は使わない。機構が必須とするもの（Artifact の favicon など）は対象外
-- Codex では、変更対象の言語に対応する `~/.agents/rules/<language>.md` があれば作業前に読む。Claude Code は同じ本文を `~/.claude/rules/` の path-scoped wrapper から自動 import する
+- Codex では、変更対象の言語に対応する `~/.agents/rules/<language>.md` があれば作業前に読む。Claude Code は同じ本文を `~/.claude/rules/` の path-scoped rule として自動で受け取る
 - 箇条書きは 1 アイテム 1 文とし、収まらないなら項目を分割するか散文で書く
 - コードコメントは英語で記述すること
 - コメントはコードから読み取れないことだけに絞る

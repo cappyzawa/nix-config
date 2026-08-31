@@ -41,7 +41,8 @@ After the first deployment, and whenever `hooks.json` changes, open Codex and ap
 ## Compatibility boundaries
 
 - Codex `@file` mentions attach context from the prompt composer; unlike Claude's instruction imports, `@path` inside `AGENTS.md`, rules, or `SKILL.md` is not expanded automatically. Use nested `AGENTS.md`, skill `references/`, explicit read instructions, or symlinks for durable composition.
-- Claude `paths:` rules do not load automatically in Codex. Language custom agents read `~/.agents/rules/<language>.md` directly, while Claude's thin `config/claude/rules/` wrappers add `paths:` and import the same body with `@path`.
+- Claude `paths:` rules do not load automatically in Codex. Language custom agents read `~/.agents/rules/<language>.md` directly, while Claude's thin `config/claude/rules/` wrappers add `paths:` and name the same body with `@path`.
+- Claude Code resolves an instruction import eagerly at session start and attaches the imported body as a global instruction, so a `@path` left in a `paths:`-scoped rule loses its scope. `setupClaude` therefore inlines the shared body when it deploys `~/.claude/rules/`, and only the deployed copy is scoped.
 - Claude prompt hooks and the session-specific oracle loop are not linked into Codex because their event contract and session environment differ.
 - Codex uses `PermissionRequest` for herdr's blocked state because it has no `Notification(permission_prompt)` event.
 - Codex preserves its existing model, trusted-project, plugin, and migration state unless a managed base or host setting explicitly overrides the same key.

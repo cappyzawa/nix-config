@@ -14,7 +14,7 @@ Global instructions are the exception: `config/claude/CLAUDE.md` is a symlink to
 |---|---|---|
 | Role | **Distribution source** deployed to `~/.claude/` | **This repo's own project-local config** |
 | Scope | All of the user's projects (global) | Only when working on nix-config |
-| Deployed? | Yes — `setupClaude` copies/symlinks it (e.g. `~/.claude/rules -> config/claude/rules`) | No — stays inside this repo |
+| Deployed? | Yes — `setupClaude` copies/symlinks/generates it (e.g. `~/.claude/skills -> config/claude/skills`) | No — stays inside this repo |
 | `rules/` holds | Language coding conventions (`nix.md`, `rust.md`, `terraform.md`, `typescript.md`) | This repo's own docs (`architecture.md`, `build-commands.md`, `nix-patterns.md`, this file) |
 | Read via | `~/.claude/CLAUDE.md` (global) | `paths:` frontmatter — each rule loads when a file it scopes is touched |
 
@@ -43,7 +43,7 @@ When adding a new repo-managed skill, add a corresponding `!` entry to `.gitigno
 |---------|--------------------------------------------|--------------|
 | Shared skills | `config/agents/skills/<name>/` with symlinks from both agent directories | `SKILL.md` |
 | Claude-only skills | `config/claude/skills/<name>/` | `SKILL.md` |
-| Shared rules | `config/agents/rules/<name>.md` | Imported by the Claude wrapper |
+| Shared rules | `config/agents/rules/<name>.md` | Inlined into the Claude wrapper at activation |
 | Claude rule wrappers | `config/claude/rules/<name>.md` | `paths:` plus `@~/.agents/rules/<name>.md` |
 | Agents  | `config/claude/agents/<name>/`             | `AGENT.md`   |
 | Hooks   | `config/claude/hooks/`                     | -            |
@@ -56,7 +56,7 @@ When adding a new repo-managed skill, add a corresponding `!` entry to `.gitigno
 Language agents (`agents/<lang>.md`) are managed as a pair with a coding-convention rule (`rules/<lang>.md`):
 
 - **Rule body**: principles, style, and knowledge shared in `config/agents/rules/<lang>.md`
-- **Claude rule wrapper**: scopes the shared body via `paths:` frontmatter and imports it with `@~/.agents/rules/<lang>.md`
+- **Claude rule wrapper**: scopes the shared body via `paths:` frontmatter and names it with `@~/.agents/rules/<lang>.md`, which `setupClaude` expands into the deployed rule
 - **Agent**: workflow definition only (pre-change checks, verification steps, output format) plus the `model:` override
 
 Conventions written in the agent file reach only the subagent, so the main conversation cannot review its output against them. Workflow written in the rule file loads into review-only sessions that never implement. Keep this separation.

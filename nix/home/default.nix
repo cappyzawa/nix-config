@@ -236,8 +236,29 @@ in
         printf '\n\n## Local\n\n@~/.claude/CLAUDE.local.md\n' >> "$tmp"
         $DRY_RUN_CMD mv "$tmp" "$CLAUDE_DIR/CLAUDE.md"
 
-        # rules, skills, hooks - symlink directories
-        for dir in rules skills hooks; do
+        # rules - the wrappers' @~/.agents/rules/<name>.md imports are inlined
+        # here rather than left for Claude Code to resolve. Claude Code resolves
+        # instruction imports eagerly at session start and attaches the imported
+        # body as a global instruction, so an imported body loses the wrapper's
+        # `paths:` scope and stays resident in every session.
+        rules_tmp=$(mktemp -d)
+        for f in "$REPO_ROOT/config/claude/rules"/*.md; do
+          ${pkgs.gawk}/bin/awk -v shared="$SHARED_RULES_DIR" '
+            /^@~\/\.agents\/rules\/[^\/]+\.md$/ {
+              body = shared "/" substr($0, length("@~/.agents/rules/") + 1)
+              while ((getline line < body) > 0) print line
+              close(body)
+              next
+            }
+            { print }
+          ' "$f" > "$rules_tmp/$(basename "$f")"
+        done
+        rm -rf "$CLAUDE_DIR/rules"
+        $DRY_RUN_CMD mv "$rules_tmp" "$CLAUDE_DIR/rules"
+        rm -rf "$rules_tmp"
+
+        # skills, hooks - symlink directories
+        for dir in skills hooks; do
           rm -rf "$CLAUDE_DIR/$dir"
           ln -sfn "$REPO_ROOT/config/claude/$dir" "$CLAUDE_DIR/$dir"
         done
