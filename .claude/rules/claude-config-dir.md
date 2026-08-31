@@ -46,7 +46,6 @@ When adding a new repo-managed skill, add a corresponding `!` entry to `.gitigno
 | Shared rules | `config/agents/rules/<name>.md` | Inlined into the Claude wrapper at activation |
 | Claude rule wrappers | `config/claude/rules/<name>.md` | `paths:` plus `@~/.agents/rules/<name>.md` |
 | Agents  | `config/claude/agents/<name>/`             | `AGENT.md`   |
-| Hooks   | `config/claude/hooks/`                     | -            |
 
 - Skill/agent directory names become the `/slash-command` name
 - Use lowercase with hyphens for directory and file names

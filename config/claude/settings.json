@@ -116,8 +116,7 @@
       "WebFetch(domain:fluxcd.io)",
       "WebFetch(domain:raw.githubusercontent.com)",
       "mcp__context7__query-docs",
-      "mcp__context7__resolve-library-id",
-      "Bash(~/.claude/hooks/loop-arm.sh:*)"
+      "mcp__context7__resolve-library-id"
     ],
     "deny": [
       "Read(~/.zshrc.local)"
@@ -175,16 +174,6 @@
           {
             "type": "command",
             "command": "( [ -n \"${HERDR_PANE_ID:-}\" ] && herdr pane report-agent \"$HERDR_PANE_ID\" --source claude-hooks --agent claude --state idle ) >/dev/null 2>&1; true"
-          }
-        ]
-      },
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"$HOME/.claude/hooks/loop-gate.sh\"",
-            "timeout": 150
           }
         ]
       }

@@ -30,7 +30,6 @@ activation ブロック (`nix/home/default.nix`):
 | `~/.agents/rules/*.md` | `config/agents/rules/*.md` | Claude/Codex 共通本文を個別 symlink |
 | `~/.claude/rules/*.md` | `config/claude/rules/*.md` + `config/agents/rules/*.md` | wrapper の `@~/.agents/rules/<name>.md` 行を本文で置換した実ファイルを生成 |
 | `~/.claude/skills` | `config/claude/skills` | ディレクトリ symlink |
-| `~/.claude/hooks` | `config/claude/hooks` | ディレクトリ symlink |
 | `~/.claude/agents` | `config/claude/agents` (+ `hosts/<host>/claude-agents`) | host 固有があれば個別ファイルを symlink でマージ、無ければディレクトリ symlink |
 
 ## settings.json のマージ規則

@@ -257,11 +257,15 @@ in
         $DRY_RUN_CMD mv "$rules_tmp" "$CLAUDE_DIR/rules"
         rm -rf "$rules_tmp"
 
-        # skills, hooks - symlink directories
-        for dir in skills hooks; do
-          rm -rf "$CLAUDE_DIR/$dir"
-          ln -sfn "$REPO_ROOT/config/claude/$dir" "$CLAUDE_DIR/$dir"
-        done
+        # skills - symlink directory
+        rm -rf "$CLAUDE_DIR/skills"
+        ln -sfn "$REPO_ROOT/config/claude/skills" "$CLAUDE_DIR/skills"
+
+        # The hooks directory retired with the session oracle-loop scripts;
+        # drop the stale symlink so it does not dangle on hosts that had it.
+        if [ -L "$CLAUDE_DIR/hooks" ]; then
+          $DRY_RUN_CMD rm -f "$CLAUDE_DIR/hooks"
+        fi
 
         # agent-browser ships its skill with the CLI so the two stay version-matched.
         # Point at the brew-managed stable path, not `agent-browser skills path`
