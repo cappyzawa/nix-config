@@ -1,8 +1,8 @@
 #!/bin/bash
 # meeting-opener.sh - Automatically open meeting URLs before events start
 #
-# Checks macOS Calendar events via icalBuddy and opens Zoom/Meet/Teams/Webex
-# URLs 1 minute before the event starts. Tracks opened events to avoid duplicates.
+# Checks macOS Calendar events via icalBuddy and opens Meet/Teams/Webex URLs
+# 1 minute before the event starts. Tracks opened events to avoid duplicates.
 
 set -euo pipefail
 
@@ -39,10 +39,11 @@ mark_opened() {
   echo "$(date +%s)|${event_id}" >> "$OPENED_LOG"
 }
 
-# Extract meeting URL from text
+# Extract meeting URL from text.
+# Zoom is excluded on purpose: those meetings are joined manually.
 extract_meeting_url() {
   local text="$1"
-  echo "$text" | grep -oE 'https?://(([a-z0-9]+\.)?zoom\.us|meet\.google\.com|teams\.microsoft\.com|([a-z0-9]+\.)?webex\.com)/[^ ]*' | head -1
+  echo "$text" | grep -oE 'https?://(meet\.google\.com|teams\.microsoft\.com|([a-z0-9]+\.)?webex\.com)/[^ ]*' | head -1
 }
 
 cleanup_old_entries
