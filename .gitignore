@@ -12,7 +12,7 @@ result
 config/claude/skills/*
 !config/claude/skills/chore/
 !config/claude/skills/codex/
-!config/claude/skills/diff-review/
+!config/claude/skills/diff-review
 !config/claude/skills/empirical-prompt-tuning/
 !config/claude/skills/japanese-tech-writing
 !config/claude/skills/land/
@@ -23,6 +23,7 @@ config/claude/skills/*
 # Codex system/plugin-managed skills are linked into ~/.codex at activation;
 # only repository-managed Codex configuration belongs here.
 config/codex/skills/*
+!config/codex/skills/diff-review
 !config/codex/skills/japanese-tech-writing
 !config/codex/skills/ponchi
 !config/codex/skills/verify

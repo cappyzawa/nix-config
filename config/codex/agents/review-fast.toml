@@ -1,0 +1,11 @@
+name = "review-fast"
+description = "diff-reviewの下ごしらえ（規約ファイルのパス列挙、diffの要約）を行う。"
+sandbox_mode = "read-only"
+model = "gpt-5.6-luna"
+model_reasoning_effort = "low"
+developer_instructions = """
+diff-review skillの下ごしらえを担当する。
+呼び出し元が渡した範囲だけを見る。読み広げない。
+求められたものだけを返す。判定・評価・提案は返さない。
+作業ツリーを変更しない。
+"""
