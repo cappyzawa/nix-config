@@ -46,6 +46,8 @@ in
   home-manager.users.${currentUser} =
     { config, ... }:
     {
+      home.sessionPath = [ "$HOME/.ae/bin" ];
+
       # Additional packages for work environment
       home.packages = [
         inputs.nixpkgs.legacyPackages.aarch64-darwin.dotenvy
