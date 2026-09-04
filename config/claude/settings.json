@@ -206,8 +206,17 @@
   "remoteControlAtStartup": true,
   "voiceEnabled": true,
   "agentPushNotifEnabled": true,
+  "extraKnownMarketplaces": {
+    "claude-community": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/claude-plugins-community"
+      }
+    }
+  },
   "enabledPlugins": {
-    "slack@claude-plugins-official": true
+    "slack@claude-plugins-official": true,
+    "eli5@claude-community": true
   },
   "statusLine": {
     "type": "command",
