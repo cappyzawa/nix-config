@@ -36,6 +36,7 @@ let
   homebrewTrust = (pkgs.formats.json { }).generate "homebrew-trust.json" {
     trustedtaps = trustedTaps;
   };
+  homebrewBrewfile = pkgs.writeText "Brewfile" config.homebrew.brewfile;
 in
 {
   imports = [
@@ -145,6 +146,12 @@ in
         # Apply settings without logout/login
         postActivation.text = ''
           sudo -u ${username} /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+
+          # Homebrew 6.0 enables every cleanup extension during bundle install;
+          # run cleanup separately to preserve non-declared MAS apps.
+          if [ -f "/opt/homebrew/bin/brew" ]; then
+            PATH="/opt/homebrew/bin:${pkgs.mas}/bin:$PATH" sudo --preserve-env=PATH --user=${lib.escapeShellArg brewUser} --set-home env HOMEBREW_NO_UPGRADE_AUTO_UPDATES_CASKS=1 XDG_CONFIG_HOME=${lib.escapeShellArg "${brewUserHome}/.config"} brew bundle cleanup --file=${lib.escapeShellArg homebrewBrewfile} --force --zap --no-mas
+          fi
         '';
       };
     };
@@ -191,26 +198,23 @@ in
       onActivation = {
         autoUpdate = true;
         upgrade = true;
-        cleanup = "zap"; # Remove unlisted casks/formulas
-        # Homebrew now requires an explicit force flag for `bundle install --cleanup`.
-        # Workaround for https://github.com/nix-darwin/nix-darwin/issues/1787;
-        # remove once https://github.com/nix-darwin/nix-darwin/pull/1789 is merged
-        # and the nix-darwin input is updated past it.
-        extraFlags = [ "--force-cleanup" ];
-        # Pin the trust store location so `brew bundle` reads the same
-        # trust.json that preActivation seeds (activation runs without
-        # XDG_CONFIG_HOME, so brew would otherwise fall back to ~/.homebrew).
-        extraEnv.XDG_CONFIG_HOME = "${brewUserHome}/.config";
-        # Homebrew 6.0 defaults HOMEBREW_UPGRADE_AUTO_UPDATES_CASKS to true, so
-        # `brew upgrade` now targets `auto_updates true` casks whenever the app
-        # bundle version differs from the tap version. Self-updating apps trail
-        # the tap during staged rollouts (Chrome via Keystone), so activation
-        # would re-download the cask and force-quit the running app, only to be
-        # overwritten by the app's own updater. Restore the pre-6.0 behaviour and
-        # let those casks update themselves; `brew upgrade --cask --greedy` still
-        # works for one-off manual upgrades. Homebrew treats any non-empty value
-        # as "set", so this can only be disabled by removing the line.
-        extraEnv.HOMEBREW_NO_UPGRADE_AUTO_UPDATES_CASKS = "1";
+        cleanup = "none";
+        extraEnv = {
+          # Pin the trust store location so `brew bundle` reads the same
+          # trust.json that preActivation seeds (activation runs without
+          # XDG_CONFIG_HOME, so brew would otherwise fall back to ~/.homebrew).
+          XDG_CONFIG_HOME = "${brewUserHome}/.config";
+          # Homebrew 6.0 defaults HOMEBREW_UPGRADE_AUTO_UPDATES_CASKS to true, so
+          # `brew upgrade` now targets `auto_updates true` casks whenever the app
+          # bundle version differs from the tap version. Self-updating apps trail
+          # the tap during staged rollouts (Chrome via Keystone), so activation
+          # would re-download the cask and force-quit the running app, only to be
+          # overwritten by the app's own updater. Restore the pre-6.0 behaviour and
+          # let those casks update themselves; `brew upgrade --cask --greedy` still
+          # works for one-off manual upgrades. Homebrew treats any non-empty value
+          # as "set", so this can only be disabled by removing the line.
+          HOMEBREW_NO_UPGRADE_AUTO_UPDATES_CASKS = "1";
+        };
       };
 
       taps = [
