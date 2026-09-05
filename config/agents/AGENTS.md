@@ -185,10 +185,9 @@ subagentの起動に、起動ごとのユーザー確認は要らない。
 - 実装agentのmodelはagent定義の既定に任せ、起動時に指定しない（既定を持たないagentだけsession継承になる）
 - 契約外の判断が多く残りそうな難しいスライスだけ、明示指定で上位modelへ上げる
   - 既定の model / effort から変えたときは、その理由を visible text に 1 行添える
-- harnessがagent名を受け取る場合は`<役割>-<model>-<effort>`の固定形式にする（例: `nix-slice1-sonnet-inh`, `reviewer-sol-high`）
-  - model は解決後の実効値を書く（起動時の指定 > agent 定義の既定 > session 継承の順で決まる）
-  - effort は明示指定した値を書き、未指定なら session 継承を表す `inh` と書く
-  - 3 項目すべてを必須にすることで、欠けた名前を「意図的な省略」ではなく「書き忘れ」と判別できる
+- harnessがagent名を受け取る場合、agent 定義の既定のまま起動するなら名前は `<役割>` だけにする（例: `rust-verbena`）
+  - 起動時に model か effort を明示指定したときだけ `<役割>-<model>-<effort>` の 3 項目で書く（例: `nix-slice1-sonnet-inh`, `reviewer-sol-high`）。片方だけ指定したなら、もう片方は既定のままを表す `inh` と書く
+  - 名前に載せるのは自分が起動時に指定した値だけ。agent 定義の既定を解決して書き写さない（写し間違えると名前が嘘をつく。既定は agent 定義の frontmatter が正本）
 
 ## 開発手法
 
