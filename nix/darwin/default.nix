@@ -244,6 +244,10 @@ in
       casks = [
         "1password"
         "raycast"
+        "claude"
+        # Codex is shipped inside the ChatGPT app; the standalone `codex-app`
+        # cask is discontinued upstream and gets disabled on 2027-07-12.
+        "chatgpt"
         "google-chrome"
         "google-japanese-ime"
         "karabiner-elements"
