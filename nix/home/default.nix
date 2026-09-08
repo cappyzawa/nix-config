@@ -202,6 +202,7 @@ in
         CLAUDE_DIR="$HOME/.claude"
         SHARED_RULES_DIR="$HOME/.agents/rules"
         HOST="${configName}"
+        SETTINGS_SECRETS="${config.home.homeDirectory}/.config/nix-config-local/claude-settings-secrets.json"
 
         $DRY_RUN_CMD mkdir -p "$CLAUDE_DIR" "$SHARED_RULES_DIR"
 
@@ -211,20 +212,91 @@ in
           $DRY_RUN_CMD ln -sfn "$f" "$SHARED_RULES_DIR/$(basename "$f")"
         done
 
-        # settings.json - copied as a writable file (not a symlink) so Claude Code can
-        # persist toggle states (e.g. voiceEnabled) without dirtying the git working tree
-        if [ -f "$REPO_ROOT/hosts/$HOST/claude-settings.json" ]; then
-          tmp=$(mktemp)
-          ${pkgs.jq}/bin/jq -s '
-            .[0] as $base | .[1] as $host |
-            $base * $host |
-            .permissions.allow = ($base.permissions.allow + $host.permissions.allow) |
-            .permissions.deny = (($base.permissions.deny // []) + ($host.permissions.deny // []))
-          ' "$REPO_ROOT/config/claude/settings.json" "$REPO_ROOT/hosts/$HOST/claude-settings.json" > "$tmp"
-          $DRY_RUN_CMD mv "$tmp" "$CLAUDE_DIR/settings.json"
-        else
-          $DRY_RUN_CMD cp -f "$REPO_ROOT/config/claude/settings.json" "$CLAUDE_DIR/settings.json"
-        fi
+        # settings.json - written as a writable file (not a symlink) so Claude Code can
+        # persist toggle states (e.g. voiceEnabled) without dirtying the git working tree.
+        # Three layers: the repo base, an optional per-host override, and an optional
+        # secrets file from outside the repo. The secrets file may carry only `env`, so a
+        # stray key in it cannot quietly relax `permissions` or replace a hook.
+        #
+        # A token belongs in settings rather than a shell rc file because Claude Code puts
+        # `env` into its own process environment before expanding the placeholders in MCP
+        # server definitions, and the desktop app is launched by launchd, which reads no rc
+        # file. Reading the secrets file here at activation time keeps the value out of the
+        # world-readable Nix store.
+        (
+          host_src="$REPO_ROOT/hosts/$HOST/claude-settings.json"
+          [ -f "$host_src" ] || host_src=/dev/null
+
+          secrets_src="$SETTINGS_SECRETS"
+          if [ -f "$secrets_src" ]; then
+            secrets_mode=$(/usr/bin/stat -f '%Lp' "$secrets_src")
+            case "$secrets_mode" in
+              400 | 600) ;;
+              *)
+                echo "setupClaude: $secrets_src holds a token and must be mode 400 or 600, found $secrets_mode" >&2
+                exit 1
+                ;;
+            esac
+          else
+            secrets_src=/dev/null
+          fi
+
+          # Stage in the destination directory so the final move is a rename rather than a
+          # copy across volumes, and trap the token-bearing file so no exit path leaves it
+          # behind - including a dry run, where the move itself is skipped.
+          if [ -d "$CLAUDE_DIR" ]; then
+            settings_tmp=$(mktemp "$CLAUDE_DIR/.settings.json.XXXXXX")
+          else
+            settings_tmp=$(mktemp)
+          fi
+          trap 'rm -f "$settings_tmp"' EXIT HUP INT TERM
+          chmod 600 "$settings_tmp"
+
+          ${pkgs.jq}/bin/jq -n \
+            --slurpfile base "$REPO_ROOT/config/claude/settings.json" \
+            --slurpfile host "$host_src" \
+            --slurpfile secrets "$secrets_src" \
+            '
+              $base[0] as $b |
+              ($host[0] // {}) as $h |
+              ($secrets[0] // {}) as $s |
+              if (($s | keys) - ["env"]) != [] then
+                error("secrets file may contain only env")
+              else . end |
+              ($b * $h)
+              | .permissions.allow = ($b.permissions.allow + ($h.permissions.allow // []))
+              | .permissions.deny = (($b.permissions.deny // []) + ($h.permissions.deny // []))
+              | .env = (($b.env // {}) * ($h.env // {}) * ($s.env // {}))
+            ' > "$settings_tmp"
+
+          # An MCP placeholder that nothing expands is passed through verbatim, so the
+          # server sends the placeholder text itself as the credential and the remote API
+          # answers unauthorized. That reads as a broken connection rather than a missing
+          # secret, so name the unresolved variables while the switch output is in view.
+          # The check itself must never gate a switch, so a failure here is reported and
+          # then dropped rather than propagated to `set -e`.
+          if ! unresolved=$(
+            ${pkgs.jq}/bin/jq -r --slurpfile settings "$settings_tmp" '
+              ($settings[0].env // {}) as $env
+              | [ .[] | .env // {} | to_entries[]
+                  | select(.value | type == "string")
+                  | select(.value | test("^\\$\\{[A-Za-z_][A-Za-z0-9_]*\\}$"))
+                  | .value[2:-1] ]
+              | unique
+              | map(select(. as $name | $env | has($name) | not))
+              | .[]
+            ' ${claudeMcpConfig} 2>&1
+          ); then
+            echo "setupClaude: MCP placeholder check failed: $unresolved" >&2
+            unresolved=""
+          fi
+          if [ -n "$unresolved" ]; then
+            echo "setupClaude: MCP placeholders with no settings env entry: $(echo "$unresolved" | tr '\n' ' ')" >&2
+            echo "setupClaude: they expand only if the process environment supplies them; see $SETTINGS_SECRETS" >&2
+          fi
+
+          $DRY_RUN_CMD mv -f "$settings_tmp" "$CLAUDE_DIR/settings.json"
+        )
 
         # CLAUDE.md - common + host-specific + Claude-only local import.
         tmp=$(mktemp)

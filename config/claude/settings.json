@@ -119,7 +119,8 @@
       "mcp__context7__resolve-library-id"
     ],
     "deny": [
-      "Read(~/.zshrc.local)"
+      "Read(~/.zshrc.local)",
+      "Read(~/.config/nix-config-local/claude-settings-secrets.json)"
     ]
   },
   "hooks": {
