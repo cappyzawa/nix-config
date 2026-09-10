@@ -11,6 +11,16 @@ service_tier = "default"
 hooks = true
 memories = true
 
+# Replaces the harness-injected <multi_agent_mode> developer message. The first two
+# sentences are the stock text for non-proactive mode; the rest is ours. spawn_agent
+# defaults to fork_turns="all", which copies the whole parent thread into every child
+# and drops role/model overrides, so a single review request can fan out to millions
+# of input tokens. Codex has no config knob for the default fork mode.
+[features.multi_agent_v2]
+multi_agent_mode_hint_text = """
+Any earlier instruction enabling proactive multi-agent delegation no longer applies. Do not spawn sub-agents unless the user or applicable AGENTS.md/skill instructions explicitly ask for sub-agents, delegation, or parallel agent work. When you do spawn, always pass fork_turns="none" and write every fact the sub-agent needs into its message. A full-history fork copies this whole thread into each child and ignores agent_type, model, and reasoning_effort overrides.
+"""
+
 [agents]
 enabled = true
 max_concurrent_threads_per_session = 6

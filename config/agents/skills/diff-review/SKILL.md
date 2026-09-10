@@ -22,7 +22,7 @@ main セッション（control plane）で実行する。subagent 内では実�
 
 harness が agent 名を受け取る場合は、グローバル instructions の §サブエージェントへの委譲 に従い `<観点キー>-<実効model>-<effort>` にする（例: `review-rules-sonnet-inh`）。Codex は呼び出し側から名前を渡せず presentation 用の nickname が付くだけなので、この形式が効くのは Claude Code だけ。
 
-**Codex で tier を prompt に書いても効かない。** spawn 呼び出しでの model 指定は `features.multi_agent_v2.expose_spawn_agent_model_overrides` を立てたときだけ露出し、それが無いと subagent は session の model を黙って継承する（エラーにならないので気づけない）。tier と sandbox を確実に効かせる経路が role 定義なので、Codex 側は role を spawn する。
+**Codex で tier を prompt に書いても効かない。** spawn 呼び出しでの model 指定は `features.multi_agent_v2.expose_spawn_agent_model_overrides` を立てたときだけ露出し、それが無いと subagent は session の model を黙って継承する（エラーにならないので気づけない）。tier と sandbox を確実に効かせる経路が role 定義なので、Codex 側は role を spawn する。**spawn には `fork_turns: "none"` を付ける。** 既定の全 history fork では `agent_type` が捨てられ、子は `default` role・session の model で走る（review-fast を指定した子が gpt-5.6-sol で動いた実測がある）。
 
 **並列本数は harness の上限を先に確認し、収まらない分は wave に分けて回す。** Codex は `~/.codex/config.toml` の `agents.max_concurrent_threads_per_session` が同時に開ける spawned agent thread 数の上限（primary は数えない）。step 4 は 5 本で固定だが、**step 5 は指摘数ぶんなので上限に収まる保証が無い**。上限に依存しない形で回すこと。
 
