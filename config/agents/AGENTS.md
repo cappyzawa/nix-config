@@ -50,7 +50,7 @@
 - PR は初回作成時に必ず draft で作成すること
 - レビュー準備ができたら別途 `gh pr ready` で解除する
 - 破壊的変更（major バージョン更新、API 削除、依存の大規模入れ替え等）は単独 PR で出し、機能変更と混ぜないこと
-- PR の merge 待ちの間に、その PR に依存する後続作業へ勝手に着手（stack）しないこと。stacked PR はユーザーが明示的に指示した場合のみ。PR と独立な別タスクへ進むのは構わない
+- PR の merge 待ちの間に、その PR に依存する後続作業へ stack して進めてよい。base を上流 PR の branch にし、上流がマージされたら base を main に戻して merge で追随する（force-push しない）。直列にするのはユーザーが指示したときだけ
 
 ### PR description
 
