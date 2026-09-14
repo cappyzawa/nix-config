@@ -595,6 +595,10 @@ in
             run = "move-node-to-workspace 1";
           }
           {
+            "if"."app-id" = "com.anthropic.claudefordesktop";
+            run = "move-node-to-workspace 1";
+          }
+          {
             "if" = {
               "app-id" = "com.google.Chrome";
               "window-title-regex-substring" = "PiP";
