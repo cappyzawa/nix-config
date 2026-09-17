@@ -8,7 +8,7 @@ allowed-tools: Bash(codex exec -s read-only:*)
 
 Codex CLI に委譲してセカンドオピニオン・レビューを得るための skill。
 
-自発的に呼ぶタイミングのルールは `~/.claude/CLAUDE.md` の「Codex レビュー」セクション参照。
+呼ぶタイミングは `~/.claude/CLAUDE.md` の「役割分担」「レビュー」に従う。定常工程ではなく、別モデルの視点が要るときに使う。
 
 ## 起動コマンド
 
@@ -27,15 +27,15 @@ codex exec -s read-only <subagent flags> --cd <project_directory> "<short reques
 `<subagent flags>` は毎回そのまま付ける（`-s read-only` の直後、`--cd` の前）:
 
 ```
--c agents.enabled=false -c 'developer_instructions="この session は Claude Code から codex exec で起動された subagent です。AGENTS.md の control plane 向け手順（作業の流れ・独立レビュー・diff-review / verify / land skill の起動）は適用しません。sub-agent を spawn せず、依頼されたレビュー・調査に単独で直接答えてください。"'
+-c agents.enabled=false -c 'developer_instructions="この session は Claude Code から codex exec で起動された subagent です。sub-agent を spawn せず、verify などの skill も起動せず、依頼されたレビュー・調査に単独で直接答えてください。"'
 ```
 
 ### なぜ subagent flags が要るか
 
-`~/.codex/AGENTS.md` は Claude と共有のグローバル instructions で、Codex を main セッション（control plane）として動かす手順（diff-review / verify / 独立 reviewer の spawn）を含む。`codex exec` はそれをそのまま読むので、レビュー依頼を「実装後レビュー」のトリガーと解釈し、diff-review skill の 5 観点 + 採点 agent + reviewer を自前で spawn する。spawn は既定で親の全 history を fork するため、1 回の依頼で 20 agent・入力 1,400 万 token を消費した実測がある。
+`~/.codex/AGENTS.md` は Claude と共有のグローバル instructions で、Codex を main セッションとして動かす前提で書かれている。`codex exec` はそれをそのまま読むので、レビュー依頼を main の作業として解釈し、sub-agent を spawn しうる。spawn は既定で親の全 history を fork するため、かつて 1 回の依頼で 20 agent・入力 1,400 万 token を消費した実測がある。
 
 - `-c agents.enabled=false` は collaboration ツール（spawn_agent 等）を tool 一覧から外す。prompt で禁止するより確実
-- `-c developer_instructions=...` は「自分は subagent」を developer message として渡す。AGENTS.md 側の「subagent として動作している場合は独立 reviewer を起動しない」分岐に入れるための入力で、これが無いと codex は自分が main だと判断する
+- `-c developer_instructions=...` は「自分は subagent」を developer message として渡す。これが無いと codex は自分が main だと判断し、AGENTS.md の main 向け手順を適用する
 - グローバル `AGENTS.md` の読み込み自体は config で止められない（`project_doc_max_bytes=0` は project 側にしか効かない）
 
 - `<project_directory>` は対象プロジェクトの絶対パス。省略すると現在の作業ディレクトリ。
@@ -74,15 +74,13 @@ codex exec -s read-only <subagent flags> --cd <dir> - < <prompt-file>
 ```
 
 内容例:
-> 以下の diff をレビューしてほしい。読んで見つかる誤りのレビュー (diff-review) は実施済みなので主目的にしなくてよいが、correctness / security / data loss に関わる問題は実施済みの観点に見えても必ず指摘してほしい。観点は (1) 同梱したユーザー要求・合格基準との乖離 (2) 設計判断の誤り (3) エッジケースの見落とし (4) テストの過不足。確認や質問は不要、具体的な修正案とコード例を能動的に出してほしい。
+> 以下の diff をレビューしてほしい。観点は (1) 同梱したユーザー要求・合格基準との乖離 (2) 設計判断の誤り (3) エッジケースの見落とし (4) テストの過不足。確認や質問は不要、具体的な修正案とコード例を能動的に出してほしい。
 
 プロンプトに含めるもの:
 
 - **diff**: レビュー前に `git status --short` を確認し、untracked の新規ファイルがあれば `git add -N <path>` してから diff を取る（`git diff HEAD` だけだと untracked が対象から落ちる）
-- **ユーザー要求・non-goals・合格基準**（§証明の形を決める で作った check）。codex は会話を見ていないので、これが無いと「要求との乖離」を判定できない
-- **diff-review で適用した修正の要約**（実施した場合）
-
-diff-review を通していない diff（スコープ判断で省略した場合等）では、従来どおり (1) バグ・エッジケースの見落とし (2) テストの過不足 (3) 命名・抽象化の妥当性 を観点にする。
+- **ユーザー要求・non-goals・合格基準**。codex は会話を見ていないので、これが無いと「要求との乖離」を判定できない
+- **verify で確かめたこと・確かめられなかったこと**（実施した場合）
 
 ### バグ調査のセカンドオピニオン（修正 2 回失敗後）
 
@@ -102,7 +100,7 @@ codex exec -s read-only <subagent flags> --cd <dir> "<質問内容>。確認や�
 
 ## 手順
 
-1. `~/.claude/CLAUDE.md` の「Codex レビュー」トリガー、またはユーザー要求に従って、codex に委譲する対象を特定する
+1. `~/.claude/CLAUDE.md` の「役割分担」「レビュー」、またはユーザー要求に従って、codex に委譲する対象を特定する
 2. プロンプトに「確認や質問は不要。具体的な提案・修正案・コード例を能動的に出してほしい」を必ず付ける
 3. 長文 (diff / コード片を含む) は Write tool で `<prompt-file>` に書き、stdin redirect で渡す。短ければ positional でも可
 4. `codex exec -s read-only <subagent flags> --cd <dir>` を Bash timeout 600000 で実行する

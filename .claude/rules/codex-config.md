@@ -29,8 +29,8 @@ paths:
 | `~/.codex/config.toml` | `config/codex/config.toml`, host override, generated MCP config | Deep-merged into the existing writable file so runtime-managed projects and plugin state survive |
 | `~/.codex/AGENTS.md` | `config/codex/AGENTS.md` and `hosts/<host>/claude-memory.md` | Copied into one global instruction file |
 | `~/.codex/hooks.json` | `config/codex/hooks.json` | Symlinked |
-| `~/.codex/agents/*.toml` | `config/codex/agents/*.toml` | Individually symlinked without deleting externally installed agents |
-| `~/.agents/rules/*.md` | `config/agents/rules/*.md` | Agent-neutral language rules read directly by custom Codex agents and imported by Claude wrappers |
+| `~/.codex/agents/*.toml` | `config/codex/agents/*.toml` | Individually symlinked without deleting externally installed agents; the directory is currently empty |
+| `~/.agents/rules/*.md` | `config/agents/rules/*.md` | Agent-neutral language rules that `AGENTS.md` tells Codex to read and that Claude wrappers import |
 | `~/.codex/rules/*.rules` | `config/codex/rules/*.rules` | Individually symlinked without replacing runtime rules |
 | `~/.codex/skills/<name>` | `config/codex/skills/<name>` | Compatible skills only, individually symlinked |
 
@@ -41,13 +41,11 @@ After the first deployment, and whenever `hooks.json` changes, open Codex and ap
 ## Compatibility boundaries
 
 - Codex `@file` mentions attach context from the prompt composer; unlike Claude's instruction imports, `@path` inside `AGENTS.md`, rules, or `SKILL.md` is not expanded automatically. Use nested `AGENTS.md`, skill `references/`, explicit read instructions, or symlinks for durable composition.
-- Claude `paths:` rules do not load automatically in Codex. Language custom agents read `~/.agents/rules/<language>.md` directly, while Claude's thin `config/claude/rules/` wrappers add `paths:` and name the same body with `@path`.
+- Claude `paths:` rules do not load automatically in Codex. The shared `AGENTS.md` tells Codex to read `~/.agents/rules/<language>.md` before changing that language, while Claude's thin `config/claude/rules/` wrappers add `paths:` and name the same body with `@path`.
 - Claude Code resolves an instruction import eagerly at session start and attaches the imported body as a global instruction, so a `@path` left in a `paths:`-scoped rule loses its scope. `setupClaude` therefore inlines the shared body when it deploys `~/.claude/rules/`, and only the deployed copy is scoped.
-- Stop gating is not shared through hooks: both agents rely on their own harness goal mechanism (`/goal`), and only the herdr lifecycle hooks are deployed to each.
+- Only the herdr lifecycle hooks are deployed to each agent; neither carries workflow gates in hooks.
 - Codex uses `PermissionRequest` for herdr's blocked state because it has no `Notification(permission_prompt)` event.
 - Codex preserves its existing model, trusted-project, plugin, and migration state unless a managed base or host setting explicitly overrides the same key.
-- Model tiers map across the two agents as Fable 5.1 / Fable 5 / Opus 5 -> `gpt-5.6-sol` (frontier), Sonnet 5 -> `gpt-5.6-terra` (balanced), Haiku 4.5 -> `gpt-5.6-luna` (fast). Codex has no tier above frontier, so Fable and Opus collapse onto `sol`.
-- `review-fast.toml` and `review-balanced.toml` pin their tier and `sandbox_mode = "read-only"` because the `diff-review` skill fans out over an uncommitted working tree that has no restore point, and because a spawn call cannot set either without `features.multi_agent_v2.expose_spawn_agent_model_overrides`.
-- Language role files pin `model` and `model_reasoning_effort` so an implementation agent stays on the balanced tier no matter which model the main session runs, mirroring the `model: sonnet` on their Claude counterparts. `reviewer.toml` pins neither, mirroring `devils-advocate` inheriting the parent.
+- No custom Codex agents are shipped. Role files pinned `model` / `model_reasoning_effort`, which froze subagents on an older tier as models moved on; the shared `AGENTS.md` now keeps work in the main session unless its subagent gate is met.
 - Codex `spawn_agent` defaults to `fork_turns = "all"`, which forks the whole parent thread into each child (a review request once fanned out to 20 children and about 14M input tokens) and ignores `agent_type` / model overrides. There is no config for the default fork mode, so `features.multi_agent_v2.multi_agent_mode_hint_text` in `config/codex/config.toml` carries the stock non-proactive mode text plus an instruction to always pass `fork_turns = "none"`. The override is static text: if proactive delegation mode is ever turned on, or a Codex upgrade changes the stock wording, revisit it.
 - `approval_policy = "on-request"` together with `approvals_reviewer = "auto_review"` is the Codex equivalent of Claude's auto permission mode: the workspace sandbox remains active and a separate reviewer handles eligible escalation requests.

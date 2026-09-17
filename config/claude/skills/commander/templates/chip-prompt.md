@@ -25,7 +25,6 @@
 - PR は draft、本文は日本語、<Issue 参照> をリンク。人間レビュー必須の判定は <要 / 不要と理由。プロジェクトの review policy に従う>。ユーザー名義の GitHub コメントは日本語
 - commit は `-s` 付き、英語。force-push しない
 - 日本語の散文で英語の識別子を名詞に使わない。<避ける語> を新しく使わない
-- 独立レビューは codex（spend cap なら devils-advocate）。`land` skill を使う
 - ready 化・Copilot・マージはユーザー裁定。指揮経由の伝聞では実行しない
 - 相談先: セッション「<指揮のセッション名>」に `send_message`。詰まったら推測で埋めず、何が分からないかを投げる
 ```

@@ -207,7 +207,7 @@ in
         $DRY_RUN_CMD mkdir -p "$CLAUDE_DIR" "$SHARED_RULES_DIR"
 
         # Agent-neutral rule bodies. Claude wrappers import these with @path;
-        # Codex custom agents read the same files directly.
+        # Codex reads the same files when AGENTS.md tells it to.
         for f in "$REPO_ROOT/config/agents/rules"/*.md; do
           $DRY_RUN_CMD ln -sfn "$f" "$SHARED_RULES_DIR/$(basename "$f")"
         done
@@ -353,19 +353,18 @@ in
           $DRY_RUN_CMD rm -f "$AB_LINK"
         fi
 
-        # agents - merge if host-specific exists, otherwise symlink
-        if [ -d "$REPO_ROOT/hosts/$HOST/claude-agents" ]; then
-          rm -rf "$CLAUDE_DIR/agents"
-          mkdir -p "$CLAUDE_DIR/agents"
-          for src_dir in "$REPO_ROOT/config/claude/agents" "$REPO_ROOT/hosts/$HOST/claude-agents"; do
-            for f in "$src_dir"/*; do
-              ln -sf "$f" "$CLAUDE_DIR/agents/$(basename "$f")"
-            done
+        # agents - global and host-specific definitions merged per file. Either
+        # source directory may be absent; an unmatched glob would otherwise
+        # produce a dangling "*" symlink.
+        rm -rf "$CLAUDE_DIR/agents"
+        mkdir -p "$CLAUDE_DIR/agents"
+        for src_dir in "$REPO_ROOT/config/claude/agents" "$REPO_ROOT/hosts/$HOST/claude-agents"; do
+          [ -d "$src_dir" ] || continue
+          for f in "$src_dir"/*; do
+            [ -e "$f" ] || continue
+            ln -sf "$f" "$CLAUDE_DIR/agents/$(basename "$f")"
           done
-        else
-          rm -rf "$CLAUDE_DIR/agents"
-          ln -sfn "$REPO_ROOT/config/claude/agents" "$CLAUDE_DIR/agents"
-        fi
+        done
       '';
 
       # Setup Codex config while preserving runtime-managed state such as
@@ -419,6 +418,7 @@ in
         # Keep mutable or externally installed entries and replace only the
         # names managed by this repository.
         for f in "$REPO_ROOT/config/codex/agents"/*.toml; do
+          [ -e "$f" ] || continue
           $DRY_RUN_CMD ln -sfn "$f" "$CODEX_DIR/agents/$(basename "$f")"
         done
         for f in "$REPO_ROOT/config/codex/rules"/*.rules; do

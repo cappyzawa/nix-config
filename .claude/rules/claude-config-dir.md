@@ -45,22 +45,16 @@ When adding a new repo-managed skill, add a corresponding `!` entry to `.gitigno
 | Claude-only skills | `config/claude/skills/<name>/` | `SKILL.md` |
 | Shared rules | `config/agents/rules/<name>.md` | Inlined into the Claude wrapper at activation |
 | Claude rule wrappers | `config/claude/rules/<name>.md` | `paths:` plus `@~/.agents/rules/<name>.md` |
-| Agents  | `config/claude/agents/<name>/`             | `AGENT.md`   |
+| Agents  | `hosts/<host>/claude-agents/<name>.md` (host-specific); `config/claude/agents/<name>.md` for global ones, currently none | frontmatter `name:` / `description:` |
 
 - Skill/agent directory names become the `/slash-command` name
 - Use lowercase with hyphens for directory and file names
 
-## Agent / Rule pairing
+## Language rules
 
-Language agents (`agents/<lang>.md`) are managed as a pair with a coding-convention rule (`rules/<lang>.md`):
+Coding conventions live once in `config/agents/rules/<lang>.md`. The Claude wrapper in `config/claude/rules/<lang>.md` only adds `paths:` and names the shared body with `@~/.agents/rules/<lang>.md`, which `setupClaude` expands into the deployed rule. Codex has no path-scoped rules, so the shared `AGENTS.md` tells it to read `~/.agents/rules/<lang>.md` before touching that language.
 
-- **Rule body**: principles, style, and knowledge shared in `config/agents/rules/<lang>.md`
-- **Claude rule wrapper**: scopes the shared body via `paths:` frontmatter and names it with `@~/.agents/rules/<lang>.md`, which `setupClaude` expands into the deployed rule
-- **Agent**: workflow definition only (pre-change checks, verification steps, output format) plus the `model:` override
-
-Conventions written in the agent file reach only the subagent, so the main conversation cannot review its output against them. Workflow written in the rule file loads into review-only sessions that never implement. Keep this separation.
-
-When adding or changing a language agent, revisit its paired rule.
+Rules carry conventions and knowledge, not workflow. There are no language subagents: the main session implements and verifies itself, per the shared `AGENTS.md`.
 
 ## Adding new files
 
