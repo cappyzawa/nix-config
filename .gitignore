@@ -18,6 +18,7 @@ config/claude/skills/*
 !config/claude/skills/japanese-tech-writing
 !config/claude/skills/ponchi
 !config/claude/skills/pull-request
+!config/claude/skills/root-fix/
 !config/claude/skills/verify
 !config/claude/skills/worktree/
 
