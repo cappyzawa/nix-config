@@ -200,17 +200,10 @@ in
       setupClaude = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
         REPO_ROOT="${config.home.homeDirectory}/ghq/src/github.com/cappyzawa/nix-config"
         CLAUDE_DIR="$HOME/.claude"
-        SHARED_RULES_DIR="$HOME/.agents/rules"
         HOST="${configName}"
         SETTINGS_SECRETS="${config.home.homeDirectory}/.config/nix-config-local/claude-settings-secrets.json"
 
-        $DRY_RUN_CMD mkdir -p "$CLAUDE_DIR" "$SHARED_RULES_DIR"
-
-        # Agent-neutral rule bodies. Claude wrappers import these with @path;
-        # Codex custom agents read the same files directly.
-        for f in "$REPO_ROOT/config/agents/rules"/*.md; do
-          $DRY_RUN_CMD ln -sfn "$f" "$SHARED_RULES_DIR/$(basename "$f")"
-        done
+        $DRY_RUN_CMD mkdir -p "$CLAUDE_DIR"
 
         # settings.json - written as a writable file (not a symlink) so Claude Code can
         # persist toggle states (e.g. voiceEnabled) without dirtying the git working tree.
@@ -308,26 +301,10 @@ in
         printf '\n\n## Local\n\n@~/.claude/CLAUDE.local.md\n' >> "$tmp"
         $DRY_RUN_CMD mv "$tmp" "$CLAUDE_DIR/CLAUDE.md"
 
-        # rules - the wrappers' @~/.agents/rules/<name>.md imports are inlined
-        # here rather than left for Claude Code to resolve. Claude Code resolves
-        # instruction imports eagerly at session start and attaches the imported
-        # body as a global instruction, so an imported body loses the wrapper's
-        # `paths:` scope and stays resident in every session.
-        rules_tmp=$(mktemp -d)
-        for f in "$REPO_ROOT/config/claude/rules"/*.md; do
-          ${pkgs.gawk}/bin/awk -v shared="$SHARED_RULES_DIR" '
-            /^@~\/\.agents\/rules\/[^\/]+\.md$/ {
-              body = shared "/" substr($0, length("@~/.agents/rules/") + 1)
-              while ((getline line < body) > 0) print line
-              close(body)
-              next
-            }
-            { print }
-          ' "$f" > "$rules_tmp/$(basename "$f")"
-        done
-        rm -rf "$CLAUDE_DIR/rules"
-        $DRY_RUN_CMD mv "$rules_tmp" "$CLAUDE_DIR/rules"
-        rm -rf "$rules_tmp"
+        # rules - symlink directory. Earlier revisions also deployed rule bodies
+        # to ~/.agents/rules for Codex; those symlinks now dangle.
+        rm -rf "$CLAUDE_DIR/rules" "$HOME/.agents/rules"
+        ln -sfn "$REPO_ROOT/config/claude/rules" "$CLAUDE_DIR/rules"
 
         # skills - symlink directory
         rm -rf "$CLAUDE_DIR/skills"
@@ -353,19 +330,18 @@ in
           $DRY_RUN_CMD rm -f "$AB_LINK"
         fi
 
-        # agents - merge if host-specific exists, otherwise symlink
-        if [ -d "$REPO_ROOT/hosts/$HOST/claude-agents" ]; then
-          rm -rf "$CLAUDE_DIR/agents"
-          mkdir -p "$CLAUDE_DIR/agents"
-          for src_dir in "$REPO_ROOT/config/claude/agents" "$REPO_ROOT/hosts/$HOST/claude-agents"; do
-            for f in "$src_dir"/*; do
-              ln -sf "$f" "$CLAUDE_DIR/agents/$(basename "$f")"
-            done
+        # agents - global and host-specific definitions merged per file. Either
+        # source directory may be absent; an unmatched glob would otherwise
+        # produce a dangling "*" symlink.
+        rm -rf "$CLAUDE_DIR/agents"
+        mkdir -p "$CLAUDE_DIR/agents"
+        for src_dir in "$REPO_ROOT/config/claude/agents" "$REPO_ROOT/hosts/$HOST/claude-agents"; do
+          [ -d "$src_dir" ] || continue
+          for f in "$src_dir"/*; do
+            [ -e "$f" ] || continue
+            ln -sf "$f" "$CLAUDE_DIR/agents/$(basename "$f")"
           done
-        else
-          rm -rf "$CLAUDE_DIR/agents"
-          ln -sfn "$REPO_ROOT/config/claude/agents" "$CLAUDE_DIR/agents"
-        fi
+        done
       '';
 
       # Setup Codex config while preserving runtime-managed state such as
@@ -419,6 +395,7 @@ in
         # Keep mutable or externally installed entries and replace only the
         # names managed by this repository.
         for f in "$REPO_ROOT/config/codex/agents"/*.toml; do
+          [ -e "$f" ] || continue
           $DRY_RUN_CMD ln -sfn "$f" "$CODEX_DIR/agents/$(basename "$f")"
         done
         for f in "$REPO_ROOT/config/codex/rules"/*.rules; do

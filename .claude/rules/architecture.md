@@ -29,7 +29,7 @@ This is a Nix Flake-based configuration for macOS using nix-darwin and Home Mana
 │   └── modules/       # Shared modules
 │       └── shared.nix
 └── config/            # Static configuration files (shared across hosts)
-    ├── agents/        # Cross-agent instructions, rule bodies, and compatible skills
+    ├── agents/        # Cross-agent instructions and compatible skills
     ├── claude/        # Claude Code-specific configuration
     ├── codex/         # Codex-specific configuration
     ├── borders/
