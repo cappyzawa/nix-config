@@ -10,7 +10,7 @@ Epic 級の Issue を、**指揮セッション（このセッション）と wo
 Agent tool の subagent ではなく **Claude App のセッション**を worker にする。
 worker は独立した context・独立した permission・独立した worktree を持ち、ユーザーが直接会話できるので、指揮側の context に tool 出力が溜まらず、承認の経路も各 worker で閉じる。
 
-model は指揮が Fable、worker は Opus で足りる（2026-09 時点の運用実績）。
+model は指揮が Fable、worker は Sonnet にする（方針が固まった実装スライスを出すので、worker に上位 model は要らない）。
 chip に model は指定できないので、ユーザーが chip を押すときの設定か、起動後の `set_session_model` で決める。
 
 ## 前提となる道具
