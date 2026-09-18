@@ -22,6 +22,9 @@
 - default branch へ直接 push せず、feature branch から PR を作る
 - すべての commit に `git commit -s` で署名する
 - commit message は英語で書き、変更の Why と What だけを載せる
+- commit の subject は Conventional Commits の `type(scope): summary` にし、repository に commitlint などの規約があればそれを優先する
+  - scope は既存の log にある語から選び、新しい scope を作るときは理由を visible text に 1 行添える
+- PR title も同じ形にし、type は主たる変更のものを使う（squash merge では PR title が default branch の commit subject になる）
 - commit message に GitHub の予約語（Fixes、Closes、Resolves など）と Issue や PR への参照（`#N`、`org/repo#N`、URL）を書かない
   - 予約語は意図せず Issue を閉じ、`#N` 参照は push のたびに Issue や PR のタイムラインへ backlink を生む
 - PR は draft で作る
@@ -42,13 +45,19 @@
 
 - 完了は自己申告ではなく実行結果で判定し、コードを変えたら動かして確かめ、コマンド、期待、実際を transcript に残す
   - 手順が要るときは `verify` skill を使う
+- PR の単位は意図ではなく検証で切り、同じ合格条件の実行で確かめられる変更は同じ PR に入れる
+  - 分けるのは、検証の surface が違うときと、ユーザーの判断を要する変更を含むときだけにする
+  - 意図の分離は commit に残す
+- 作業中に気づいた範囲外の直しは、今やる、捨てる、別 PR の 3 つから選び、既定は今やるにする
+  - 別 PR にするのは上の分ける条件を満たすときだけで、「後で」は捨てるの別名なので出口に含めない
+  - 今やるときは、同じ検証で確かめられるので含めたと visible text に 1 行書く
 - commit 前のレビューは main が diff を一度読み直すだけにし、それ以上の層はユーザーが求めたときだけ足す
   - 読んで見つかる誤りは、PR 上の Code Review agent と人間が担う
 - 設計判断のセカンドオピニオンや、同じバグへの修正が 2 回連続で失敗したときは、別 context の視点を入れる
   - まず該当コードを読むか 1 回動かして実験で決められないかを試し、残る問いを `codex` skill か、問いと関連ファイルだけを渡した上位 model の subagent（`model: fable`）に出す
   - 投げるのは選択肢、集めた証拠、自分の推奨を書いた問いで、開いた問いにしない
 - ライブラリの API と使い方は Context7 MCP を優先し、WebSearch は最終手段にする
-- レビュー指摘は、即時対応できるものはその場で直し、見送るものは理由を添えてユーザーに判断を仰ぐ
+- レビュー指摘は、その PR で直すか、理由を添えてユーザーに見送りの判断を仰ぐかにし、指摘から follow-up の PR を生まない
 
 ## サブエージェント
 
