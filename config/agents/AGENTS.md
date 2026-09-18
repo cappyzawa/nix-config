@@ -12,8 +12,6 @@
 - 日本語を書くときは `japanese-tech-writing` skill を読み、その規範に従う
 - 絵文字は使わない（Artifact の favicon のように機構が必須とするものは対象外）
 - PR、Issue、docs の言語は repository の公開範囲で決め、public は英語、internal と private は日本語にする
-- Codex では、変更対象の言語に対応する `~/.agents/rules/<language>.md` があれば作業前に読む
-  - Claude Code は同じ本文を path-scoped rule として自動で受け取る
 - 書ける分量の上限は、結論を支える証拠の量である
   - 断定は、読んだコード、実行した出力、ユーザーの明示発言で直接確認した範囲にだけ使い、それ以外は仮説か提案として書く
   - 渡された「確認済み」は、添えられた証拠が支える範囲でしか引き継がない

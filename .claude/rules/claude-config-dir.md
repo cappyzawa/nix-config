@@ -52,7 +52,7 @@ When adding a new repo-managed skill, add a corresponding `!` entry to `.gitigno
 
 ## Language rules
 
-Coding conventions live once in `config/agents/rules/<lang>.md`. The Claude wrapper in `config/claude/rules/<lang>.md` only adds `paths:` and names the shared body with `@~/.agents/rules/<lang>.md`, which `setupClaude` expands into the deployed rule. Codex has no path-scoped rules, so the shared `AGENTS.md` tells it to read `~/.agents/rules/<lang>.md` before touching that language.
+Coding conventions live once in `config/agents/rules/<lang>.md`. The Claude wrapper in `config/claude/rules/<lang>.md` only adds `paths:` and names the shared body with `@~/.agents/rules/<lang>.md`, which `setupClaude` expands into the deployed rule. Codex has no path-scoped rules; the same bodies are deployed to `~/.agents/rules/` where a Codex session can read them on request, but nothing loads them automatically.
 
 Rules carry conventions and knowledge, not workflow. There are no language subagents: the main session implements and verifies itself, per the shared `AGENTS.md`.
 

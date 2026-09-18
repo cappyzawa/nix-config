@@ -207,7 +207,7 @@ in
         $DRY_RUN_CMD mkdir -p "$CLAUDE_DIR" "$SHARED_RULES_DIR"
 
         # Agent-neutral rule bodies. Claude wrappers import these with @path;
-        # Codex reads the same files when AGENTS.md tells it to.
+        # Codex has no path-scoped rules; these stay readable on request.
         for f in "$REPO_ROOT/config/agents/rules"/*.md; do
           $DRY_RUN_CMD ln -sfn "$f" "$SHARED_RULES_DIR/$(basename "$f")"
         done
