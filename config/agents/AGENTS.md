@@ -22,6 +22,9 @@
 - default branch へ直接 push せず、feature branch から PR を作る
 - すべての commit に `git commit -s` で署名する
 - commit message は英語で書き、変更の Why と What だけを載せる
+- commit の subject は Conventional Commits の `type(scope): summary` にし、repository に commitlint などの規約があればそれを優先する
+  - scope は既存の log にある語から選び、新しい scope を作るときは理由を visible text に 1 行添える
+- PR title も同じ形にし、type は主たる変更のものを使う（squash merge では PR title が default branch の commit subject になる）
 - commit message に GitHub の予約語（Fixes、Closes、Resolves など）と Issue や PR への参照（`#N`、`org/repo#N`、URL）を書かない
   - 予約語は意図せず Issue を閉じ、`#N` 参照は push のたびに Issue や PR のタイムラインへ backlink を生む
 - PR は draft で作る
