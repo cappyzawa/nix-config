@@ -30,7 +30,6 @@ paths:
 | `~/.codex/AGENTS.md` | `config/codex/AGENTS.md` and `hosts/<host>/claude-memory.md` | Copied into one global instruction file |
 | `~/.codex/hooks.json` | `config/codex/hooks.json` | Symlinked |
 | `~/.codex/agents/*.toml` | `config/codex/agents/*.toml` | Individually symlinked without deleting externally installed agents; the directory is currently empty |
-| `~/.agents/rules/*.md` | `config/agents/rules/*.md` | Agent-neutral language rule bodies imported by the Claude wrappers; available to Codex on request only |
 | `~/.codex/rules/*.rules` | `config/codex/rules/*.rules` | Individually symlinked without replacing runtime rules |
 | `~/.codex/skills/<name>` | `config/codex/skills/<name>` | Compatible skills only, individually symlinked |
 
@@ -41,8 +40,7 @@ After the first deployment, and whenever `hooks.json` changes, open Codex and ap
 ## Compatibility boundaries
 
 - Codex `@file` mentions attach context from the prompt composer; unlike Claude's instruction imports, `@path` inside `AGENTS.md`, rules, or `SKILL.md` is not expanded automatically. Use nested `AGENTS.md`, skill `references/`, explicit read instructions, or symlinks for durable composition.
-- Claude `paths:` rules do not load automatically in Codex, and nothing else loads the language rules there. Claude's thin `config/claude/rules/` wrappers add `paths:` and name the shared body with `@path`.
-- Claude Code resolves an instruction import eagerly at session start and attaches the imported body as a global instruction, so a `@path` left in a `paths:`-scoped rule loses its scope. `setupClaude` therefore inlines the shared body when it deploys `~/.claude/rules/`, and only the deployed copy is scoped.
+- Codex has no path-scoped rules, so the language rules under `config/claude/rules/` are Claude-only. What the two agents share is the instruction text and the skills.
 - Only the herdr lifecycle hooks are deployed to each agent; neither carries workflow gates in hooks.
 - Codex uses `PermissionRequest` for herdr's blocked state because it has no `Notification(permission_prompt)` event.
 - Codex preserves its existing model, trusted-project, plugin, and migration state unless a managed base or host setting explicitly overrides the same key.
