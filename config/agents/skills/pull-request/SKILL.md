@@ -22,7 +22,8 @@ PR body の読み手は human レビュアーで、merge 判断に必要な情�
 
 - 動機を 1〜2 文で書く
 - アプローチを箇条書き 5 点までで書き、per-file の列挙にはしない
-- non-goals と follow-up は該当があるときだけ節を作る
+- non-goals は該当があるときだけ節を作る
+- follow-up の節に書くのは、検証の surface が違うかユーザーの判断が要るために別 PR にしたものだけで、それ以外は本 PR に含めるか捨てる
 - 関連 Issue や PR へのリンクと GitHub の予約語（Closes など）は PR body ではむしろ推奨する
   - 参照は `org/repo#N` のように org/repo まで明示し、番号だけの `#N` による取り違えを防ぐ
 
