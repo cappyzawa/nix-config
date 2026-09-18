@@ -85,23 +85,6 @@ in
         };
       };
 
-      # esa.io official MCP server (stdio). The access token is referenced as a
-      # placeholder and expanded from the Claude Code process environment, which
-      # the `env` block of ~/.claude/settings.json feeds. The real token lives in
-      # ~/.config/nix-config-local/claude-settings-secrets.json, merged into those
-      # settings at activation time (see setupClaude in nix/home/default.nix).
-      # A shell rc file cannot hold it: the desktop app is launched by launchd and
-      # never reads one, so the placeholder would reach the server unexpanded.
-      shared.claudeMcpServers.esa = {
-        type = "stdio";
-        command = "npx";
-        args = [ "@esaio/esa-mcp-server" ];
-        env = {
-          ESA_ACCESS_TOKEN = "\${ESA_ACCESS_TOKEN}";
-          LANG = "ja";
-        };
-      };
-
       programs = {
         # AeroSpace settings for external monitors
         aerospace.settings.gaps.outer.top = lib.mkForce [
