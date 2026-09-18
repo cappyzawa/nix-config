@@ -29,4 +29,3 @@ Issue は課題を伝える文書で、解決策の設計書ではない。
 
 - Issue や PR への参照は `org/repo#N` 形式で書く
 - リポジトリに Issue テンプレートがあればテンプレートに従い、この規範は各欄の埋め方の指針として適用する
-- 言語は repository の公開範囲で決め、public は英語、internal と private は日本語にする
