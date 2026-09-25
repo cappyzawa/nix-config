@@ -20,7 +20,6 @@ config/claude/skills/*
 !config/claude/skills/pull-request
 !config/claude/skills/root-fix/
 !config/claude/skills/verify
-!config/claude/skills/worktree/
 
 # Codex system/plugin-managed skills are linked into ~/.codex at activation;
 # only repository-managed Codex configuration belongs here.

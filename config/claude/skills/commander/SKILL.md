@@ -20,7 +20,6 @@ chip に model は指定できないので、ユーザーが chip を押すと�
 - `mcp__ccd_session_mgmt__list_sessions` / `list_events` / `send_message` / `set_session_title` / `set_session_model`: worker の発見・観察・指示・命名
 - `mcp__ccd_session__dismiss_task`: 押されなかった chip の取り下げ（再発行はまず dismiss してから）
 - worker からの連絡は `<cross-session-message>` として届く。返信は `send_message` で、宛先は `list_sessions` の sessionId（`from` の socket アドレスはセッションが消えると解決しない）
-- Claude Code CLI では `worktree` skill（herdr）が代替になるが、この skill の手順は Claude App 前提
 
 ## 0. 名乗る
 
