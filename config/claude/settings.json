@@ -8,7 +8,7 @@
     "CLAUDE_CODE_STOP_HOOK_BLOCK_CAP": "20",
     "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet"
   },
-  "vim": true,
+  "editorMode": "vim",
   "attribution": {
     "commit": "Co-Authored-By: Claude <noreply@anthropic.com>",
     "pr": "🤖 Generated with Claude Code",
@@ -205,7 +205,7 @@
   },
   "language": "Japanese",
   "remoteControlAtStartup": true,
-  "voiceEnabled": true,
+  "voice": { "enabled": true },
   "agentPushNotifEnabled": true,
   "extraKnownMarketplaces": {
     "claude-community": {

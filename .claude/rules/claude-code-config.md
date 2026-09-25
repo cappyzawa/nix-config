@@ -49,7 +49,7 @@ activation ブロック (`nix/home/default.nix`):
   - 未解決のプレースホルダは文字列のまま server へ渡り、remote API が unauthorized を返す。接続不良に見えて原因が分かりにくいため名前を出す
   - 検査自体の失敗は報告するだけで switch を止めない
 - `permissions.allow` / `permissions.deny` は上書きでなく配列連結
-- **symlink ではなく実ファイルとしてコピーする**。Claude Code が runtime に書き込む値（`voiceEnabled` など）で git working tree を汚さないため
+- **symlink ではなく実ファイルとしてコピーする**。Claude Code が runtime に書き込む値（`voice` など）で git working tree を汚さないため
 - コピーは毎回上書きなので、runtime が書き込む値を switch 後も残したいなら base（または host）側に宣言しておく必要がある。宣言していないキーは switch のたびに消える
   - 例: `/plugin install`（user scope）が書く `enabledPlugins`。宣言していないと switch で有効化フラグが消え、plugin が無効化される
 

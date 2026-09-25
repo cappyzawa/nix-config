@@ -206,7 +206,7 @@ in
         $DRY_RUN_CMD mkdir -p "$CLAUDE_DIR"
 
         # settings.json - written as a writable file (not a symlink) so Claude Code can
-        # persist toggle states (e.g. voiceEnabled) without dirtying the git working tree.
+        # persist toggle states (e.g. voice) without dirtying the git working tree.
         # Three layers: the repo base, an optional per-host override, and an optional
         # secrets file from outside the repo. The secrets file may carry only `env`, so a
         # stray key in it cannot quietly relax `permissions` or replace a hook.
