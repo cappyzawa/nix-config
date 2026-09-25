@@ -204,7 +204,6 @@
     ]
   },
   "language": "Japanese",
-  "effortLevel": "high",
   "remoteControlAtStartup": true,
   "voiceEnabled": true,
   "agentPushNotifEnabled": true,
