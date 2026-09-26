@@ -1,6 +1,7 @@
 ---
 name: verify
 description: 変更を実際に動かして検証する。diff から変更 surface を分類し、surface ごとの観点で検証項目を起こして実行し、証拠を残す。実装完了後・完了報告前に使う。
+effort: high
 ---
 
 # Verify
