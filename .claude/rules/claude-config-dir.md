@@ -44,7 +44,7 @@ When adding a new repo-managed skill, add a corresponding `!` entry to `.gitigno
 | Shared skills | `config/agents/skills/<name>/` with symlinks from both agent directories | `SKILL.md` |
 | Claude-only skills | `config/claude/skills/<name>/` | `SKILL.md` |
 | Rules | `config/claude/rules/<name>.md` | `paths:` frontmatter plus the body |
-| Agents  | `hosts/<host>/claude-agents/<name>.md` (host-specific); `config/claude/agents/<name>.md` for global ones, currently none | frontmatter `name:` / `description:` |
+| Agents  | `hosts/<host>/claude-agents/<name>.md` (host-specific); `config/claude/agents/<name>.md` for global ones (`implementer`) | frontmatter `name:` / `description:` |
 
 - Skill/agent directory names become the `/slash-command` name
 - Use lowercase with hyphens for directory and file names
@@ -53,7 +53,7 @@ When adding a new repo-managed skill, add a corresponding `!` entry to `.gitigno
 
 Coding conventions live in `config/claude/rules/<lang>.md` with a `paths:` frontmatter, and `~/.claude/rules` is a symlink to that directory. Codex has no path-scoped rules and does not read them; sharing with Codex stops at `AGENTS.md` and skills.
 
-Rules carry conventions and knowledge, not workflow. There are no language subagents: the main session implements and verifies itself, per the shared `AGENTS.md`.
+Rules carry conventions and knowledge, not workflow. There are no language subagents: per the shared `AGENTS.md`, implementation goes to the language-agnostic `implementer` and the main session verifies.
 
 ## Adding new files
 

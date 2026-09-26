@@ -43,7 +43,7 @@
   - 自分で実装するときも subagent に出すときも省かない
   - 「呼び出し側が正しく組めば成り立つ」「コメントで伝える」で済ませているものは、型、private なフィールド、生成を 1 か所に絞った関数で表せないかを先に試す
   - 契約を受けた側は型の形を変えられないので、subagent への契約に書く型の形（key、struct、戻り値の `Option` など）はこの判断を経たものにする
-- How が固まったら、実装は Sonnet の subagent か worker セッションに出し、main の context には契約と証拠だけを載せる
+- How が固まったら、実装は実装用の subagent（Claude では `implementer`）か worker セッションに出し、main の context には契約と証拠だけを載せる
 
 ## 検証とレビュー
 
@@ -79,6 +79,7 @@ subagent を起こすのは、1 か 2 のどちらかが成り立ち、かつ 3 
 - subagent に渡すのは契約（目的、対象ファイル、書き込み範囲、合格条件）と上流の成果物で、会話履歴は渡さない
 - subagent に返させるのは patch、証拠、未解決事項で、transcript は返させない
 - 合格条件は subagent が実行できるコマンドにし、main は報告の文ではなくその出力で判定する（疑わしければ自分で 1 回実行する）
+  - subagent が回すのは合格条件のコマンドまでで、`verify` skill は統合した後に main が回す
 - 統合と trunk への書き込みは main だけが行う
 - 調査の fan-out は、1 件の lookup に 1 agent、比較に 2〜4、広い調査にだけ 10 以上を目安にする
 - model と effort は agent 定義の既定に任せ、起動時に変えたときは理由を visible text に 1 行添える
