@@ -1,7 +1,7 @@
 ---
 name: implementer
 description: How が固まった実装を契約（目的、対象ファイル、書き込み範囲、合格条件）どおりに書く。main セッションが実装を委譲するときに使う。
-model: sonnet
+model: claude-sonnet-5-5
 effort: low
 disallowedTools: Skill
 ---
