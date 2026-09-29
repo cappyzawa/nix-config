@@ -260,6 +260,9 @@ in
               | .permissions.allow = ($b.permissions.allow + ($h.permissions.allow // []))
               | .permissions.deny = (($b.permissions.deny // []) + ($h.permissions.deny // []))
               | .env = (($b.env // {}) * ($h.env // {}) * ($s.env // {}))
+              | if (.env.CLAUDE_CODE_SUBAGENT_MODEL // "" | IN("", "inherit")) then
+                  error("env.CLAUDE_CODE_SUBAGENT_MODEL must name a model: the implementer agent takes its model from it and would otherwise inherit the main session model")
+                else . end
             ' > "$settings_tmp"
 
           # An MCP placeholder that nothing expands is passed through verbatim, so the

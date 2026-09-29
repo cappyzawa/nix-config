@@ -48,6 +48,8 @@ activation ブロック (`nix/home/default.nix`):
 - 生成後に、MCP 定義のプレースホルダが settings の `env` で解決されているかを検査し、未解決の変数名を switch 出力に出す
   - 未解決のプレースホルダは文字列のまま server へ渡り、remote API が unauthorized を返す。接続不良に見えて原因が分かりにくいため名前を出す
   - 検査自体の失敗は報告するだけで switch を止めない
+- マージ結果の `env.CLAUDE_CODE_SUBAGENT_MODEL` が空か `inherit` なら activation を止める
+  - `implementer` は model を持たず、この env から下位 model を受け取る。env が無いと main の model を継承し、実装 lane が上位 model で動く
 - `permissions.allow` / `permissions.deny` は上書きでなく配列連結
 - **symlink ではなく実ファイルとしてコピーする**。Claude Code が runtime に書き込む値（`voice` など）で git working tree を汚さないため
 - コピーは毎回上書きなので、runtime が書き込む値を switch 後も残したいなら base（または host）側に宣言しておく必要がある。宣言していないキーは switch のたびに消える
