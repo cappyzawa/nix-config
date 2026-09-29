@@ -29,7 +29,7 @@ paths:
 | `~/.codex/config.toml` | `config/codex/config.toml`, host override, generated MCP config | Deep-merged into the existing writable file so runtime-managed projects and plugin state survive |
 | `~/.codex/AGENTS.md` | `config/codex/AGENTS.md` and `hosts/<host>/claude-memory.md` | Copied into one global instruction file |
 | `~/.codex/hooks.json` | `config/codex/hooks.json` | Symlinked |
-| `~/.codex/agents/*.toml` | `config/codex/agents/*.toml` | Individually symlinked without deleting externally installed agents; the directory is currently empty |
+| `~/.codex/agents/nix-config` | `config/codex/agents` | Directory symlink beside externally installed agents. Codex opens role files with `O_NOFOLLOW`, so a per-file symlink fails with `agent type is currently not available`; discovery recurses into subdirectories, so the directory link works |
 | `~/.codex/rules/*.rules` | `config/codex/rules/*.rules` | Individually symlinked without replacing runtime rules |
 | `~/.codex/skills/<name>` | `config/codex/skills/<name>` | Compatible skills only, individually symlinked |
 

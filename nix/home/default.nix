@@ -396,16 +396,24 @@ in
         fi
 
         # Keep mutable or externally installed entries and replace only the
-        # names managed by this repository.
-        for f in "$REPO_ROOT/config/codex/agents"/*.toml; do
-          [ -e "$f" ] || continue
-          $DRY_RUN_CMD ln -sfn "$f" "$CODEX_DIR/agents/$(basename "$f")"
-        done
+        # names managed by this repository. Codex opens a role file with
+        # O_NOFOLLOW, so roles go through a directory link: discovery recurses
+        # into subdirectories, and only the final path component must not be a link.
+        $DRY_RUN_CMD ln -sfn "$REPO_ROOT/config/codex/agents" "$CODEX_DIR/agents/nix-config"
         for f in "$REPO_ROOT/config/codex/rules"/*.rules; do
           $DRY_RUN_CMD ln -sfn "$f" "$CODEX_DIR/rules/$(basename "$f")"
         done
         for f in "$REPO_ROOT/config/codex/skills"/*; do
           $DRY_RUN_CMD ln -sfn "$f" "$CODEX_DIR/skills/$(basename "$f")"
+        done
+        # Entries removed from this repository leave their links dangling.
+        for d in agents rules skills; do
+          for link in "$CODEX_DIR/$d"/*; do
+            [ -L "$link" ] && [ ! -e "$link" ] || continue
+            case "$(readlink "$link")" in
+              "$REPO_ROOT/config/codex/$d/"*) $DRY_RUN_CMD rm -f "$link" ;;
+            esac
+          done
         done
         $DRY_RUN_CMD ln -sfn "$REPO_ROOT/config/codex/hooks.json" "$CODEX_DIR/hooks.json"
       '';
