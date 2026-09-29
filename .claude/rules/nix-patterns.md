@@ -18,5 +18,5 @@ Each machine has its own directory at `hosts/{hostname}/` with a `default.nix` a
 - Additional Homebrew casks/brews
 - App Store apps (masApps)
 - AeroSpace monitor-specific settings
-- Host-specific config files (e.g., `claude-memory.md`)
+- Host-specific config files (e.g., `agent-instructions.md`)
 - Any other host-specific overrides

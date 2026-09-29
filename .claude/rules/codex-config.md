@@ -10,15 +10,13 @@ paths:
 
 # Codex configuration
 
-## Canonical instructions
+## Instructions
 
-`config/agents/AGENTS.md` is the global instruction source shared by Codex and Claude Code.
+`config/codex/AGENTS.md` is Codex's global instruction file, independent of Claude's `config/claude/CLAUDE.md`.
 
-- `config/codex/AGENTS.md` is a relative symlink to the canonical file.
-- `config/claude/CLAUDE.md` is a relative symlink to the canonical file.
-- The repository-root `AGENTS.md` contains nix-config-specific routing instructions.
-- The repository-root `CLAUDE.md` is a symlink to `AGENTS.md` so both agents read the same project rules.
-- Agent-specific behavior belongs in settings, hooks, skills, or custom agent definitions instead of the shared instructions.
+- The two files share an engineering philosophy but not text: the workflows it implies differ by harness, and wording kept neutral for both was weaker in each. Duplicated rules are accepted because they change rarely.
+- Only harness-independent skills are shared, from `config/agents/skills/`.
+- The repository-root `AGENTS.md` holds nix-config facts, and the repository-root `CLAUDE.md` is a symlink to it, because those facts do not depend on the harness.
 
 ## Home Manager deployment
 
@@ -27,7 +25,7 @@ paths:
 | Target | Source | Behavior |
 |---|---|---|
 | `~/.codex/config.toml` | `config/codex/config.toml`, host override, generated MCP config | Deep-merged into the existing writable file so runtime-managed projects and plugin state survive |
-| `~/.codex/AGENTS.md` | `config/codex/AGENTS.md` and `hosts/<host>/claude-memory.md` | Copied into one global instruction file |
+| `~/.codex/AGENTS.md` | `config/codex/AGENTS.md` and `hosts/<host>/agent-instructions.md` | Copied into one global instruction file |
 | `~/.codex/hooks.json` | `config/codex/hooks.json` | Symlinked |
 | `~/.codex/agents/nix-config` | `config/codex/agents` | Directory symlink beside externally installed agents. Codex opens role files with `O_NOFOLLOW`, so a per-file symlink fails with `agent type is currently not available`; discovery recurses into subdirectories, so the directory link works |
 | `~/.codex/rules/*.rules` | `config/codex/rules/*.rules` | Individually symlinked without replacing runtime rules |
@@ -40,7 +38,7 @@ After the first deployment, and whenever `hooks.json` changes, open Codex and ap
 ## Compatibility boundaries
 
 - Codex `@file` mentions attach context from the prompt composer; unlike Claude's instruction imports, `@path` inside `AGENTS.md`, rules, or `SKILL.md` is not expanded automatically. Use nested `AGENTS.md`, skill `references/`, explicit read instructions, or symlinks for durable composition.
-- Codex has no path-scoped rules, so the language rules under `config/claude/rules/` are Claude-only. What the two agents share is the instruction text and the skills.
+- Codex has no path-scoped rules, so the language rules under `config/claude/rules/` are Claude-only. What the two agents share is the harness-independent skills.
 - Only the herdr lifecycle hooks are deployed to each agent; neither carries workflow gates in hooks.
 - Codex uses `PermissionRequest` for herdr's blocked state because it has no `Notification(permission_prompt)` event.
 - Codex preserves its existing model, trusted-project, plugin, and migration state unless a managed base or host setting explicitly overrides the same key.

@@ -2,7 +2,7 @@
 paths:
   - "nix/home/default.nix"
   - "config/claude/**"
-  - "hosts/*/claude-memory.md"
+  - "hosts/*/agent-instructions.md"
   - "hosts/*/claude-settings.json"
 ---
 
@@ -26,7 +26,7 @@ activation ブロック (`nix/home/default.nix`):
 | 対象 | ソース | 反映方法 |
 |---|---|---|
 | `~/.claude/settings.json` | `config/claude/settings.json` (+ `hosts/<host>/claude-settings.json` + `~/.config/nix-config-local/claude-settings-secrets.json`) | jq マージ後、書き込み可能な実ファイルとしてコピー（symlink ではない） |
-| `~/.claude/CLAUDE.md` | `config/claude/CLAUDE.md` symlink経由の`config/agents/AGENTS.md` (+ `hosts/<host>/claude-memory.md`) | 連結し、Claude専用の `@~/.claude/CLAUDE.local.md` importを末尾へ付けてコピー |
+| `~/.claude/CLAUDE.md` | `config/claude/CLAUDE.md` (+ `hosts/<host>/agent-instructions.md`) | 連結し、Claude専用の `@~/.claude/CLAUDE.local.md` importを末尾へ付けてコピー |
 | `~/.claude/rules` | `config/claude/rules` | ディレクトリ symlink |
 | `~/.claude/skills` | `config/claude/skills` | ディレクトリ symlink |
 | `~/.claude/agents/*` | `config/claude/agents` (あれば) + `hosts/<host>/claude-agents` | 存在するディレクトリの中身を個別ファイルで symlink |
@@ -57,6 +57,7 @@ activation ブロック (`nix/home/default.nix`):
 
 ## このプロジェクトの規約
 
-- 共通 instructions と共通 skill は `config/agents/` に置く。rule と Claude 固有の設定は `config/claude/` 配下に置く
+- Claude の instructions（`config/claude/CLAUDE.md`）は Codex の `config/codex/AGENTS.md` と独立に書く。共有するのは `config/agents/skills/` の harness に依らない skill だけにする
+- rule と Claude 固有の設定は `config/claude/` 配下に置く
 - 新規ディレクトリ・ファイルを作った場合は `git add` してから `make check` すること（flake が未追跡パスを参照できないため）
-- host 固有の上書きは `hosts/<host>/` に置く（`claude-settings.json` / `claude-memory.md` / `claude-agents/`）
+- host 固有の上書きは `hosts/<host>/` に置く（`claude-settings.json` / `claude-agents/`。`agent-instructions.md` は Claude と Codex の両方の instructions に追記する）

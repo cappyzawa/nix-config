@@ -32,7 +32,7 @@ codex exec -s read-only <subagent flags> --cd <project_directory> "<short reques
 
 ### なぜ subagent flags が要るか
 
-`~/.codex/AGENTS.md` は Claude と共有のグローバル instructions で、Codex を main セッションとして動かす前提で書かれている。`codex exec` はそれをそのまま読むので、レビュー依頼を main の作業として解釈し、sub-agent を spawn しうる。spawn は既定で親の全 history を fork するため、かつて 1 回の依頼で 20 agent・入力 1,400 万 token を消費した実測がある。
+`~/.codex/AGENTS.md` は Codex のグローバル instructions で、Codex を top-level の thread として動かす前提で書かれている。`codex exec` はそれをそのまま読むので、レビュー依頼を main の作業として解釈し、sub-agent を spawn しうる。spawn は既定で親の全 history を fork するため、かつて 1 回の依頼で 20 agent・入力 1,400 万 token を消費した実測がある。
 
 - `-c agents.enabled=false` は collaboration ツール（spawn_agent 等）を tool 一覧から外す。prompt で禁止するより確実
 - `-c developer_instructions=...` は「自分は subagent」を developer message として渡す。これが無いと codex は自分が main だと判断し、AGENTS.md の main 向け手順を適用する

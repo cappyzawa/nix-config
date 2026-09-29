@@ -8,7 +8,6 @@ paths:
 # config/claude/ vs .claude/
 
 Two `claude` directories with the same name but different roles. Do not merge them.
-Global instructions are the exception: `config/claude/CLAUDE.md` is a symlink to the cross-agent canonical `config/agents/AGENTS.md`.
 
 | | `config/claude/` | `.claude/` (repo root) |
 |---|---|---|
@@ -51,9 +50,9 @@ When adding a new repo-managed skill, add a corresponding `!` entry to `.gitigno
 
 ## Language rules
 
-Coding conventions live in `config/claude/rules/<lang>.md` with a `paths:` frontmatter, and `~/.claude/rules` is a symlink to that directory. Codex has no path-scoped rules and does not read them; sharing with Codex stops at `AGENTS.md` and skills.
+Coding conventions live in `config/claude/rules/<lang>.md` with a `paths:` frontmatter, and `~/.claude/rules` is a symlink to that directory. Codex has no path-scoped rules and does not read them; sharing with Codex stops at the skills under `config/agents/skills/`.
 
-Rules carry conventions and knowledge, not workflow. There are no language subagents: per the shared `AGENTS.md`, implementation goes to the language-agnostic `implementer` and the main session verifies.
+Rules carry conventions and knowledge, not workflow. There are no language subagents: per `CLAUDE.md`, implementation goes to the language-agnostic `implementer` and the main session verifies.
 
 ## Adding new files
 

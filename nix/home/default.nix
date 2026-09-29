@@ -294,12 +294,12 @@ in
           $DRY_RUN_CMD mv -f "$settings_tmp" "$CLAUDE_DIR/settings.json"
         )
 
-        # CLAUDE.md - common + host-specific + Claude-only local import.
+        # CLAUDE.md - Claude instructions + host-specific + Claude-only local import.
         tmp=$(mktemp)
         cat "$REPO_ROOT/config/claude/CLAUDE.md" > "$tmp"
-        if [ -f "$REPO_ROOT/hosts/$HOST/claude-memory.md" ]; then
+        if [ -f "$REPO_ROOT/hosts/$HOST/agent-instructions.md" ]; then
           printf '\n' >> "$tmp"
-          cat "$REPO_ROOT/hosts/$HOST/claude-memory.md" >> "$tmp"
+          cat "$REPO_ROOT/hosts/$HOST/agent-instructions.md" >> "$tmp"
         fi
         printf '\n\n## Local\n\n@~/.claude/CLAUDE.local.md\n' >> "$tmp"
         $DRY_RUN_CMD mv "$tmp" "$CLAUDE_DIR/CLAUDE.md"
@@ -384,12 +384,12 @@ in
         $DRY_RUN_CMD mv "$merged_toml" "$CODEX_DIR/config.toml"
         rm -f "$runtime_json" "$base_json" "$mcp_json" "$host_json" "$merged_json" "$merged_toml"
 
-        # AGENTS.md - common + host-specific context.
-        if [ -f "$REPO_ROOT/hosts/$HOST/claude-memory.md" ]; then
+        # AGENTS.md - Codex instructions + host-specific context.
+        if [ -f "$REPO_ROOT/hosts/$HOST/agent-instructions.md" ]; then
           tmp=$(mktemp)
           cat "$REPO_ROOT/config/codex/AGENTS.md" > "$tmp"
           printf '\n' >> "$tmp"
-          cat "$REPO_ROOT/hosts/$HOST/claude-memory.md" >> "$tmp"
+          cat "$REPO_ROOT/hosts/$HOST/agent-instructions.md" >> "$tmp"
           $DRY_RUN_CMD mv "$tmp" "$CODEX_DIR/AGENTS.md"
         else
           $DRY_RUN_CMD cp -fL "$REPO_ROOT/config/codex/AGENTS.md" "$CODEX_DIR/AGENTS.md"
