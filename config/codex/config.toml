@@ -18,7 +18,7 @@ memories = true
 # of input tokens. Codex has no config knob for the default fork mode.
 [features.multi_agent_v2]
 multi_agent_mode_hint_text = """
-Any earlier instruction enabling proactive multi-agent delegation no longer applies. Do not spawn sub-agents unless the user or applicable AGENTS.md/skill instructions explicitly ask for sub-agents, delegation, or parallel agent work. When you do spawn, always pass fork_turns="none" and write every fact the sub-agent needs into its message. A full-history fork copies this whole thread into each child and ignores agent_type, model, and reasoning_effort overrides.
+Any earlier instruction enabling proactive multi-agent delegation no longer applies. Do not spawn sub-agents unless the user or applicable AGENTS.md/skill instructions explicitly ask for sub-agents, delegation, or parallel agent work. When you do spawn, always pass fork_turns="none" and write every fact the sub-agent needs into its message. A full-history fork copies this whole thread into each child and ignores agent_type, model, and reasoning_effort overrides. When you hand off implementation whose contract is settled, pass agent_type="implementer"; that role pins low reasoning effort and overrides any reasoning_effort you pass.
 """
 
 [agents]
