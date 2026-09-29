@@ -27,7 +27,6 @@ paths:
 | `~/.codex/config.toml` | `config/codex/config.toml`, host override, generated MCP config | Deep-merged into the existing writable file so runtime-managed projects and plugin state survive |
 | `~/.codex/AGENTS.md` | `config/codex/AGENTS.md` and `hosts/<host>/agent-instructions.md` | Copied into one global instruction file |
 | `~/.codex/hooks.json` | `config/codex/hooks.json` | Symlinked |
-| `~/.codex/agents/nix-config` | `config/codex/agents` | Directory symlink beside externally installed agents. Codex opens role files with `O_NOFOLLOW`, so a per-file symlink fails with `agent type is currently not available`; discovery recurses into subdirectories, so the directory link works |
 | `~/.codex/rules/*.rules` | `config/codex/rules/*.rules` | Individually symlinked without replacing runtime rules |
 | `~/.codex/skills/<name>` | `config/codex/skills/<name>` | Compatible skills only, individually symlinked |
 
@@ -42,9 +41,8 @@ After the first deployment, and whenever `hooks.json` changes, open Codex and ap
 - Only the herdr lifecycle hooks are deployed to each agent; neither carries workflow gates in hooks.
 - Codex uses `PermissionRequest` for herdr's blocked state because it has no `Notification(permission_prompt)` event.
 - Codex preserves its existing model, trusted-project, plugin, and migration state unless a managed base or host setting explicitly overrides the same key.
-- `implementer` is the only shipped role. It pins `model_reasoning_effort = "low"` and no `model`: earlier role files pinned both, which froze subagents on an older tier as models moved on.
-  - Codex applies the role after the `spawn_agent` `model` / `reasoning_effort` arguments, so the role's effort wins over the parent's. To give one implementation more effort, spawn without `agent_type` instead of passing `reasoning_effort`.
-  - With no `model`, the role runs on the parent's model, so the implementation lane differs from the main session by effort, not by tier (Claude's `CLAUDE_CODE_SUBAGENT_MODEL` lowers both). `agents.default_subagent_model` stays unset because it also reaches the Codex commander's task owners, which hold a slice's How, and a role without `model` cannot restore the parent's model once it is set.
-  - `spawn_agent` tells the model to omit `agent_type` unless asked, so `multi_agent_mode_hint_text` names the role for implementation hand-offs.
+- No custom Codex roles are shipped. The top-level thread owns a task end to end, and subagents are tactical helpers that inherit its model and effort, so `agents.default_subagent_model` stays unset.
+  - If a role is added later, deploy it through a directory link: Codex opens role files with `O_NOFOLLOW`, so a per-file symlink fails with `agent type is currently not available`, while discovery recurses into subdirectories.
+- `model_reasoning_effort` applies to normal turns and `plan_mode_reasoning_effort` only to turns in Plan Mode. The higher Plan Mode effort does not make Plan Mode the default workflow; `AGENTS.md` limits Plan Mode to tasks that need the strategy confirmed first.
 - Codex `spawn_agent` defaults to `fork_turns = "all"`, which forks the whole parent thread into each child (a review request once fanned out to 20 children and about 14M input tokens) and ignores `agent_type` / model overrides. There is no config for the default fork mode, so `features.multi_agent_v2.multi_agent_mode_hint_text` in `config/codex/config.toml` carries the stock non-proactive mode text plus an instruction to always pass `fork_turns = "none"`. The override is static text: if proactive delegation mode is ever turned on, or a Codex upgrade changes the stock wording, revisit it.
 - `approval_policy = "on-request"` together with `approvals_reviewer = "auto_review"` is the Codex equivalent of Claude's auto permission mode: the workspace sandbox remains active and a separate reviewer handles eligible escalation requests.

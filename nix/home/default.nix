@@ -354,7 +354,7 @@ in
         CODEX_DIR="$HOME/.codex"
         HOST="${configName}"
 
-        $DRY_RUN_CMD mkdir -p "$CODEX_DIR" "$CODEX_DIR/agents" "$CODEX_DIR/rules" "$CODEX_DIR/skills"
+        $DRY_RUN_CMD mkdir -p "$CODEX_DIR" "$CODEX_DIR/rules" "$CODEX_DIR/skills"
 
         runtime_json=$(mktemp)
         base_json=$(mktemp)
@@ -396,17 +396,19 @@ in
         fi
 
         # Keep mutable or externally installed entries and replace only the
-        # names managed by this repository. Codex opens a role file with
-        # O_NOFOLLOW, so roles go through a directory link: discovery recurses
-        # into subdirectories, and only the final path component must not be a link.
-        $DRY_RUN_CMD ln -sfn "$REPO_ROOT/config/codex/agents" "$CODEX_DIR/agents/nix-config"
+        # names managed by this repository.
         for f in "$REPO_ROOT/config/codex/rules"/*.rules; do
           $DRY_RUN_CMD ln -sfn "$f" "$CODEX_DIR/rules/$(basename "$f")"
         done
         for f in "$REPO_ROOT/config/codex/skills"/*; do
           $DRY_RUN_CMD ln -sfn "$f" "$CODEX_DIR/skills/$(basename "$f")"
         done
-        # Entries removed from this repository leave their links dangling.
+        # Entries removed from this repository leave their links dangling. The
+        # agents directory link predates dropping the Codex roles and matches no
+        # per-entry prefix, so it is removed by name.
+        if [ -L "$CODEX_DIR/agents/nix-config" ]; then
+          $DRY_RUN_CMD rm -f "$CODEX_DIR/agents/nix-config"
+        fi
         for d in agents rules skills; do
           for link in "$CODEX_DIR/$d"/*; do
             [ -L "$link" ] && [ ! -e "$link" ] || continue
