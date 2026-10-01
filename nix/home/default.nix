@@ -543,7 +543,6 @@ in
         "after-startup-command" = [
           "exec-and-forget /opt/homebrew/bin/borders"
           "exec-and-forget /opt/homebrew/bin/sketchybar"
-          "exec-and-forget open -a Alacritty"
           "exec-and-forget open -a Slack"
         ];
 

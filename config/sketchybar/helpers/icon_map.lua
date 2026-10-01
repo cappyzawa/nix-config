@@ -6,7 +6,7 @@ return {
 	["Arc"] = ":arc:",
 	["Calculator"] = ":calculator:",
 	["Calendar"] = ":calendar:",
-	["ChatGPT"] = ":chatgpt:",
+	["ChatGPT"] = ":openai:",
 	["Claude"] = ":claude:",
 	["Code"] = ":vscode:",
 	["Cursor"] = ":cursor:",
