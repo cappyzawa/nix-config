@@ -404,10 +404,10 @@ in
         for f in "$REPO_ROOT/config/codex/rules"/*.rules; do
           $DRY_RUN_CMD ln -sfn "$f" "$CODEX_DIR/rules/$(basename "$f")"
         done
+        $DRY_RUN_CMD ln -sfn "${ghStackSkill}" "$REPO_ROOT/config/codex/skills/gh-stack"
         for f in "$REPO_ROOT/config/codex/skills"/*; do
           $DRY_RUN_CMD ln -sfn "$f" "$CODEX_DIR/skills/$(basename "$f")"
         done
-        $DRY_RUN_CMD ln -sfn "${ghStackSkill}" "$CODEX_DIR/skills/gh-stack"
         # Entries removed from this repository leave their links dangling. The
         # agents directory link predates dropping the Codex roles and matches no
         # per-entry prefix, so it is removed by name.
