@@ -52,7 +52,7 @@ worker は指揮の会話を見ていないので、**背景（読むもの）�
 - 判断規則を先に渡す（例: 「warm 10 分以内なら pull_request に載せる、超えたら main push だけ」）。worker が自分で当てはめられ、境目で割れたときだけ指揮に戻る
 - 「推奨は書くが決めない」と「裁定して進める」を契約で区別する。前者は数字を測って持ち帰る調査型、後者は実装型
 - 同時に走る PR が触るファイルの所有を chip に書く（「`design/x.md` の A 節は別 PR が所有、触らない」）。衝突は section 単位で避け、先にマージした方に他方が rebase する
-- 依存する後続は上流のマージを待たず **stack して出してよい**（GitHub が stacked PR をサポートするようになり、待つより並行に進める方が得）。chip には base branch（上流の branch 名）と、上流マージ後の retarget（base を main に戻して merge で追随、force-push なし）を契約として書く。ユーザーが rate limit や集中の都合で直列を望んだときだけ待つ
+- 依存する後続は上流のマージを待たず **stack して出してよい**（GitHub が stacked PR をサポートするようになり、待つより並行に進める方が得）。chip には上流の branch 名と、`gh stack link` で上流に積むことを契約として書く。worker ごとに worktree が分かれていて local の stack 追跡が使えないので、`gh-stack` skill の別 worktree から操作する場合の手順に従わせる。ユーザーが rate limit や集中の都合で直列を望んだときだけ待つ
 - 語彙の規約（英語識別子を日本語名詞にしない、避ける語）を chip に持ち込む。後から直すと保存形式の改名になる
 - chip が押されなかったら `dismiss_task` してから再発行する
 

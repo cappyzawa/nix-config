@@ -12,10 +12,10 @@ PR body の読み手は human レビュアーで、merge 判断に必要な情�
 
 - PR は初回作成時に必ず draft で作り、レビュー準備ができたら `gh pr ready` で解除する
 - 破壊的変更（major バージョン更新、API 削除、依存の大規模入れ替えなど）は単独 PR で出し、機能変更と混ぜない
-- ready 後の修正は force-push で履歴を書き換えず、commit を足す
-- PR の merge 待ちの間に、その PR に依存する後続作業を stack して進めてよい
-  - base を上流 PR の branch にする
-  - 上流がマージされたら base を main に戻し、merge で追随する（force-push しない）
+- ready 後の修正は force-push で履歴を書き換えず、commit を足す（`gh stack` が管理する branch は除く）
+- 互いに依存する変更は `gh stack` で stack にし、作り方、追随、merge は `gh-stack` skill に従う
+  - 上流 PR の merge を待たずに、それに依存する後続作業を進めるときに使う
+  - 1 つの PR では大きすぎる作業を、依存の順に層へ分けるときにも使う
   - 直列にするのはユーザーが指示したときだけにする
 
 ## 本文に書くこと

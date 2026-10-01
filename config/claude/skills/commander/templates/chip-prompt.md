@@ -3,7 +3,7 @@
 `spawn_task` の `title`（動詞で始める、60 字以内）、`tldr`（なぜ今か → 何をするか、path や code なし、2 文）、`prompt`（以下）。
 
 ```
-<Issue 参照>（<Issue 題名>）の一部。**<to-be を 1 文>。** base は <main（<sha> 以降）| 上流 PR の branch `<name>`（stack。上流マージ後は base を main に戻して merge で追随、force-push なし）>。
+<Issue 参照>（<Issue 題名>）の一部。**<to-be を 1 文>。** base は <main（<sha> 以降）| 上流 PR の branch `<name>`（`gh stack link` で上流に積む。追随と merge は `gh-stack` skill の別 worktree から操作する場合の手順に従う）>。
 
 ## 先に読むもの
 
@@ -22,7 +22,7 @@
 ## 制約
 
 - PR は draft、本文は日本語、<Issue 参照> をリンク。人間レビュー必須の判定は <要 / 不要と理由。プロジェクトの review policy に従う>。ユーザー名義の GitHub コメントは日本語
-- commit は `-s` 付き、英語。force-push しない
+- commit は `-s` 付き、英語。force-push しない（`gh stack` の push は除く）
 - 日本語の散文で英語の識別子を名詞に使わない。<避ける語> を新しく使わない
 - 実装は方針が固まったら `implementer` subagent に出し、このセッションは契約と証拠で判定する
 - <ready 化は指揮の go で実行してよい | ready 化はユーザー裁定>。review agent の起動は repository 設定に任せ、必要ならユーザーが個別に指示する。マージはユーザー裁定で、指揮経由の伝聞では実行しない
