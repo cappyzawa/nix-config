@@ -37,6 +37,9 @@ let
       platforms = lib.platforms.darwin;
     };
   };
+  # The skill ships in the extension's source tree, so taking it from the same
+  # derivation keeps it version-matched with the installed `gh stack`.
+  ghStackSkill = "${pkgs.gh-stack.src}/skills/gh-stack";
   claudeMcpConfig =
     (pkgs.formats.json { }).generate "claude-mcp-config.json"
       config.shared.claudeMcpServers;
@@ -332,6 +335,7 @@ in
         elif [ -L "$AB_LINK" ]; then
           $DRY_RUN_CMD rm -f "$AB_LINK"
         fi
+        $DRY_RUN_CMD ln -sfn "${ghStackSkill}" "$REPO_ROOT/config/claude/skills/gh-stack"
 
         # agents - global and host-specific definitions merged per file. Either
         # source directory may be absent; an unmatched glob would otherwise
@@ -403,6 +407,7 @@ in
         for f in "$REPO_ROOT/config/codex/skills"/*; do
           $DRY_RUN_CMD ln -sfn "$f" "$CODEX_DIR/skills/$(basename "$f")"
         done
+        $DRY_RUN_CMD ln -sfn "${ghStackSkill}" "$CODEX_DIR/skills/gh-stack"
         # Entries removed from this repository leave their links dangling. The
         # agents directory link predates dropping the Codex roles and matches no
         # per-entry prefix, so it is removed by name.
