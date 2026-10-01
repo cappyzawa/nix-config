@@ -769,6 +769,7 @@ in
       extensions = [
         pkgs.gh-dash # config is managed by programs.gh-dash + akari-theme
         gh-ghq-cd-pkg
+        pkgs.gh-stack
       ];
       settings = {
         version = "1";
