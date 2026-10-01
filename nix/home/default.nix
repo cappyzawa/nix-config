@@ -83,6 +83,7 @@ in
     variant = "night";
     # Cascades on from akari.enable; tmux is gone (herdr took over)
     tmux.enable = false;
+    starship.enable = false;
   };
   home = {
     inherit username;
@@ -786,12 +787,11 @@ in
       };
     };
 
-    # Starship prompt (akari-night palette is managed by akari-theme module)
     starship = {
       enable = true;
-      settings = {
+      settings = lib.recursiveUpdate (lib.importTOML ../../config/starship/palette.toml) {
         add_newline = true;
-        # akari-night palette is added by akari-theme module
+        palette = "custom";
 
         os = {
           disabled = true;
@@ -889,7 +889,7 @@ in
         terraform.symbol = "󱁢 ";
         fill = {
           symbol = "─";
-          style = "fg:current_line";
+          style = "fg:border";
         };
         cmd_duration.min_time = 500;
         shell = {
@@ -1602,8 +1602,6 @@ in
         # Deduplicate PATH entries
         typeset -U path
 
-        # Starship is now managed by programs.starship + akari-theme module
-
         # Direnv (deferred)
         zsh-defer eval "$(direnv hook zsh)"
 
@@ -1727,8 +1725,6 @@ in
       # Alacritty is managed by programs.alacritty + akari-theme module
 
       # Helix is managed by programs.helix + akari-theme module
-
-      # Starship is managed by programs.starship + akari-theme module
 
       # pnpm global config (supply-chain hardening via release cooldown)
       "pnpm/rc".text = ''
