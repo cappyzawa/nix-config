@@ -19,7 +19,7 @@ chip に model は指定できないので、ユーザーが chip を押すと�
 - `mcp__ccd_session__spawn_task`: worker を起こす唯一の手段。ユーザーが chip を押すと fresh な worktree でセッションが立つ。指揮からセッションを直接作る API は無い
 - `mcp__ccd_session_mgmt__list_sessions` / `list_events` / `send_message` / `set_session_title` / `set_session_model`: worker の発見・観察・指示・命名
 - `mcp__ccd_session__dismiss_task`: 押されなかった chip の取り下げ（再発行はまず dismiss してから）
-- `mcp__ccd_session_mgmt__archive_session`: 退役させた worker のアーカイブ。ユーザーがセッションごとに同意してから呼ぶ
+- `mcp__ccd_session_mgmt__archive_session`: 依頼を終えた worker のアーカイブ。ユーザーがセッションごとに同意してから呼ぶ
 - worker からの連絡は `<cross-session-message>` として届く。返信は `send_message` で、宛先は `list_sessions` の sessionId（`from` の socket アドレスはセッションが消えると解決しない）
 
 ## 0. 名乗る
@@ -95,14 +95,10 @@ project memory に「キックオフ」ファイルを 1 つ持ち、節目ご�
 
 ## 8. 掃除
 
-worker に出した依頼が終わり、その worker に次の依頼を出すつもりも無くなったら、その場で `set_session_title` でタイトルの先頭に「[退役]」を付ける。
-消してよいかを知っているのは指揮だけで、ユーザーはサイドバーを見て消すので、判断を指揮の会話に残しても誰にも届かない。
-タイトルはセッションの外に残るので、指揮を作り直しても判断は引き継がれる。
-サイドバーのカスタムグループへは移さない（移すとサイドバー全体の表示がグループ単位に切り替わり、Project ごとの表示が崩れる）。
-退役させた worker にもう一度依頼したくなったら、「[退役]」を外してから `send_message` する。
-
-盤面を作り直したときに「[退役]」の付いたセッションが残っていたら、AskUserQuestion の複数選択でアーカイブしてよいかを尋ね、選ばれたものだけを `archive_session` する。
+worker に出した依頼が終わり、その worker に次の依頼を出すつもりも無くなったら、その場で AskUserQuestion でアーカイブしてよいかを尋ね、同意を得たものだけを `archive_session` する。
+消してよいかを知っているのは指揮だけなので、判断を指揮の会話に残すとユーザーは消してよいセッションを見分けられない。
 アーカイブは既定で worktree も片付け、Archived 一覧から戻せる。
+サイドバーのカスタムグループへは移さない（移すとサイドバー全体の表示がグループ単位に切り替わり、Project ごとの表示が崩れる）。
 
 マージ済みで session が消えた worker の worktree は、clean かつ detached HEAD か確認してから `git worktree remove` し、ローカル branch を消す。
 同じ path が別 worker に再利用されていることがあるので、`list_sessions` の cwd と照合してから消す。
