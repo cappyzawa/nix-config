@@ -19,6 +19,7 @@ chip に model は指定できないので、ユーザーが chip を押すと�
 - `mcp__ccd_session__spawn_task`: worker を起こす唯一の手段。ユーザーが chip を押すと fresh な worktree でセッションが立つ。指揮からセッションを直接作る API は無い
 - `mcp__ccd_session_mgmt__list_sessions` / `list_events` / `send_message` / `set_session_title` / `set_session_model`: worker の発見・観察・指示・命名
 - `mcp__ccd_session__dismiss_task`: 押されなかった chip の取り下げ（再発行はまず dismiss してから）
+- `mcp__ccd_sidebar__list_groups` / `create_group` / `move_sessions`: 退役させた worker をサイドバーの「退役」グループへ移す
 - worker からの連絡は `<cross-session-message>` として届く。返信は `send_message` で、宛先は `list_sessions` の sessionId（`from` の socket アドレスはセッションが消えると解決しない）
 
 ## 0. 名乗る
@@ -92,6 +93,12 @@ project memory に「キックオフ」ファイルを 1 つ持ち、節目ご�
 キックオフを正本にし、milestone ごとに指揮セッションを作り直してキックオフから読み直す。指揮の会話は worker の報告と盤面更新で膨らみ続け、長くなった context は compact しても判断の質が戻らない。
 
 ## 8. 掃除
+
+worker に出した依頼が終わり、その worker に次の依頼を出すつもりも無くなったら、その場でサイドバーの「退役」グループへ移す。
+グループは `list_groups` で探し、無いときだけ `create_group` で作る。
+消してよいかを知っているのは指揮だけで、ユーザーはサイドバーを見て消すので、判断を指揮の会話に残しても誰にも届かない。
+グループはセッションの外に残るので、指揮を作り直しても判断は引き継がれる。
+退役させた worker にもう一度依頼したくなったら、`move_sessions` の `group_id: null` で戻してから `send_message` する。
 
 マージ済みで session が消えた worker の worktree は、clean かつ detached HEAD か確認してから `git worktree remove` し、ローカル branch を消す。
 同じ path が別 worker に再利用されていることがあるので、`list_sessions` の cwd と照合してから消す。
