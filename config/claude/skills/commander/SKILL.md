@@ -19,7 +19,7 @@ chip に model は指定できないので、ユーザーが chip を押すと�
 - `mcp__ccd_session__spawn_task`: worker を起こす唯一の手段。ユーザーが chip を押すと fresh な worktree でセッションが立つ。指揮からセッションを直接作る API は無い
 - `mcp__ccd_session_mgmt__list_sessions` / `list_events` / `send_message` / `set_session_title` / `set_session_model`: worker の発見・観察・指示・命名
 - `mcp__ccd_session__dismiss_task`: 押されなかった chip の取り下げ（再発行はまず dismiss してから）
-- `mcp__ccd_sidebar__list_groups` / `create_group` / `move_sessions`: 退役させた worker をサイドバーの「退役」グループへ移す
+- `mcp__ccd_session_mgmt__archive_session`: 退役させた worker のアーカイブ。ユーザーがセッションごとに同意してから呼ぶ
 - worker からの連絡は `<cross-session-message>` として届く。返信は `send_message` で、宛先は `list_sessions` の sessionId（`from` の socket アドレスはセッションが消えると解決しない）
 
 ## 0. 名乗る
@@ -37,7 +37,8 @@ Issue 本文・コメント・関連 memory・進行中 PR・CI 状態を読み�
 
 ## 2. 現状の盤面を持つ
 
-`list_sessions` と `gh pr list` / `gh run list` で、走っているセッション・PR・CI を表にする。
+`list_sessions`（`include_archived: true`）と `gh pr list` / `gh run list` で、セッション・PR・CI を表にする。
+アーカイブや削除の済んだ worker もこの一覧から読み取り、ユーザーの申告を待たない。
 以後、ユーザーへの報告は毎回この表を末尾に付ける（作業名 / 状態 / 待っているもの）。
 ユーザーは worker の会話を全部は見ないので、盤面が無いと何を待っているか分からなくなる。
 
@@ -94,11 +95,14 @@ project memory に「キックオフ」ファイルを 1 つ持ち、節目ご�
 
 ## 8. 掃除
 
-worker に出した依頼が終わり、その worker に次の依頼を出すつもりも無くなったら、その場でサイドバーの「退役」グループへ移す。
-グループは `list_groups` で探し、無いときだけ `create_group` で作る。
+worker に出した依頼が終わり、その worker に次の依頼を出すつもりも無くなったら、その場で `set_session_title` でタイトルの先頭に「[退役]」を付ける。
 消してよいかを知っているのは指揮だけで、ユーザーはサイドバーを見て消すので、判断を指揮の会話に残しても誰にも届かない。
-グループはセッションの外に残るので、指揮を作り直しても判断は引き継がれる。
-退役させた worker にもう一度依頼したくなったら、`move_sessions` の `group_id: null` で戻してから `send_message` する。
+タイトルはセッションの外に残るので、指揮を作り直しても判断は引き継がれる。
+サイドバーのカスタムグループへは移さない（移すとサイドバー全体の表示がグループ単位に切り替わり、Project ごとの表示が崩れる）。
+退役させた worker にもう一度依頼したくなったら、「[退役]」を外してから `send_message` する。
+
+盤面を作り直したときに「[退役]」の付いたセッションが残っていたら、AskUserQuestion の複数選択でアーカイブしてよいかを尋ね、選ばれたものだけを `archive_session` する。
+アーカイブは既定で worktree も片付け、Archived 一覧から戻せる。
 
 マージ済みで session が消えた worker の worktree は、clean かつ detached HEAD か確認してから `git worktree remove` し、ローカル branch を消す。
 同じ path が別 worker に再利用されていることがあるので、`list_sessions` の cwd と照合してから消す。
