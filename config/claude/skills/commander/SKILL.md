@@ -98,8 +98,6 @@ project memory に「キックオフ」ファイルを 1 つ持ち、節目ご�
 worker に出した依頼が終わり、その worker に次の依頼を出すつもりも無くなったら、その場で AskUserQuestion でアーカイブしてよいかを尋ね、同意を得たものだけを `archive_session` する。
 消してよいかを知っているのは指揮だけなので、判断を指揮の会話に残すとユーザーは消してよいセッションを見分けられない。
 アーカイブは既定で worktree も片付け、Archived 一覧から戻せる。
-サイドバーのカスタムグループへは移さない（移すとサイドバー全体の表示がグループ単位に切り替わり、Project ごとの表示が崩れる）。
-
 マージ済みで session が消えた worker の worktree は、clean かつ detached HEAD か確認してから `git worktree remove` し、ローカル branch を消す。
 同じ path が別 worker に再利用されていることがあるので、`list_sessions` の cwd と照合してから消す。
 remote branch はマージ時に消えているのが通常で、残っていたら別途報告する。
