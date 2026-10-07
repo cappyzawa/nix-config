@@ -6,7 +6,8 @@
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
     "ENABLE_CLAUDEAI_MCP_SERVERS": "false",
     "CLAUDE_CODE_STOP_HOOK_BLOCK_CAP": "20",
-    "CLAUDE_CODE_SUBAGENT_MODEL": "claude-sonnet-5-5"
+    "CLAUDE_CODE_SUBAGENT_MODEL": "claude-sonnet-5-5",
+    "CLAUDE_CODE_PLUGIN_DIRS": "~/.claude/mods/my-issues"
   },
   "editorMode": "vim",
   "attribution": {

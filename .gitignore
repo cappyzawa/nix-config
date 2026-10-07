@@ -29,3 +29,6 @@ config/codex/skills/*
 !config/codex/skills/ponchi
 !config/codex/skills/pull-request
 !config/codex/skills/verify
+
+# Claude Code writes each loaded mod's API types here
+config/claude/mods/*/.claude-plugin/types/

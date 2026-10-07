@@ -1,0 +1,1 @@
+{ "name": "my-issues", "version": "0.1.0", "description": "List GitHub issues assigned to me and start a worktree session for one", "types": "./types/index.d.ts" }

@@ -43,6 +43,7 @@ When adding a new repo-managed skill, add a corresponding `!` entry to `.gitigno
 | Shared skills | `config/agents/skills/<name>/` with symlinks from both agent directories | `SKILL.md` |
 | Claude-only skills | `config/claude/skills/<name>/` | `SKILL.md` |
 | Rules | `config/claude/rules/<name>.md` | `paths:` frontmatter plus the body |
+| Mods | `config/claude/mods/<name>/`, listed in `env.CLAUDE_CODE_PLUGIN_DIRS` of `config/claude/settings.json` (path-list separated) | `hooks/hooks.json` |
 | Agents  | `hosts/<host>/claude-agents/<name>.md` (host-specific); `config/claude/agents/<name>.md` for global ones (`implementer`) | frontmatter `name:` / `description:` |
 
 - Skill/agent directory names become the `/slash-command` name

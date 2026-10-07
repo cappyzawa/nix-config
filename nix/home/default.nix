@@ -317,6 +317,10 @@ in
         rm -rf "$CLAUDE_DIR/skills"
         ln -sfn "$REPO_ROOT/config/claude/skills" "$CLAUDE_DIR/skills"
 
+        # mods - symlink directory; settings env CLAUDE_CODE_PLUGIN_DIRS loads each mod from here
+        rm -rf "$CLAUDE_DIR/mods"
+        ln -sfn "$REPO_ROOT/config/claude/mods" "$CLAUDE_DIR/mods"
+
         # The hooks directory retired with the session oracle-loop scripts;
         # drop the stale symlink so it does not dangle on hosts that had it.
         if [ -L "$CLAUDE_DIR/hooks" ]; then

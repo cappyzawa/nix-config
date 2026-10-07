@@ -29,6 +29,7 @@ activation ブロック (`nix/home/default.nix`):
 | `~/.claude/CLAUDE.md` | `config/claude/CLAUDE.md` (+ `hosts/<host>/agent-instructions.md`) | 連結し、Claude専用の `@~/.claude/CLAUDE.local.md` importを末尾へ付けてコピー |
 | `~/.claude/rules` | `config/claude/rules` | ディレクトリ symlink |
 | `~/.claude/skills` | `config/claude/skills` | ディレクトリ symlink |
+| `~/.claude/mods` | `config/claude/mods` | ディレクトリ symlink。各 mod は settings の `env.CLAUDE_CODE_PLUGIN_DIRS` に列挙したものだけが読み込まれる |
 | `~/.claude/agents/*` | `config/claude/agents` (あれば) + `hosts/<host>/claude-agents` | 存在するディレクトリの中身を個別ファイルで symlink |
 
 ## settings.json のマージ規則
