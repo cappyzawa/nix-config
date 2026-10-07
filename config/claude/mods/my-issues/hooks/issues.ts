@@ -38,14 +38,16 @@ export function taskFor(issue: Issue, cwd: string) {
   const title = label.length > TITLE_LIMIT ? `${label.slice(0, TITLE_LIMIT - 1)}…` : label
   return {
     title,
-    tldr: `Read ${issue.repo}#${issue.number} and align on it before any work: ${issue.title}`,
+    tldr: `${issue.repo}#${issue.number} を読んで認識を合わせる: ${issue.title}`,
     prompt: [
-      `This session is for the GitHub issue ${issue.url} (${issue.repo}#${issue.number}).`,
-      'This first turn is for understanding it, not for working on it:',
-      `1. Read it with \`gh issue view ${issue.number} --repo ${issue.repo} --comments\` and the code it touches.`,
-      '2. Tell me, in your own words, what the problem is, why it matters, and what done looks like.',
-      '3. List what is unclear or what you would need me to decide.',
-      'Do not change any files, create branches, or start implementing. Stop after this and wait for my reply.',
+      `このセッションでは GitHub Issue ${issue.url} (${issue.repo}#${issue.number}) を扱う。`,
+      '最初のターンは内容を理解して認識を合わせるためのもので、作業には入らない。',
+      '',
+      `1. \`gh issue view ${issue.number} --repo ${issue.repo} --comments\` で Issue を読み、関係するコードも読む。`,
+      '2. 何が問題か、なぜ問題か、どうなれば完了かを、自分の言葉で説明する。',
+      '3. 不明な点と、私に判断してほしい点を挙げる。',
+      '',
+      'ファイルの変更、branch の作成、実装はしない。ここまでで止めて、私の返事を待つ。',
     ].join('\n'),
     cwd,
   }
