@@ -12,6 +12,40 @@ project_doc_fallback_filenames = []
 web_search = "live"
 service_tier = "default"
 
+[desktop]
+followUpQueueMode = "steer"
+conversationDetailMode = "STEPS_COMMANDS"
+ambient-suggestions-enabled = false
+appearanceDarkCodeThemeId = "codex"
+sansFontSize = 16
+worktree-upstream-refresh-mode = "best-effort"
+selected-avatar-id = "null-signal"
+git-pull-request-merge-method = "squash"
+show-context-window-usage = true
+git-commit-instructions = """
+コミットメッセージに次の trailer を重複なく追加する:
+Co-authored-by: Codex <noreply@openai.com>"""
+git-pr-instructions = "PR 本文の末尾に Generated with Codex を重複なく追加する。"
+
+[desktop.open-in-target-preferences]
+global = "systemDefault"
+
+[desktop.appearanceDarkChromeTheme]
+accent = "#ee5896"
+accentSource = "custom"
+contrast = 60
+ink = "#f0eee6"
+opaqueWindows = false
+surface = "#17191d"
+
+[desktop.appearanceDarkChromeTheme.fonts]
+ui = '"Moralerspace Argon"'
+
+[desktop.appearanceDarkChromeTheme.semanticColors]
+diffAdded = "#91a995"
+diffRemoved = "#ef7178"
+skill = "#28b6f6"
+
 [features]
 hooks = true
 memories = true
