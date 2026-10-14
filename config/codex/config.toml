@@ -25,7 +25,7 @@ show-context-window-usage = true
 git-commit-instructions = """
 コミットメッセージに次の trailer を重複なく追加する:
 Co-authored-by: Codex <noreply@openai.com>"""
-git-pr-instructions = "PR 本文の末尾に Generated with Codex を重複なく追加する。"
+git-pr-instructions = 'PR 本文の末尾に "🤖 Generated with Codex" を重複なく追加する。'
 
 [desktop.open-in-target-preferences]
 global = "systemDefault"
