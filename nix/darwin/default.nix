@@ -262,6 +262,7 @@ in
         "dropbox"
         "appcleaner"
         "logi-options+"
+        "ddpm"
       ];
 
       masApps = {
