@@ -30,6 +30,10 @@ git-pr-instructions = 'PR 本文の末尾に "🤖 Generated with Codex" を重�
 [desktop.open-in-target-preferences]
 global = "systemDefault"
 
+[desktop.appearanceLightChromeTheme.fonts]
+code = '"Moralerspace Argon"'
+ui = '"Moralerspace Argon"'
+
 [desktop.appearanceDarkChromeTheme]
 accent = "#ee5896"
 accentSource = "custom"
@@ -39,6 +43,7 @@ opaqueWindows = false
 surface = "#17191d"
 
 [desktop.appearanceDarkChromeTheme.fonts]
+code = '"Moralerspace Argon"'
 ui = '"Moralerspace Argon"'
 
 [desktop.appearanceDarkChromeTheme.semanticColors]
