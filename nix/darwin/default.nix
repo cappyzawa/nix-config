@@ -104,6 +104,34 @@ in
           "com.tinyspeck.slackmacgap" = {
             NSAppSleepDisabled = true;
           };
+          # The whole array is replaced, so the palette entries macOS enables by
+          # default must be listed too or the emoji/50-on palettes disappear.
+          "com.apple.HIToolbox" = {
+            AppleEnabledInputSources = [
+              {
+                InputSourceKind = "Keyboard Layout";
+                "KeyboardLayout ID" = 252;
+                "KeyboardLayout Name" = "ABC";
+              }
+              {
+                "Bundle ID" = "com.apple.inputmethod.Kotoeri.RomajiTyping";
+                "Input Mode" = "com.apple.inputmethod.Japanese";
+                InputSourceKind = "Input Mode";
+              }
+              {
+                "Bundle ID" = "com.apple.inputmethod.Kotoeri.RomajiTyping";
+                InputSourceKind = "Keyboard Input Method";
+              }
+              {
+                "Bundle ID" = "com.apple.CharacterPaletteIM";
+                InputSourceKind = "Non Keyboard Input Method";
+              }
+              {
+                "Bundle ID" = "com.apple.50onPaletteIM";
+                InputSourceKind = "Non Keyboard Input Method";
+              }
+            ];
+          };
           "com.apple.symbolichotkeys" = {
             AppleSymbolicHotKeys = {
               # Disable Spotlight search (Command + Space)
@@ -249,7 +277,6 @@ in
         # cask is discontinued upstream and gets disabled on 2027-07-12.
         "chatgpt"
         "google-chrome"
-        "google-japanese-ime"
         "karabiner-elements"
         "font-moralerspace"
         "sf-symbols"
