@@ -53,6 +53,8 @@ in
       # System state version
       stateVersion = 6;
 
+      startup.chime = false;
+
       # macOS system settings
       defaults = {
         # Dock
@@ -78,6 +80,9 @@ in
           FXPreferredViewStyle = "Nlsv"; # List view
           FXDefaultSearchScope = "SCcf"; # Search the current folder
           _FXSortFoldersFirst = true;
+          NewWindowTarget = "Home";
+          ShowStatusBar = true;
+          FXRemoveOldTrashItems = true; # Empty items older than 30 days
         };
 
         # AeroSpace recommends one Space across displays to avoid focus bugs (needs logout)
@@ -114,6 +119,8 @@ in
           NSAutomaticSpellingCorrectionEnabled = false;
           NSDocumentSaveNewDocumentsToCloud = false;
           NSWindowShouldDragOnGesture = true; # Ctrl+Cmd drag moves windows from anywhere
+          NSNavPanelExpandedStateForSaveMode = true;
+          AppleKeyboardUIMode = 3; # Tab moves focus to every control
         };
 
         # Window Manager (disable desktop widgets and built-in tiling that fights AeroSpace)
