@@ -37,6 +37,8 @@ let
     trustedtaps = trustedTaps;
   };
   homebrewBrewfile = pkgs.writeText "Brewfile" config.homebrew.brewfile;
+
+  screenshotDir = "${config.users.users.${username}.home}/Pictures/Screenshots";
 in
 {
   imports = [
@@ -60,6 +62,8 @@ in
           mineffect = "scale";
           show-recents = false;
           tilesize = 48;
+          # AeroSpace parks windows off-screen; grouping keeps Mission Control readable
+          expose-group-apps = true;
           persistent-apps = [
             "${config.users.users.${username}.home}/Applications/Home Manager Apps/Alacritty.app"
             "/Applications/Google Chrome.app"
@@ -71,7 +75,22 @@ in
           AppleShowAllExtensions = true;
           ShowPathbar = true;
           FXEnableExtensionChangeWarning = false;
+          FXPreferredViewStyle = "Nlsv"; # List view
+          FXDefaultSearchScope = "SCcf"; # Search the current folder
+          _FXSortFoldersFirst = true;
         };
+
+        # AeroSpace recommends one Space across displays to avoid focus bugs (needs logout)
+        spaces.spans-displays = true;
+
+        # Screenshots
+        screencapture = {
+          location = screenshotDir;
+          disable-shadow = true;
+        };
+
+        # Leave the fn (globe) key unused; Karabiner handles input source switching
+        hitoolbox.AppleFnUsageType = "Do Nothing";
 
         # Trackpad
         trackpad = {
@@ -89,12 +108,21 @@ in
           InitialKeyRepeat = 15;
           KeyRepeat = 2;
           _HIHideMenuBar = true; # Hide menu bar for sketchybar
+          AppleInterfaceStyle = "Dark";
+          NSAutomaticCapitalizationEnabled = false;
+          NSAutomaticPeriodSubstitutionEnabled = false;
+          NSAutomaticSpellingCorrectionEnabled = false;
+          NSDocumentSaveNewDocumentsToCloud = false;
+          NSWindowShouldDragOnGesture = true; # Ctrl+Cmd drag moves windows from anywhere
         };
 
-        # Window Manager (disable desktop widgets)
+        # Window Manager (disable desktop widgets and built-in tiling that fights AeroSpace)
         WindowManager = {
           EnableStandardClickToShowDesktop = false;
           StandardHideWidgets = true;
+          EnableTilingByEdgeDrag = false;
+          EnableTopTilingByEdgeDrag = false;
+          EnableTilingOptionAccelerator = false;
         };
 
         # Keyboard shortcuts
@@ -103,6 +131,10 @@ in
           # window is moved off-screen by AeroSpace on inactive workspaces.
           "com.tinyspeck.slackmacgap" = {
             NSAppSleepDisabled = true;
+          };
+          "com.apple.desktopservices" = {
+            DSDontWriteNetworkStores = true;
+            DSDontWriteUSBStores = true;
           };
           # The whole array is replaced, so the palette entries macOS enables by
           # default must be listed too or the emoji/50-on palettes disappear.
@@ -168,6 +200,7 @@ in
 
         # Set desktop wallpaper to akari-night background color
         extraActivation.text = ''
+          sudo -u ${username} mkdir -p ${lib.escapeShellArg screenshotDir}
           sudo -u ${username} /usr/bin/python3 /Users/${username}/.config/scripts/set-wallpaper.py || true
         '';
 
