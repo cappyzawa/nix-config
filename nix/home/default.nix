@@ -308,6 +308,22 @@ in
         printf '\n\n## Local\n\n@~/.claude/CLAUDE.local.md\n' >> "$tmp"
         $DRY_RUN_CMD mv "$tmp" "$CLAUDE_DIR/CLAUDE.md"
 
+        # output-styles - each style + japanese-tech-writing body, generated so the
+        # writing norms stay in effect every turn without the model invoking the skill.
+        # Concatenated rather than @-imported because an @ import inside an output
+        # style is not known to expand.
+        STYLES_DIR="$CLAUDE_DIR/output-styles"
+        WRITING_SKILL="$REPO_ROOT/config/agents/skills/japanese-tech-writing/SKILL.md"
+        $DRY_RUN_CMD rm -rf "$STYLES_DIR"
+        $DRY_RUN_CMD mkdir -p "$STYLES_DIR"
+        for style in "$REPO_ROOT"/config/claude/output-styles/*.md; do
+          [ -f "$style" ] || continue
+          tmp=$(mktemp)
+          cat "$style" > "$tmp"
+          awk 'fm >= 2 { print; next } /^---$/ { fm++ }' "$WRITING_SKILL" >> "$tmp"
+          $DRY_RUN_CMD mv "$tmp" "$STYLES_DIR/$(basename "$style")"
+        done
+
         # rules - symlink directory. Earlier revisions also deployed rule bodies
         # to ~/.agents/rules for Codex; those symlinks now dangle.
         rm -rf "$CLAUDE_DIR/rules" "$HOME/.agents/rules"
