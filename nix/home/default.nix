@@ -320,7 +320,7 @@ in
           [ -f "$style" ] || continue
           tmp=$(mktemp)
           cat "$style" > "$tmp"
-          awk 'fm >= 2 { print; next } /^---$/ { fm++ }' "$WRITING_SKILL" >> "$tmp"
+          ${pkgs.gawk}/bin/awk 'fm >= 2 { print; next } /^---$/ { fm++ }' "$WRITING_SKILL" >> "$tmp"
           $DRY_RUN_CMD mv "$tmp" "$STYLES_DIR/$(basename "$style")"
         done
 
