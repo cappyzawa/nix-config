@@ -20,6 +20,7 @@ worker の model は起動時に `model` で渡す。
   - 指揮のこのターンが worker の報告や自動イベントで始まったときは、app が起動を拒む。そのときは `initiation: "own_initiative"` の提案カードを出し、ユーザーが押して起動する
 - `mcp__ccd_session_mgmt__list_sessions`（`linked: true`）/ `list_events` / `set_session_title`: worker の発見・観察・命名
 - `SendMessage`（`to` に worker の `local_…` id）: worker への追加指示と相談への返信。id は起動結果か `list_sessions` から取る
+- worker からの連絡は `<cross-session-message>` として届き、`from` か `from-session` に worker の `local_…` id が入る。返信はその id に送る
 - `mcp__ccd_session__dismiss_task`: 押されなかった提案カードの取り下げ（出し直しはまず dismiss してから）
 - `mcp__ccd_session_mgmt__archive_session`: 依頼を終えた worker のアーカイブ。ユーザーがセッションごとに同意してから呼ぶ
 
