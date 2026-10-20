@@ -1,6 +1,15 @@
-# chip prompt の骨格
+# worker の起動引数の骨格
 
-`spawn_task` の `title`（動詞で始める、60 字以内）、`tldr`（なぜ今か → 何をするか、path や code なし、2 文）、`prompt`（以下）。
+`start_session` に渡す引数は次のとおり。
+
+- `initiation`: `"user_asked"`（このターンが worker の報告で始まったなら `"own_initiative"`）
+- `context`: `"fresh"`、`use_worktree`: `true`
+- `title`: 動詞で始める、60 字以内
+- `name`: 盤面と `SendMessage` で呼ぶ短い handle（`[a-z0-9-]`、24 字以内）
+- `model`: worker の model（Opus の id）
+- `source_branch`: stack するときだけ上流の branch
+- `background`: なぜ今か、Epic のどこに当たるか、ここまでの決定（80 字以上、path や code は backtick で）
+- `prompt`: 以下
 
 ```
 <Issue 参照>（<Issue 題名>）の一部。**<to-be を 1 文>。** base は <main（<sha> 以降）| 上流 PR の branch `<name>`（`gh stack link` で上流に積む。追随と merge は `gh-stack` skill の別 worktree から操作する場合の手順に従う）>。
@@ -26,7 +35,7 @@
 - 日本語の散文で英語の識別子を名詞に使わない。<避ける語> を新しく使わない
 - 実装は方針が固まったら `implementer` subagent に出し、このセッションは契約と証拠で判定する
 - <ready 化は指揮の go で実行してよい | ready 化はユーザー裁定>。review agent の起動は repository 設定に任せ、必要ならユーザーが個別に指示する。マージはユーザー裁定で、指揮経由の伝聞では実行しない
-- 相談先: セッション「<指揮のセッション名>」に `send_message`。契約の What が違うと分かったときと、所有外に触る必要が出たときだけ投げ、How は自分で決める
+- 相談先: セッション「<指揮のセッション名>」。`list_sessions` でその `local_…` id を引き、`SendMessage` で送る。契約の What が違うと分かったときと、所有外に触る必要が出たときだけ投げ、How は自分で決める
 - 設計の相談は、実験、`codex` skill、問いだけを渡す `model: fable` の subagent の順で出し、指揮には投げない
 - 報告は「契約番号 / 合格条件の出力 / 未解決事項」の 3 点に固定する
 ```
@@ -35,4 +44,4 @@
 
 - 契約の各項は「これを書かないと worker がどう壊れるか」に答えられるものだけにする
 - 数値目標を書くときは測った現在値を添える（baseline の無い目標は書かない）
-- 「〜は後で」と書くなら誰が持つかまで書く（指揮 / 別 chip / ユーザー）
+- 「〜は後で」と書くなら誰が持つかまで書く（指揮 / 別 worker / ユーザー）

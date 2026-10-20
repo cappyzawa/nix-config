@@ -1,6 +1,6 @@
 ---
 name: commander
-description: Epic 級の Issue を「指揮セッション 1 つ + worktree セッション複数」で進める運用。指揮は実装せず、fresh-eyes 評価・スライス切り出し・chip 発行・裁定・進捗管理・記録に徹し、作業本体は Claude App の別セッション（worktree）に出す。Issue を渡されて「指揮官になってくれ」「セッションで並行に進めたい」と言われたとき、または複数 PR にまたがる作業を 1 セッションで抱えそうなときに使う。
+description: Epic 級の Issue を「指揮セッション 1 つ + worktree セッション複数」で進める運用。指揮は実装せず、fresh-eyes 評価・スライス切り出し・worker の起動・裁定・進捗管理・記録に徹し、作業本体は Claude App の別セッション（worktree）に出す。Issue を渡されて「指揮官になってくれ」「セッションで並行に進めたい」と言われたとき、または複数 PR にまたがる作業を 1 セッションで抱えそうなときに使う。
 argument-hint: <Issue URL> [補足]
 ---
 
@@ -12,26 +12,37 @@ worker は独立した context・独立した permission・独立した worktree
 
 CLAUDE.md の役割分担を層ごとに当てる。指揮はユーザーと Epic の Why と What を決め、worker はスライスの main セッションとして How を持ち、実装は `implementer` subagent に出す。
 model は指揮が Fable、worker が Opus で、この分担に対応する。
-chip に model は指定できないので、ユーザーが chip を押すときの設定か、起動後の `set_session_model` で決める。
+worker の model は起動時に `model` で渡す。
 
 ## 前提となる道具
 
-- `mcp__ccd_session__spawn_task`: worker を起こす唯一の手段。ユーザーが chip を押すと fresh な worktree でセッションが立つ。指揮からセッションを直接作る API は無い
-- `mcp__ccd_session_mgmt__list_sessions` / `list_events` / `send_message` / `set_session_title` / `set_session_model`: worker の発見・観察・指示・命名
-- `mcp__ccd_session__dismiss_task`: 押されなかった chip の取り下げ（再発行はまず dismiss してから）
+- `mcp__ccd_session__start_session`: worker を起こす手段。ユーザーが commander を呼んで並行に進めると決めた時点で、スライスごとに `initiation: "user_asked"`、`context: "fresh"`、`use_worktree: true` で起動し、その場で立ち上がる
+  - 指揮のこのターンが worker の報告や自動イベントで始まったときは、app が起動を拒む。そのときは `initiation: "own_initiative"` の提案カードを出し、ユーザーが押して起動する
+- `mcp__ccd_session_mgmt__list_sessions`（`linked: true`）/ `list_events` / `set_session_title`: worker の発見・観察・命名
+- `SendMessage`（`to` に worker の `local_…` id）: worker への追加指示と相談への返信。id は起動結果か `list_sessions` から取る
+- `mcp__ccd_session__dismiss_task`: 押されなかった提案カードの取り下げ（出し直しはまず dismiss してから）
 - `mcp__ccd_session_mgmt__archive_session`: 依頼を終えた worker のアーカイブ。ユーザーがセッションごとに同意してから呼ぶ
-- worker からの連絡は `<cross-session-message>` として届く。返信は `send_message` で、宛先は `list_sessions` の sessionId（`from` の socket アドレスはセッションが消えると解決しない）
+
+## worker の報告が届く条件
+
+worker がターンを終えると、その報告の先頭 400 文字が指揮に届く。
+届くのは worker の最初のターンと、指揮の `SendMessage` が始めたターンの報告で、ユーザーが worker と直接やり取りしたターンの報告は指揮の次のターンまで待つ。
+app は、指揮が idle で、起動した worker が全員ターンを終えたときに、指揮を `<side-sessions-event>` で再開する。
+ユーザーの発言を挟まずに再開が続いたときも、報告は指揮の次のターンまで待つ。
+
+再開されたターンでは、ユーザーが頼んだ範囲のうち報告で進められるようになった手順だけを進め、頼まれていない worker は起こさない。
+報告は worker の自己申告なので、PR、CI、branch を見てから盤面に載せる。
 
 ## 0. 名乗る
 
 `set_session_title` で「<Issue 番号> 指揮」のような固定名にする。
-chip の prompt に「相談先: セッション『<名前>』に `send_message`」と書けるようになり、worker が `list_sessions` で指揮を見つけられる。
+brief に「相談先: セッション『<名前>』」と書けるようになり、worker が `list_sessions` で指揮を見つけられる。
 
 ## 1. fresh-eyes 評価（着手前、必ず出す）
 
 Issue 本文・コメント・関連 memory・進行中 PR・CI 状態を読み、**方針が正しいか**を先に評価してユーザーに返す。
 評価の観点は固定で、順序の偏り（作業分解が既存資産単位で症状単位になっていない）、読み手の不在（書き手だけ厚い）、直列ボトルネック（外部依存待ちが全部を止める）、比較キーや語彙が運用で割れる箇所、の 4 つを最低限見る。
-評価で出た欠落は、そのまま最初の chip になることが多い（例: 「何を測るかの一覧が無い」→ 一覧を書く chip）。
+評価で出た欠落は、そのまま最初のスライスになることが多い（例: 「何を測るかの一覧が無い」→ 一覧を書くスライス）。
 
 評価は結論と根拠だけを書く。修正に着手しない。
 
@@ -42,21 +53,21 @@ Issue 本文・コメント・関連 memory・進行中 PR・CI 状態を読み�
 以後、ユーザーへの報告は毎回この表を末尾に付ける（作業名 / 状態 / 待っているもの）。
 ユーザーは worker の会話を全部は見ないので、盤面が無いと何を待っているか分からなくなる。
 
-## 3. スライスを切って chip を出す
+## 3. スライスを切って worker を起こす
 
-1 chip = 1 PR = 合格条件 1 つ。同じ合格条件で確かめられる変更は 1 つの chip に入れ、意図の分離は commit に残す。
-`templates/chip-prompt.md` の骨格で prompt を書く。
+1 worker = 1 PR = 合格条件 1 つ。同じ合格条件で確かめられる変更は 1 つの worker に入れ、意図の分離は commit に残す。
+`templates/session-brief.md` の骨格で `start_session` の引数を書く。
 worker は指揮の会話を見ていないので、**背景（読むもの）・契約（番号付き）・制約・相談先**を自己完結で書く。
 契約に書くのは to-be、合格条件のコマンド、所有の線引き、判断規則までで、設計は書かない。How は worker が持ち、指揮が設計を書くと全スライスの設計 context を指揮が抱え、How の相談が指揮に戻ってくる。
 
-**同時に走らせる worker は、ユーザーが 1 日にレビューして merge できる PR の数（目安 2〜3）を上限にする。** 上限を超えた worker は在庫を作るだけで、待つ間に前提が変わって手戻りになる。1 つ merge されたら次の chip を出す。
+**同時に走らせる worker は、ユーザーが 1 日にレビューして merge できる PR の数（目安 2〜3）を上限にする。** 上限を超えた worker は在庫を作るだけで、待つ間に前提が変わって手戻りになる。1 つ merge されたら次の worker を起こす（merge を伝えるユーザーの発言で始まったターンなら起動でき、worker の報告で始まったターンなら提案カードになる）。
 
 - 判断規則を先に渡す（例: 「warm 10 分以内なら pull_request に載せる、超えたら main push だけ」）。worker が自分で当てはめられ、境目で割れたときだけ指揮に戻る
 - 「推奨は書くが決めない」と「裁定して進める」を契約で区別する。前者は数字を測って持ち帰る調査型、後者は実装型
-- 同時に走る PR が触るファイルの所有を chip に書く（「`design/x.md` の A 節は別 PR が所有、触らない」）。衝突は section 単位で避け、先にマージした方に他方が rebase する
-- 依存する後続は上流のマージを待たず **stack して出してよい**（GitHub が stacked PR をサポートするようになり、待つより並行に進める方が得）。chip には上流の branch 名と、`gh stack link` で上流に積むことを契約として書く。worker ごとに worktree が分かれていて local の stack 追跡が使えないので、`gh-stack` skill の別 worktree から操作する場合の手順に従わせる。ユーザーが rate limit や集中の都合で直列を望んだときだけ待つ
-- 語彙の規約（英語識別子を日本語名詞にしない、避ける語）を chip に持ち込む。後から直すと保存形式の改名になる
-- chip が押されなかったら `dismiss_task` してから再発行する
+- 同時に走る PR が触るファイルの所有を brief に書く（「`design/x.md` の A 節は別 PR が所有、触らない」）。衝突は section 単位で避け、先にマージした方に他方が rebase する
+- 依存する後続は上流のマージを待たず **stack して出してよい**（GitHub が stacked PR をサポートするようになり、待つより並行に進める方が得）。`source_branch` に上流の branch を渡し、brief に `gh stack link` で上流に積むことを契約として書く。worker ごとに worktree が分かれていて local の stack 追跡が使えないので、`gh-stack` skill の別 worktree から操作する場合の手順に従わせる。ユーザーが rate limit や集中の都合で直列を望んだときだけ待つ
+- 語彙の規約（英語識別子を日本語名詞にしない、避ける語）を brief に持ち込む。後から直すと保存形式の改名になる
+- 提案カードが押されなかったら `dismiss_task` してから出し直す
 
 ## 4. 相談に答える
 
@@ -66,7 +77,7 @@ worker からの相談は **その場で裁定し、根拠を 1〜2 文添えて
 - How の判断は worker に返す。指揮が裁定するのは to-be、所有の線引き、判断規則の解釈で、契約自体が誤っていたと分かったら止めてユーザーに戻す
 - worker が「所有外」として保留したファイルがあれば、所有を明示的に移す
 - 前提が変わったこと（外部依存が解けた、レビューで穴が出た）は、裁定を変えなくてもユーザーに伝える
-- 同じ型の指摘が別 worker で 2 回出たら、以後の chip の契約に一般化して入れる（例: 「新しい検査が信用している入力を negative test で塞ぐ」）
+- 同じ型の指摘が別 worker で 2 回出たら、以後の brief の契約に一般化して入れる（例: 「新しい検査が信用している入力を negative test で塞ぐ」）
 - 行き詰まった worker は、指揮が事実を集めて仮説を渡す（例: CI 失敗ログの該当行と Dockerfile の COPY 一覧）。ただし帰属を断定しない。worker の訂正を受けたら自分の読みが違ったと明記する
 
 ## 5. 承認の経路
@@ -79,7 +90,7 @@ ready 化・マージ・issue / PR へのコメント・人への mention は外
 
 ## 6. レビューとマージ順
 
-- review agent への応答ラウンドの上限は変更量のルール（CLAUDE.local.md）で決め、chip に書く。人間レビュー必須の判定はプロジェクトの review policy に従い、要否と理由を chip と PR 本文に書く。仕分け（実害 / 文面磨き / 見送り）を毎ラウンド返させる
+- review agent への応答ラウンドの上限は変更量のルール（CLAUDE.local.md）で決め、brief に書く。人間レビュー必須の判定はプロジェクトの review policy に従い、要否と理由を brief と PR 本文に書く。仕分け（実害 / 文面磨き / 見送り）を毎ラウンド返させる
 - 切り上げ条件は「文面磨きしか残らない」か「上限到達」。上限内でも契約の形に触る指摘が尽きたら切り上げる
 - worker 自身の「直前の修正が次の穴を作った」報告は傾向として記録する（契約を締める変更で頻発する）
 - マージ順は指揮が決めて両 worker に伝える。マージされたら main の sha を後続 worker に送り、main を merge（force-push なし）で取り込ませる
@@ -89,7 +100,7 @@ ready 化・マージ・issue / PR へのコメント・人への mention は外
 
 project memory に「キックオフ」ファイルを 1 つ持ち、節目ごとに更新する。
 書くのは、決定と根拠、マージ済み PR と main の sha、各 worker が返した「想定と違った事実」、持ち越し論点、掃除の状態。
-ユーザーからの運用上の指摘（語彙、承認経路、休日）は個別の feedback memory にし、次の chip の制約に反映する。
+ユーザーからの運用上の指摘（語彙、承認経路、休日）は個別の feedback memory にし、次の brief の制約に反映する。
 
 キックオフを正本にし、milestone ごとに指揮セッションを作り直してキックオフから読み直す。指揮の会話は worker の報告と盤面更新で膨らみ続け、長くなった context は compact しても判断の質が戻らない。
 

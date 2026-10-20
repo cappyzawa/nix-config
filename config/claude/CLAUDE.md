@@ -43,7 +43,7 @@
   - 自分で実装するときも subagent に出すときも省かない
   - 「呼び出し側が正しく組めば成り立つ」「コメントで伝える」で済ませているものは、型、private なフィールド、生成を 1 か所に絞った関数で表せないかを先に試す
   - 契約を受けた側は型の形を変えられないので、subagent への契約に書く型の形（key、struct、戻り値の `Option` など）はこの判断を経たものにする
-- How と契約が固まったら、実装は `implementer` subagent か worker セッション（commander の worker、task chip から起こすセッション）に出し、main の context には契約と証拠だけを載せる
+- How と契約が固まったら、実装は `implementer` subagent か worker セッション（commander の worker、`start_session` で起こすセッション）に出し、main の context には契約と証拠だけを載せる
   - `implementer` は agent 定義で effort を low に固定している。instruction で effort を下げさせても下がらないので、委譲先で下げる
   - 実装担当は契約を再解釈も再設計もせず、実装、局所のデバッグ、合格条件の実行に集中する
   - 契約の What や型の形を変えないと進めないときは、変えずに問いとして上位へ返す
