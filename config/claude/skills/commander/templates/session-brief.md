@@ -7,6 +7,7 @@
 - `title`: 動詞で始める、60 字以内
 - `name`: 盤面と `SendMessage` で呼ぶ短い handle（`[a-z0-9-]`、24 字以内）
 - `model`: worker の model（Opus の id）
+- `effort`: `"medium"`
 - `source_branch`: stack するときだけ上流の branch
 - `background`: なぜ今か、Epic のどこに当たるか、ここまでの決定（80 字以上、path や code は backtick で）
 - `prompt`: 以下

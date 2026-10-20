@@ -11,8 +11,8 @@ Agent tool の subagent ではなく **Claude App のセッション**を worker
 worker は独立した context・独立した permission・独立した worktree を持ち、ユーザーが直接会話できるので、指揮側の context に tool 出力が溜まらず、承認の経路も各 worker で閉じる。
 
 CLAUDE.md の役割分担を層ごとに当てる。指揮はユーザーと Epic の Why と What を決め、worker はスライスの main セッションとして How を持ち、実装は `implementer` subagent に出す。
-model は指揮が Fable、worker が Opus で、この分担に対応する。
-worker の model は起動時に `model` で渡す。
+model と effort は指揮が Fable の `high`、worker が Opus の `medium` で、この分担に対応する。
+worker の起動では `model` と `effort` を必ず渡す。省略すると指揮の値を継承し、Opus が `high` で動く。
 
 ## 前提となる道具
 
