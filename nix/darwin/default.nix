@@ -209,6 +209,10 @@ in
         extraActivation.text = ''
           sudo -u ${username} mkdir -p ${lib.escapeShellArg screenshotDir}
           sudo -u ${username} /usr/bin/python3 /Users/${username}/.config/scripts/set-wallpaper.py || true
+
+          # Never sleep on AC power. power.sleep.computer goes through systemsetup,
+          # which also changes the battery profile, so call pmset -c directly.
+          /usr/bin/pmset -c sleep 0
         '';
 
         # Apply settings without logout/login
