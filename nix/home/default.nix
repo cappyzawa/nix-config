@@ -409,6 +409,16 @@ in
         $DRY_RUN_CMD mv "$merged_toml" "$CODEX_DIR/config.toml"
         rm -f "$runtime_json" "$base_json" "$mcp_json" "$host_json" "$merged_json" "$merged_toml"
 
+        keybindings_json=$(mktemp)
+        if [ -f "$CODEX_DIR/keybindings.json" ]; then
+          ${pkgs.jq}/bin/jq --slurpfile managed "$REPO_ROOT/config/codex/keybindings.json" '
+            map(select(.command as $command | $managed[0] | all(.command != $command))) + $managed[0]
+          ' "$CODEX_DIR/keybindings.json" > "$keybindings_json"
+        else
+          cp "$REPO_ROOT/config/codex/keybindings.json" "$keybindings_json"
+        fi
+        $DRY_RUN_CMD mv "$keybindings_json" "$CODEX_DIR/keybindings.json"
+
         # AGENTS.md - Codex instructions + host-specific context.
         if [ -f "$REPO_ROOT/hosts/$HOST/agent-instructions.md" ]; then
           tmp=$(mktemp)

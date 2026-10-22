@@ -20,6 +20,7 @@ appearanceDarkCodeThemeId = "codex"
 sansFontSize = 16
 worktree-upstream-refresh-mode = "best-effort"
 selected-avatar-id = "null-signal"
+pet-visibility = "on-demand"
 git-pull-request-merge-method = "squash"
 show-context-window-usage = true
 git-commit-instructions = """
