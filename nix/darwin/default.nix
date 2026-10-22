@@ -209,10 +209,6 @@ in
         extraActivation.text = ''
           sudo -u ${username} mkdir -p ${lib.escapeShellArg screenshotDir}
           sudo -u ${username} /usr/bin/python3 /Users/${username}/.config/scripts/set-wallpaper.py || true
-
-          # Never sleep on AC power. power.sleep.computer goes through systemsetup,
-          # which also changes the battery profile, so call pmset -c directly.
-          /usr/bin/pmset -c sleep 0
         '';
 
         # Apply settings without logout/login
@@ -226,6 +222,22 @@ in
           fi
         '';
       };
+    };
+
+    # Treat the Mac as a desktop while it is on AC power. A KVM input switch drops
+    # the display link for under a second, which is enough for powerd to put a
+    # closed-lid Mac into clamshell sleep, and no assertion third-party code can
+    # take prevents that; disablesleep does, but it is system-wide rather than
+    # per power source, so this daemon follows the power source instead.
+    launchd.daemons.sleep-on-battery-only.serviceConfig = {
+      ProgramArguments = [
+        "/bin/sh"
+        "${../../config/sleep-on-battery-only/sleep-on-battery-only.sh}"
+      ];
+      RunAtLoad = true;
+      StartInterval = 10;
+      StandardOutPath = "/var/log/sleep-on-battery-only.log";
+      StandardErrorPath = "/var/log/sleep-on-battery-only.log";
     };
 
     # Disable nix-darwin's Nix management (using Determinate Nix)
