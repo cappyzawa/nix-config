@@ -5,6 +5,11 @@
   ...
 }:
 {
+  shared.mainApp = {
+    path = "/Applications/Claude.app";
+    bundleId = "com.anthropic.claudefordesktop";
+  };
+
   # Additional Homebrew packages for this machine
   homebrew = {
     taps = [

@@ -609,11 +609,7 @@ in
         # Window rules
         "on-window-detected" = [
           {
-            "if"."app-id" = "org.alacritty";
-            run = "move-node-to-workspace 1";
-          }
-          {
-            "if"."app-id" = "com.anthropic.claudefordesktop";
+            "if"."app-id" = config.shared.mainApp.bundleId;
             run = "move-node-to-workspace 1";
           }
           {

@@ -17,6 +17,19 @@ in
         description = "Default font size";
       };
     };
+    mainApp = mkOption {
+      type = types.submodule {
+        options = {
+          path = mkOption { type = types.str; };
+          bundleId = mkOption { type = types.str; };
+        };
+      };
+      default = {
+        path = "/Applications/ChatGPT.app";
+        bundleId = "com.openai.codex";
+      };
+      description = "Primary work app, pinned to the Dock and sent to AeroSpace workspace 1";
+    };
     claudeMcpServers = mkOption {
       type = types.attrsOf types.anything;
       default = { };

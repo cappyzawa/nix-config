@@ -46,6 +46,8 @@ in
   ];
 
   config = {
+    home-manager.users.${username}.shared.mainApp = config.shared.mainApp;
+
     system = {
       # Primary user for user-specific settings
       primaryUser = username;
@@ -67,7 +69,7 @@ in
           # AeroSpace parks windows off-screen; grouping keeps Mission Control readable
           expose-group-apps = true;
           persistent-apps = [
-            "${config.users.users.${username}.home}/Applications/Home Manager Apps/Alacritty.app"
+            config.shared.mainApp.path
             "/Applications/Google Chrome.app"
           ];
         };
