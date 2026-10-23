@@ -70,13 +70,6 @@ in
     ../modules/shared.nix
   ];
 
-  shared.claudeMcpServers = {
-    context7 = {
-      type = "http";
-      url = "https://mcp.context7.com/mcp";
-    };
-  };
-
   # Akari theme
   akari = {
     enable = true;
