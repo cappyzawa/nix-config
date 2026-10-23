@@ -242,6 +242,29 @@ in
       StandardErrorPath = "/var/log/sleep-on-battery-only.log";
     };
 
+    # determinate-nixd already collects garbage on its own, but it cannot free
+    # paths that old system generations still reference, and nix.gc.automatic
+    # requires nix.enable. Only prune generations here and leave collection to
+    # determinate-nixd, which advises against running a second collector.
+    launchd.daemons.prune-system-generations.serviceConfig = {
+      ProgramArguments = [
+        "/nix/var/nix/profiles/default/bin/nix-env"
+        "--profile"
+        "/nix/var/nix/profiles/system"
+        "--delete-generations"
+        "14d"
+      ];
+      StartCalendarInterval = [
+        {
+          Weekday = 0;
+          Hour = 12;
+          Minute = 0;
+        }
+      ];
+      StandardOutPath = "/var/log/prune-system-generations.log";
+      StandardErrorPath = "/var/log/prune-system-generations.log";
+    };
+
     # Disable nix-darwin's Nix management (using Determinate Nix)
     nix.enable = false;
 
