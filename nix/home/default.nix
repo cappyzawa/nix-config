@@ -87,6 +87,10 @@ in
 
     # Home directory files
     file.".yamlfmt".source = ../../config/yamlfmt/config.yaml;
+    file.".hammerspoon" = {
+      source = ../../config/hammerspoon;
+      recursive = true;
+    };
 
     # Session PATH (declarative PATH management)
     sessionPath = [
@@ -1703,6 +1707,20 @@ in
         lg = "lazygit";
         vim = "hx";
       };
+    };
+  };
+
+  launchd.agents.hammerspoon = {
+    enable = true;
+    config = {
+      ProgramArguments = [
+        "/usr/bin/open"
+        "-g"
+        "-a"
+        "/Applications/Hammerspoon.app"
+      ];
+      RunAtLoad = true;
+      ProcessType = "Interactive";
     };
   };
 

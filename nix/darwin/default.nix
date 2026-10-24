@@ -358,6 +358,7 @@ in
         # cask is discontinued upstream and gets disabled on 2027-07-12.
         "chatgpt"
         "google-chrome"
+        "hammerspoon"
         "karabiner-elements"
         "font-moralerspace"
         "sf-symbols"
