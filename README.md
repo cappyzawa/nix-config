@@ -7,6 +7,10 @@ My Nix configuration for macOS using [nix-darwin](https://github.com/LnL7/nix-da
 - **nix-darwin**: macOS system settings, Homebrew management
 - **Home Manager**: User environment, CLI tools, dotfiles
 
+## Personal assets
+
+- [Minibancho pet assets and restoration](hosts/cappyzawa/minibancho.md)
+
 ## Fresh macOS Setup
 
 ### 1. Install Nix
