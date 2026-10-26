@@ -15,7 +15,6 @@ config/claude/skills/*
 !config/claude/skills/commander/
 !config/claude/skills/empirical-prompt-tuning/
 !config/claude/skills/issue
-!config/claude/skills/japanese-tech-writing
 !config/claude/skills/ponchi
 !config/claude/skills/pull-request
 !config/claude/skills/root-fix/
@@ -25,7 +24,6 @@ config/claude/skills/*
 # only repository-managed Codex configuration belongs here.
 config/codex/skills/*
 !config/codex/skills/issue
-!config/codex/skills/japanese-tech-writing
 !config/codex/skills/ponchi
 !config/codex/skills/pull-request
 !config/codex/skills/verify

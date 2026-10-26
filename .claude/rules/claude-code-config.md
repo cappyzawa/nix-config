@@ -27,7 +27,6 @@ activation ブロック (`nix/home/default.nix`):
 |---|---|---|
 | `~/.claude/settings.json` | `config/claude/settings.json` (+ `hosts/<host>/claude-settings.json` + `~/.config/nix-config-local/claude-settings-secrets.json`) | jq マージ後、書き込み可能な実ファイルとしてコピー（symlink ではない） |
 | `~/.claude/CLAUDE.md` | `config/claude/CLAUDE.md` (+ `hosts/<host>/agent-instructions.md`) | 連結し、Claude専用の `@~/.claude/CLAUDE.local.md` importを末尾へ付けてコピー |
-| `~/.claude/output-styles/*.md` | `config/claude/output-styles/*.md` + `config/agents/skills/japanese-tech-writing/SKILL.md` の本文 | style ごとに skill 本文（frontmatter 除く）を末尾へ連結してコピー。output style 内の `@` import が展開されるか未確認なので連結で毎ターン効かせる |
 | `~/.claude/rules` | `config/claude/rules` | ディレクトリ symlink |
 | `~/.claude/skills` | `config/claude/skills` | ディレクトリ symlink |
 | `~/.claude/mods` | `config/claude/mods` | ディレクトリ symlink。各 mod は settings の `env.CLAUDE_CODE_PLUGIN_DIRS` に列挙したものだけが読み込まれる |

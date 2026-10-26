@@ -9,7 +9,7 @@
 ## 言語と表記
 
 - 会話は日本語で行う（Thinking は英語でもよい）
-- 日本語を書くときは `japanese-tech-writing` skill を読み、その規範に従う
+- 記事、docs、PR、Issue など人が読む日本語の文書を書く、直すときは `yomiyasu` skill で推敲する
 - 絵文字は使わない（Artifact の favicon のように機構が必須とするものは対象外）
 - PR、Issue、docs の言語は repository の公開範囲で決め、public は英語、internal と private は日本語にする
 - 書ける分量の上限は、結論を支える証拠の量である
