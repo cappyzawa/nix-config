@@ -1498,15 +1498,6 @@ in
     # Atuin (shell history)
     atuin = {
       enable = true;
-      # PTY-based e2e tests fail in the darwin build sandbox (atuin 18.23.0):
-      # the capture test times out and the bash-preexec variants cannot find
-      # atuin on PATH. Only zsh integration is used here.
-      package = pkgs.atuin.overrideAttrs (old: {
-        checkFlags = (old.checkFlags or [ ]) ++ [
-          "--skip=filtered_commands_leave_no_captured_output"
-          "--skip=bash_preexec"
-        ];
-      });
       enableZshIntegration = true;
       flags = [ "--disable-up-arrow" ];
       settings = {
