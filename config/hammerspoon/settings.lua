@@ -10,6 +10,11 @@ return {
 			connected = { steps = 2, label = "120%" },
 			disconnected = { steps = -3, label = "70%" },
 		},
+		["com.tinyspeck.slackmacgap"] = {
+			rememberWindowZoom = true,
+			connected = { steps = 2, label = "2 steps up" },
+			disconnected = { steps = -3, label = "3 steps down" },
+		},
 		-- Claude is not installed on the trial host; verify its zoom increments there.
 		["com.anthropic.claudefordesktop"] = {
 			rememberWindowZoom = true,
