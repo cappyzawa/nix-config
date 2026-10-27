@@ -791,6 +791,7 @@ in
         version = "1";
         git_protocol = "https";
         prompt = "enabled";
+        expiring_credentials = "enabled";
         aliases = {
           co = "pr checkout";
           cd = "ghq-cd";
