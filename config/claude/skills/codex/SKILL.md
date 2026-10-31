@@ -8,7 +8,7 @@ allowed-tools: Bash(codex exec -s read-only:*)
 
 Codex CLI に委譲してセカンドオピニオン・レビューを得るための skill。
 
-呼ぶタイミングは `~/.claude/CLAUDE.md` の「役割分担」「レビュー」に従う。定常工程ではなく、別モデルの視点が要るときに使う。
+呼ぶタイミングは `~/.claude/CLAUDE.md` の「検証とレビュー」に従う。定常工程ではなく、別モデルの視点が要るときに使う。
 
 ## 起動コマンド
 
@@ -100,7 +100,7 @@ codex exec -s read-only <subagent flags> --cd <dir> "<質問内容>。確認や�
 
 ## 手順
 
-1. `~/.claude/CLAUDE.md` の「役割分担」「レビュー」、またはユーザー要求に従って、codex に委譲する対象を特定する
+1. `~/.claude/CLAUDE.md` の「検証とレビュー」、またはユーザー要求に従って、codex に委譲する対象を特定する
 2. プロンプトに「確認や質問は不要。具体的な提案・修正案・コード例を能動的に出してほしい」を必ず付ける
 3. 長文 (diff / コード片を含む) は Write tool で `<prompt-file>` に書き、stdin redirect で渡す。短ければ positional でも可
 4. `codex exec -s read-only <subagent flags> --cd <dir>` を Bash timeout 600000 で実行する

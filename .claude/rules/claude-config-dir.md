@@ -14,15 +14,15 @@ Two `claude` directories with the same name but different roles. Do not merge th
 | Role | **Distribution source** deployed to `~/.claude/` | **This repo's own project-local config** |
 | Scope | All of the user's projects (global) | Only when working on nix-config |
 | Deployed? | Yes — `setupClaude` copies/symlinks/generates it (e.g. `~/.claude/skills -> config/claude/skills`) | No — stays inside this repo |
-| `rules/` holds | Language coding conventions (`go.md`, `nix.md`, `rust.md`, `terraform.md`, `typescript.md`) | This repo's own docs (`architecture.md`, `build-commands.md`, `nix-patterns.md`, this file) |
+| `rules/` holds | Language coding conventions and the rule-file convention | This repo's own docs |
 | Read via | `~/.claude/CLAUDE.md` (global) | `paths:` frontmatter — each rule loads when a file it scopes is touched |
 
 Neither is redundant: deleting `config/claude/` wipes the global `~/.claude/` setup; deleting `.claude/` drops the conventions Claude reads while editing nix-config. See `claude-code-config.md` (the `setupClaude` rules) for how `config/claude/` is deployed.
 
 # config/claude/ directory conventions
 
-`config/claude/` is symlinked to `~/.claude/` via Home Manager (`skillsDir`, `rulesDir`, etc.).
-This means externally installed files (e.g. Claude Code plugin install) also appear in this directory.
+`setupClaude` symlinks the subdirectories of `config/claude/` (`skills/`, `rules/`, `mods/`) into `~/.claude/`.
+This means externally installed files (e.g. Claude Code plugin install) also appear in those directories.
 
 ## Git tracking policy
 
@@ -53,7 +53,7 @@ When adding a new repo-managed skill, add a corresponding `!` entry to `.gitigno
 
 Coding conventions live in `config/claude/rules/<lang>.md` with a `paths:` frontmatter, and `~/.claude/rules` is a symlink to that directory. Codex has no path-scoped rules and does not read them; sharing with Codex stops at the skills under `config/agents/skills/`.
 
-Rules carry conventions and knowledge, not workflow. There are no language subagents: per `CLAUDE.md`, the main session implements and verifies.
+Rules carry conventions and knowledge, not workflow.
 
 ## Adding new files
 
