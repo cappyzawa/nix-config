@@ -15,6 +15,7 @@ paths:
 `config/codex/AGENTS.md` is Codex's global instruction file, independent of Claude's `config/claude/CLAUDE.md`.
 
 - The two files share an engineering philosophy but not text: the workflows it implies differ by harness, and wording kept neutral for both was weaker in each. Duplicated rules are accepted because they change rarely.
+  - Some rules diverge on purpose to counter each agent's habits, so do not align them: out-of-scope fixes default to "do it now" for Claude, which defers too much as follow-ups, and to "report only" for Codex, which overreaches.
 - Only harness-independent skills are shared, from `config/agents/skills/`.
 - The repository-root `AGENTS.md` holds nix-config facts, and the repository-root `CLAUDE.md` is a symlink to it, because those facts do not depend on the harness.
 

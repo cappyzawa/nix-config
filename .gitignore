@@ -12,7 +12,6 @@ result
 config/claude/skills/*
 !config/claude/skills/chore/
 !config/claude/skills/codex/
-!config/claude/skills/commander/
 !config/claude/skills/empirical-prompt-tuning/
 !config/claude/skills/issue
 !config/claude/skills/ponchi
