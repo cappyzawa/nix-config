@@ -44,7 +44,4 @@ paths:
 
 ## よくあるトラブルシューティング
 
-- **infinite recursion**: `lib.mkDefault` / `lib.mkForce` の優先度衝突、または自己参照するモジュール。依存グラフを確認する
-- **attribute not found**: inputs の `follows` ミス、またはオプション名のタイポ。`nix repl` で確認する
-- **hash mismatch**: `outputHash` を持つ fixed-output derivation。`lib.fakeHash` で一度ビルドし、正しいハッシュに差し替える
 - **flake が新しいファイルを見つけない**: `git add` し忘れ。ステージングすれば解決する
