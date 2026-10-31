@@ -51,7 +51,7 @@ paths:
 - type guard 関数 (`x is T`) を使い、型の絞り込みを再利用可能にする
 - オーバーロードより union 引数 + conditional return type を検討する。型推論との相性が良い
 - ユーティリティ型 (`Pick`, `Omit`, `Partial`, `Required`, `Record`) を活用し、型の重複を避ける
-- public な関数には JSDoc (`/** */`) を書く。自明でない場合は `@param`, `@returns`, `@example` を含める
+- JSDoc (`/** */`) は、名前と型から使い方が読めない public な関数にだけ書き、`@param`, `@returns`, `@example` はその読めない部分を補うときに使う
 
 ## エラーハンドリング
 
