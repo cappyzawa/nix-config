@@ -133,7 +133,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "( [ -n \"${HERDR_PANE_ID:-}\" ] && herdr pane report-agent \"$HERDR_PANE_ID\" --source claude-hooks --agent claude --state working ) >/dev/null 2>&1; true"
+            "command": "( [ -n \"${TMUX:-}\" ] && [ -n \"${TMUX_PANE:-}\" ] && tmux set-option -qw -t \"$TMUX_PANE\" @claude_agent_status running ) >/dev/null 2>&1; true"
           }
         ]
       }
@@ -144,7 +144,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "( [ -n \"${HERDR_PANE_ID:-}\" ] && herdr pane report-agent \"$HERDR_PANE_ID\" --source claude-hooks --agent claude --state working ) >/dev/null 2>&1; true"
+            "command": "( [ -n \"${TMUX:-}\" ] && [ -n \"${TMUX_PANE:-}\" ] && tmux set-option -qw -t \"$TMUX_PANE\" @claude_agent_status running ) >/dev/null 2>&1; true"
           }
         ]
       }
@@ -155,7 +155,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "( [ -n \"${HERDR_PANE_ID:-}\" ] && herdr pane report-agent \"$HERDR_PANE_ID\" --source claude-hooks --agent claude --state working ) >/dev/null 2>&1; true"
+            "command": "( [ -n \"${TMUX:-}\" ] && [ -n \"${TMUX_PANE:-}\" ] && tmux set-option -qw -t \"$TMUX_PANE\" @claude_agent_status running ) >/dev/null 2>&1; true"
           }
         ]
       }
@@ -166,7 +166,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "( [ -n \"${HERDR_PANE_ID:-}\" ] && herdr pane report-agent \"$HERDR_PANE_ID\" --source claude-hooks --agent claude --state blocked ) >/dev/null 2>&1; true"
+            "command": "( [ -n \"${TMUX:-}\" ] && [ -n \"${TMUX_PANE:-}\" ] && tmux set-option -qw -t \"$TMUX_PANE\" @claude_agent_status attention ) >/dev/null 2>&1; true"
           }
         ]
       }
@@ -177,7 +177,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "( [ -n \"${HERDR_PANE_ID:-}\" ] && herdr pane report-agent \"$HERDR_PANE_ID\" --source claude-hooks --agent claude --state idle ) >/dev/null 2>&1; true"
+            "command": "( [ -n \"${TMUX:-}\" ] && [ -n \"${TMUX_PANE:-}\" ] && tmux set-option -qw -t \"$TMUX_PANE\" @claude_agent_status waiting ) >/dev/null 2>&1; true"
           }
         ]
       }
@@ -188,7 +188,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "( [ -n \"${HERDR_PANE_ID:-}\" ] && herdr pane report-agent \"$HERDR_PANE_ID\" --source claude-hooks --agent claude --state blocked ) >/dev/null 2>&1; true"
+            "command": "( [ -n \"${TMUX:-}\" ] && [ -n \"${TMUX_PANE:-}\" ] && tmux set-option -qw -t \"$TMUX_PANE\" @claude_agent_status attention ) >/dev/null 2>&1; true"
           }
         ]
       }
@@ -199,7 +199,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "( [ -n \"${HERDR_PANE_ID:-}\" ] && herdr pane release-agent \"$HERDR_PANE_ID\" --source claude-hooks --agent claude ) >/dev/null 2>&1; true"
+            "command": "( [ -n \"${TMUX:-}\" ] && [ -n \"${TMUX_PANE:-}\" ] && tmux set-option -qwu -t \"$TMUX_PANE\" @claude_agent_status ) >/dev/null 2>&1; true"
           }
         ]
       }

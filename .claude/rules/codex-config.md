@@ -27,20 +27,16 @@ paths:
 |---|---|---|
 | `~/.codex/config.toml` | `config/codex/config.toml`, host override, generated MCP config | Deep-merged into the existing writable file so runtime-managed projects and plugin state survive |
 | `~/.codex/AGENTS.md` | `config/codex/AGENTS.md` and `hosts/<host>/agent-instructions.md` | Copied into one global instruction file |
-| `~/.codex/hooks.json` | `config/codex/hooks.json` | Symlinked |
 | `~/.codex/rules/*.rules` | `config/codex/rules/*.rules` | Individually symlinked without replacing runtime rules |
 | `~/.codex/skills/<name>` | `config/codex/skills/<name>` | Compatible skills only, individually symlinked |
 
 MCP servers continue to use `shared.claudeMcpServers` as their Nix source for compatibility, but activation renders that source into both Claude JSON and Codex TOML.
 
-After the first deployment, and whenever `hooks.json` changes, open Codex and approve the user-level hook hash before expecting the herdr integration to run.
-
 ## Compatibility boundaries
 
 - Codex `@file` mentions attach context from the prompt composer; unlike Claude's instruction imports, `@path` inside `AGENTS.md`, rules, or `SKILL.md` is not expanded automatically. Use nested `AGENTS.md`, skill `references/`, explicit read instructions, or symlinks for durable composition.
 - Codex has no path-scoped rules, so the language rules under `config/claude/rules/` are Claude-only. What the two agents share is the harness-independent skills.
-- Only the herdr lifecycle hooks are deployed to each agent; neither carries workflow gates in hooks.
-- Codex uses `PermissionRequest` for herdr's blocked state because it has no `Notification(permission_prompt)` event.
+- No Codex hooks are deployed, and Claude's hooks only report agent state to tmux; neither carries workflow gates in hooks.
 - Codex preserves its existing model, trusted-project, plugin, and migration state unless a managed base or host setting explicitly overrides the same key.
 - No custom Codex roles are shipped. The top-level thread owns a task end to end, and subagents are tactical helpers that inherit its model and effort, so `agents.default_subagent_model` stays unset.
   - If a role is added later, deploy it through a directory link: Codex opens role files with `O_NOFOLLOW`, so a per-file symlink fails with `agent type is currently not available`, while discovery recurses into subdirectories.

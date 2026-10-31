@@ -75,11 +75,11 @@ inputs.nix-darwin.lib.darwinSystem {
         ];
         extraSpecialArgs = {
           inherit inputs sbarluaPkg;
+          inherit (inputs) tpm;
           configName = name;
           currentUser = user;
           username = user;
           gh-ghq-cd-pkg = inputs.gh-ghq-cd.packages.${system}.gh-ghq-cd;
-          herdr-pkg = inputs.herdr.packages.${system}.default;
         };
         users.${user} = import ../nix/home;
       };
