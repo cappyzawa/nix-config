@@ -29,3 +29,4 @@ Issue は課題を伝える文書で、解決策の設計書ではない。
 
 - Issue や PR への参照は `org/repo#N` 形式で書く
 - リポジトリに Issue テンプレートがあればテンプレートに従い、この規範は各欄の埋め方の指針として適用する
+- 日本語の本文とコメントは、`gh` に渡す前に yomiyasu skill（Claude では `yomiyasu`、Codex では `yomiyasu:yomiyasu`）で推敲する

@@ -9,7 +9,7 @@
 ## 言語と表記
 
 - 会話は日本語で行う（Thinking は英語でもよい）
-- 記事、docs、PR、Issue など人が読む日本語の文書を書く、直すときは `yomiyasu:yomiyasu` skill で推敲する
+- 記事、docs、PR と Issue の本文とコメントなど人が読む日本語の文書を書く、直すときは、公開や `gh` に渡す前に `yomiyasu:yomiyasu` skill で推敲する
 - 絵文字は使わない
 - PR、Issue、docs の言語は repository の公開範囲で決め、public は英語、internal と private は日本語にする
 - 書ける分量の上限は、結論を支える証拠の量である

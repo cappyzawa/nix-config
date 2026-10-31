@@ -57,3 +57,4 @@ PR body には merge 後に価値が消える情報だけを書き、寿命の�
 ## 形式
 
 - リポジトリに PR テンプレートがあればテンプレートに従い、この規範は各欄の埋め方の指針として適用する
+- 日本語の本文とコメントは、`gh` に渡す前に yomiyasu skill（Claude では `yomiyasu`、Codex では `yomiyasu:yomiyasu`）で推敲する
