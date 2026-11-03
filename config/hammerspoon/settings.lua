@@ -2,6 +2,7 @@ return {
 	applications = {
 		-- Chrome resets to its configured default page zoom, currently 125%.
 		["com.google.Chrome"] = {
+			rememberWindowZoom = true,
 			connected = { steps = 0, label = "125%" },
 			disconnected = { steps = -5, label = "75%" },
 		},
