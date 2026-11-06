@@ -20,7 +20,6 @@
       "twingate"
     ];
     brews = [
-      "ffmpeg"
       # mise: prebuilt bottle instead of slow Nix source build
       "mise"
     ];

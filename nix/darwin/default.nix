@@ -333,6 +333,7 @@ in
       ];
 
       brews = [
+        "ffmpeg"
         "lua"
         "mas"
         "pkgx"
