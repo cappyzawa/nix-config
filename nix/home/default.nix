@@ -1501,6 +1501,13 @@ in
     # Atuin (shell history)
     atuin = {
       enable = true;
+      package = pkgs.atuin.overrideAttrs (
+        final: old: {
+          buildFeatures = lib.remove "ai" old.buildFeatures;
+          cargoBuildFeatures = final.buildFeatures;
+          cargoCheckFeatures = final.buildFeatures;
+        }
+      );
       enableZshIntegration = true;
       flags = [ "--disable-up-arrow" ];
       settings = {
