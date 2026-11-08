@@ -3,9 +3,12 @@
   lib,
   inputs,
   configName,
+  currentUser,
   ...
 }:
 {
+  home-manager.users.${currentUser}.imports = [ ./crequa-git.nix ];
+
   # Personal applications
   homebrew = {
     casks = [ "codex" ]; # OpenAI Codex CLI (cask: prebuilt binary)
