@@ -8,6 +8,7 @@ let
   crequaGitRepositories = [
     "prods"
     "hololive-knowledge"
+    "crequa"
   ];
   crequaGitTokenFile = "${config.xdg.dataHome}/git/crequa-token";
   crequaGitCredential = pkgs.writeShellApplication {
