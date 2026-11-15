@@ -4,10 +4,14 @@
   inputs,
   configName,
   currentUser,
+  pkgs,
   ...
 }:
 {
-  home-manager.users.${currentUser}.imports = [ ./crequa-git.nix ];
+  home-manager.users.${currentUser} = {
+    imports = [ ./crequa-git.nix ];
+    home.packages = [ pkgs.cloudflared ];
+  };
 
   # Personal applications
   homebrew = {
