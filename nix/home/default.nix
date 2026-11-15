@@ -111,7 +111,6 @@ in
       jq # JSON processor
       fd # Better find
       eza # Better ls
-      fzf # Fuzzy finder
       ripgrep # Better grep
       gnused # GNU sed
       wget # HTTP client
@@ -1498,23 +1497,9 @@ in
       };
     };
 
-    # Atuin (shell history)
-    atuin = {
+    fzf = {
       enable = true;
-      package = pkgs.atuin.overrideAttrs (
-        final: old: {
-          buildFeatures = lib.remove "ai" old.buildFeatures;
-          cargoBuildFeatures = final.buildFeatures;
-          cargoCheckFeatures = final.buildFeatures;
-        }
-      );
       enableZshIntegration = true;
-      flags = [ "--disable-up-arrow" ];
-      settings = {
-        search_mode = "fuzzy";
-        filter_mode = "global";
-        style = "compact";
-      };
     };
 
     # Alacritty (theme is managed by akari-theme module)
