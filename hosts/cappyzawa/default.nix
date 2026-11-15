@@ -4,17 +4,14 @@
   inputs,
   configName,
   currentUser,
-  pkgs,
   ...
 }:
 {
-  home-manager.users.${currentUser} = {
-    imports = [ ./crequa-git.nix ];
-    home.packages = [ pkgs.cloudflared ];
-  };
+  home-manager.users.${currentUser}.imports = [ ./crequa-git.nix ];
 
   # Personal applications
   homebrew = {
+    brews = [ "cloudflared" ];
     casks = [ "codex" ]; # OpenAI Codex CLI (cask: prebuilt binary)
     masApps = {
       "LINE" = 539883307;
