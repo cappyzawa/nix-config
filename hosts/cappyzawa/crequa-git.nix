@@ -65,6 +65,45 @@ let
       fi
       export GH_TOKEN
       export GH_HOST=github.com
+
+      if [[ ''${1:-} == pr && ''${2:-} == ready ]]; then
+        repo_value_next=false
+        for arg in "''${@:3}"; do
+          if "$repo_value_next"; then
+            repo_value_next=false
+            continue
+          fi
+          case "$arg" in
+            -R|--repo) repo_value_next=true ;;
+            -R?*|--repo=*) ;;
+            --) break ;;
+            -*) exec gh "$@" ;;
+          esac
+        done
+
+        if pr_url=$(gh pr view --json url,author,isDraft,state \
+          --jq 'select(.state == "OPEN" and .isDraft and .author.login == "cappyzawa").url' \
+          "''${@:3}" 2>/dev/null) &&
+          [[ "$pr_url" =~ ^https://github\.com/crequa/prods/pull/([1-9][0-9]*)$ ]]; then
+          pr_number=''${BASH_REMATCH[1]}
+          if ready_output=$(gh pr ready "$pr_url" 2>&1); then
+            printf '%s\n' "$ready_output" >&2
+          else
+            ready_status=$?
+            printf '%s\n' "$ready_output" >&2
+            exit "$ready_status"
+          fi
+
+          # gh also exits successfully when a PR is already ready.
+          if [[ "$ready_output" == *"Pull request crequa/prods#$pr_number is marked as \"ready for review\""* ]]; then
+            if ! gh pr comment "$pr_url" --body '@codex review'; then
+              printf 'PR is ready, but the Codex review request could not be confirmed: %s\n' "$pr_url" >&2
+              exit 1
+            fi
+          fi
+          exit 0
+        fi
+      fi
       exec gh "$@"
     '';
   };
