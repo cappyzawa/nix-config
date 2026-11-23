@@ -39,8 +39,12 @@ if ! command -v gh >/dev/null; then
   exit 0
 fi
 
+# admin:public_key lets anyone holding the gh token add SSH auth keys, so the
+# scopes live only as long as this script needs them.
+key_scopes=admin:public_key,admin:ssh_signing_key
 if ! gh api user/keys >/dev/null 2>&1 || ! gh api user/ssh_signing_keys >/dev/null 2>&1; then
-  gh auth refresh -h github.com -s admin:public_key,admin:ssh_signing_key
+  gh auth refresh -h github.com -s "$key_scopes"
+  trap 'gh auth refresh -h github.com --remove-scopes "$key_scopes"' EXIT
 fi
 
 register() {
