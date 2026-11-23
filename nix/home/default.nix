@@ -16,7 +16,7 @@ let
   fontFamily = config.shared.fonts.main;
   fontSize = config.shared.fonts.size;
   # Generated on each host and kept out of 1Password so unattended agents are
-  # not blocked on a locked vault.
+  # not blocked on a locked vault. `make github-key` (GITHUB_KEY) creates it.
   githubSshKey = "${config.home.homeDirectory}/.ssh/id_ed25519";
   # Local-only, hand-drawn-style diagram generator (drives the ponchi skill).
   # Not in nixpkgs and has no flake, so build from source pinned to a release tag.

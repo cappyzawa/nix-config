@@ -29,7 +29,17 @@ git clone https://github.com/cappyzawa/nix-config.git ~/nix-config
 cd ~/nix-config
 ```
 
-### 3. Apply the configuration
+### 3. Prepare the GitHub key
+
+Each host uses its own `~/.ssh/id_ed25519`, outside 1Password, for GitHub SSH and commit signing, so unattended agents are never blocked on a locked vault. The key is never committed.
+
+```bash
+make github-key NIXNAME=cappyzawa
+```
+
+This generates the key if missing, adds its public key to `config/git/allowed_signers` (commit that change), removes signing settings from `~/.gitconfig.local` that would override the managed ones, and registers the key on GitHub as both an Authentication and a Signing key via `gh`. On a fresh Mac `gh` is not installed yet, so register `~/.ssh/id_ed25519.pub` in GitHub settings by hand, or rerun the command after bootstrap. `make bootstrap`, `make switch` and `make update` refuse to run until the key exists.
+
+### 4. Apply the configuration
 
 ```bash
 # First time: bootstrap nix-darwin (specify your host)
@@ -85,7 +95,7 @@ To add a new machine:
      user = "{username}";  # optional if same as hostname
    };
    ```
-3. Bootstrap on the new machine: `make bootstrap NIXNAME={hostname}`
+3. Prepare the GitHub key and bootstrap on the new machine: `make github-key NIXNAME={hostname}`, then `make bootstrap NIXNAME={hostname}`
 
 ## Per-host local overrides
 

@@ -31,6 +31,17 @@ define check_nixname
 	fi
 endef
 
+# Must match githubSshKey in nix/home/default.nix. Switching without it breaks
+# git push and every signed commit.
+GITHUB_KEY := $(HOME)/.ssh/id_ed25519
+
+define check_github_key
+	@if [ ! -f "$(GITHUB_KEY)" ]; then \
+		echo "Error: $(GITHUB_KEY) not found. Run 'make github-key' first."; \
+		exit 1; \
+	fi
+endef
+
 # Save NIXNAME to file for future use
 define save_nixname
 	@mkdir -p $(dir $(HOST_FILE))
@@ -52,17 +63,24 @@ endef
 
 bootstrap: ## First-time setup: bootstrap nix-darwin (NIXNAME=<host> required on first run)
 	$(call check_nixname,bootstrap)
+	$(call check_github_key)
 	$(call run_with_local_override,nix run nix-darwin -- switch --flake '.#$(_NIXNAME)')
 	$(call save_nixname)
 
 switch: ## Apply nix-darwin and home-manager configuration
 	$(call check_nixname,switch)
+	$(call check_github_key)
 	$(call run_with_local_override,/run/current-system/sw/bin/darwin-rebuild switch --flake '.#$(_NIXNAME)')
 
 update: ## Update flake inputs and apply
 	$(call check_nixname,update)
+	$(call check_github_key)
 	nix flake update
 	$(call run_with_local_override,/run/current-system/sw/bin/darwin-rebuild switch --flake '.#$(_NIXNAME)')
+
+github-key: ## Create this host's GitHub SSH/signing key and register it (run before switch)
+	$(call check_nixname,github-key)
+	./scripts/setup-github-key.sh $(_NIXNAME) $(GITHUB_KEY)
 
 rollback: ## Select a generation with fzf and switch to it
 	@gen=$$(sudo darwin-rebuild --list-generations | fzf --tac | awk '{print $$1}') && \
