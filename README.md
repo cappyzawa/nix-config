@@ -37,7 +37,7 @@ Each host uses its own `~/.ssh/id_ed25519`, outside 1Password, for GitHub SSH an
 make github-key NIXNAME=cappyzawa
 ```
 
-This generates the key if missing, adds its public key to `config/git/allowed_signers` (commit that change), removes signing settings from `~/.gitconfig.local` that would override the managed ones, and registers the key on GitHub as both an Authentication and a Signing key via `gh`. On a fresh Mac `gh` is not installed yet, so register `~/.ssh/id_ed25519.pub` in GitHub settings by hand, or rerun the command after bootstrap. `make bootstrap`, `make switch` and `make update` refuse to run until the key exists.
+This generates the key if missing, adds its public key to `config/git/allowed_signers` (commit that change), removes signing settings from `~/.gitconfig.local` that would override the managed ones, and registers the key on GitHub as both an Authentication and a Signing key via `gh`. Registration needs two browser approvals: one grants `gh` the key-admin scopes, the other removes them again so the token does not keep the power to add SSH keys. On a fresh Mac `gh` is not installed yet, so register `~/.ssh/id_ed25519.pub` in GitHub settings by hand, or rerun the command after bootstrap. `make bootstrap`, `make switch` and `make update` refuse to run until the key exists.
 
 ### 4. Apply the configuration
 

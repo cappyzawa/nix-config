@@ -43,8 +43,9 @@ fi
 # scopes live only as long as this script needs them.
 key_scopes=admin:public_key,admin:ssh_signing_key
 if ! gh api user/keys >/dev/null 2>&1 || ! gh api user/ssh_signing_keys >/dev/null 2>&1; then
+  echo "Browser approval 1/2: grant $key_scopes to register the key."
   gh auth refresh -h github.com -s "$key_scopes"
-  trap 'gh auth refresh -h github.com --remove-scopes "$key_scopes"' EXIT
+  trap 'echo "Browser approval 2/2: remove $key_scopes again."; gh auth refresh -h github.com --remove-scopes "$key_scopes"' EXIT
 fi
 
 register() {
