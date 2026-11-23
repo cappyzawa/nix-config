@@ -82,6 +82,9 @@ in
       iconPrefix = "";
     };
     starship.enable = false;
+    lazygit.enable = false;
+    gh-dash.enable = false;
+    delta.enable = false;
   };
   home = {
     inherit username;
@@ -163,12 +166,10 @@ in
       protobuf # Protocol Buffers compiler (protoc)
       grpcurl # gRPC client for testing
       uv # Python package manager (provides uvx)
-      hyperfine # Benchmarking tool
       yq-go # YAML processor
       ponchi # Hand-drawn-style diagram generator (ponchi skill)
       golangci-lint # Go linter
       goreleaser # Go release tool
-      glow # Markdown renderer
       bacon # Rust background compiler
 
       # Security and credentials
@@ -786,7 +787,6 @@ in
     gh = {
       enable = true;
       extensions = [
-        pkgs.gh-dash # config is managed by programs.gh-dash + akari-theme
         gh-ghq-cd-pkg
         pkgs.gh-stack
       ];
@@ -1029,29 +1029,12 @@ in
       };
     };
 
-    # Delta (git pager) - theme is managed by akari-theme module
-    delta = {
-      enable = true;
-      enableGitIntegration = true;
-    };
-
     # Bat (theme is managed by akari-theme module)
     bat = {
       enable = true;
       config = {
         color = "always";
       };
-    };
-
-    # Lazygit
-    lazygit = {
-      enable = true;
-    };
-
-    # gh-dash (installed via gh.extensions, config managed by akari-theme)
-    gh-dash = {
-      enable = true;
-      package = null; # installed via programs.gh.extensions
     };
 
     # Helix editor (theme is managed by akari-theme module)
@@ -1741,10 +1724,8 @@ in
         set -g @continuum-save-interval '10'
         # akari-tmux is now managed by akari-theme module
         set -g @plugin 'cappyzawa/tmux-popups'
-        set -g @popup_g 'lazygit'
         set -g @popup_l 'gh cd -p 1'
         set -g @popup_c 'gh cd -p 1 -c claude'
-        set -g @popup_d 'gh dash'
         set -g @popup_f 'hx .'
 
         # Initialize TMUX plugin manager (keep this line at the very bottom)
@@ -1870,7 +1851,6 @@ in
 
         # Tools (Nix-managed, always available)
         ls = "eza";
-        lg = "lazygit";
         vim = "hx";
       };
     };
@@ -1949,7 +1929,7 @@ in
       "zsh/30_fzf.zsh".source = ../../config/zsh/30_fzf.zsh;
       "zsh/40_integrations.zsh".source = ../../config/zsh/40_integrations.zsh;
 
-      # Bat theme, Lazygit themes, and gh-dash are managed by akari-theme module
+      # Bat theme is managed by akari-theme module
 
       # Karabiner-Elements (force to avoid .backup conflict with Karabiner's own backup)
       "karabiner/karabiner.json" = {

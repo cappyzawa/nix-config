@@ -43,7 +43,6 @@ in
       "awscurl"
       "duckdb"
       "poppler"
-      "googleworkspace-cli" # Google Workspace CLI (installs `gws` binary)
     ];
   };
 
@@ -101,39 +100,6 @@ in
         # AWS_PROFILE default lives in ~/.zshrc.local (kept out of this public repo).
         zsh.sessionVariables = {
           AWS_VAULT_BACKEND = "keychain";
-        };
-
-        # gh-dash configuration for work environment
-        # Note: Update the date filter periodically to exclude old items
-        gh-dash.settings = {
-          prSections = [
-            {
-              title = "My Pull Requests";
-              filters = "is:open author:@me updated:>2026-01-01";
-            }
-            {
-              title = "Needs My Review";
-              filters = "is:open review-requested:@me updated:>2026-01-01";
-            }
-            {
-              title = "Involved";
-              filters = "is:open involves:@me -author:@me updated:>2026-01-01";
-            }
-          ];
-          issuesSections = [
-            {
-              title = "My Issues";
-              filters = "is:open author:@me updated:>2026-01-01";
-            }
-            {
-              title = "Assigned";
-              filters = "is:open assignee:@me updated:>2026-01-01";
-            }
-            {
-              title = "Involved";
-              filters = "is:open involves:@me -author:@me updated:>2026-01-01";
-            }
-          ];
         };
       };
     };

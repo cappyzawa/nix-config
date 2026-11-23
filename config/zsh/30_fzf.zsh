@@ -18,10 +18,7 @@ elif command -v exa &>/dev/null; then
     zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa --all --color=always $realpath'
 fi
 
-# Git diff highlighter with delta
-if command -v delta &>/dev/null; then
-    zstyle ':fzf-tab:complete:git-(add|diff|restore):*' fzf-preview 'git diff $word | delta --paging=never --width=20'
-fi
+zstyle ':fzf-tab:complete:git-(add|diff|restore):*' fzf-preview 'git diff --color=always $word'
 
 # Process preview for kill/ps
 zstyle ':fzf-tab:complete:(kill|ps):argument-rest' fzf-preview \
