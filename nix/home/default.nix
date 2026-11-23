@@ -15,6 +15,9 @@
 let
   fontFamily = config.shared.fonts.main;
   fontSize = config.shared.fonts.size;
+  # Generated on each host and kept out of 1Password so unattended agents are
+  # not blocked on a locked vault.
+  githubSshKey = "${config.home.homeDirectory}/.ssh/id_ed25519";
   # Local-only, hand-drawn-style diagram generator (drives the ponchi skill).
   # Not in nixpkgs and has no flake, so build from source pinned to a release tag.
   ponchi = pkgs.rustPlatform.buildRustPackage {
@@ -966,6 +969,20 @@ in
       };
     };
 
+    ssh = {
+      enable = true;
+      enableDefaultConfig = false;
+      includes = [ "~/.colima/ssh_config" ];
+      settings = {
+        "github.com" = {
+          IdentityAgent = "none";
+          IdentityFile = githubSshKey;
+          IdentitiesOnly = true;
+        };
+        "*".IdentityAgent = "\"~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock\"";
+      };
+    };
+
     # Direnv
     direnv = {
       enable = true;
@@ -977,7 +994,8 @@ in
       enable = true;
       signing = {
         format = "ssh";
-        signer = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
+        key = githubSshKey;
+        signer = "/usr/bin/ssh-keygen";
         signByDefault = true;
       };
       ignores = [

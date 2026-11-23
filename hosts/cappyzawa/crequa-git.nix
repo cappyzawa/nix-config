@@ -78,7 +78,6 @@ in
           condition = "hasconfig:remote.*.url:${url}";
           contents = {
             user.signingKey = "${config.home.homeDirectory}/.ssh/id_ed25519_crequa_signing";
-            gpg.ssh.program = "/usr/bin/ssh-keygen";
             url."https://github.com/crequa/".insteadOf = [
               "git@github.com:crequa/"
               "ssh://git@github.com/crequa/"
