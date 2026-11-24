@@ -433,10 +433,6 @@ in
             esac
           done
         done
-        # hooks.json carried only the retired herdr integration
-        if [ -L "$CODEX_DIR/hooks.json" ]; then
-          $DRY_RUN_CMD rm -f "$CODEX_DIR/hooks.json"
-        fi
       '';
 
       # SbarLua installation (symlink to expected location)
