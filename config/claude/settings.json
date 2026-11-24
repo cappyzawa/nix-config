@@ -133,7 +133,9 @@
         "~/go/pkg/mod",
         "~/.cargo/registry",
         "~/.cargo/git",
-        "~/.npm"
+        "~/.npm",
+        "~/.moon/cache",
+        "~/.moon/registry"
       ]
     }
   },

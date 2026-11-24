@@ -78,6 +78,8 @@ writable_roots = [
   "~/.cargo/registry",
   "~/.cargo/git",
   "~/.npm",
+  "~/.moon/cache",
+  "~/.moon/registry",
 ]
 
 [tui]
