@@ -323,12 +323,6 @@ in
         rm -rf "$CLAUDE_DIR/mods"
         ln -sfn "$REPO_ROOT/config/claude/mods" "$CLAUDE_DIR/mods"
 
-        # The hooks directory retired with the session oracle-loop scripts;
-        # drop the stale symlink so it does not dangle on hosts that had it.
-        if [ -L "$CLAUDE_DIR/hooks" ]; then
-          $DRY_RUN_CMD rm -f "$CLAUDE_DIR/hooks"
-        fi
-
         # agent-browser ships its skill with the CLI so the two stay version-matched.
         # Point at the brew-managed stable path, not `agent-browser skills path`
         # (that returns a version-pinned Cellar path and goes stale on upgrade).
