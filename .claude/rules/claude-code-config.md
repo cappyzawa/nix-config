@@ -45,7 +45,7 @@ activation ブロック (`nix/home/default.nix`):
   - mode が 400 / 600 でなければ値を出さずに activation を止める
   - 生成物は staging を `$CLAUDE_DIR` 内に作って `chmod 600` してから rename する。異常終了と dry-run では trap が staging を消す
   - 実値を持つファイルなので `permissions.deny` の `Read(...)` に加える
-  - ただし `deny` は誤操作除けであって隔離ではない（`Bash(cat:*)` が allow にあり、token は Claude のプロセス環境から全子プロセスへ継承される）
+  - sandbox が `deny` の `Read(...)` を OS レベルの読み取り拒否に写すので、sandbox 内の Bash からも読めない。ただし `excludedCommands` に当たるコマンドと sandbox 外での再実行は読めるうえ、token は Claude のプロセス環境から全子プロセスへ継承されるので、隔離ではない
 - 生成後に、MCP 定義のプレースホルダが settings の `env` で解決されているかを検査し、未解決の変数名を switch 出力に出す
   - 未解決のプレースホルダは文字列のまま server へ渡り、remote API が unauthorized を返す。接続不良に見えて原因が分かりにくいため名前を出す
   - 検査自体の失敗は報告するだけで switch を止めない
