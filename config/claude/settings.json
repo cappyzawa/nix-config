@@ -232,7 +232,8 @@
   },
   "enabledPlugins": {
     "slack@claude-plugins-official": true,
-    "eli5@claude-community": true
+    "eli5@claude-community": true,
+    "frontend-design@claude-plugins-official": true
   },
   "statusLine": {
     "type": "command",
