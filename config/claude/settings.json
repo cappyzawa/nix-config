@@ -124,21 +124,6 @@
       "Read(~/.config/nix-config-local/claude-settings-secrets.json)"
     ]
   },
-  "sandbox": {
-    "enabled": true,
-    "excludedCommands": ["gh *", "docker *", "codex *", "nix *"],
-    "filesystem": {
-      "allowWrite": [
-        "~/Library/Caches/go-build",
-        "~/go/pkg/mod",
-        "~/.cargo/registry",
-        "~/.cargo/git",
-        "~/.npm",
-        "~/.moon/cache",
-        "~/.moon/registry"
-      ]
-    }
-  },
   "hooks": {
     "UserPromptSubmit": [
       {
