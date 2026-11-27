@@ -69,6 +69,40 @@ let
   # The skill ships in the extension's source tree, so taking it from the same
   # derivation keeps it version-matched with the installed `gh stack`.
   ghStackSkill = "${pkgs.gh-stack.src}/skills/gh-stack";
+  # `gh skill install` records the installed version only in each SKILL.md,
+  # inside a gitignored directory, so pin third-party skills here instead.
+  quintSkillsSrc = pkgs.fetchFromGitHub {
+    owner = "quint-co";
+    repo = "quint";
+    rev = "8f5ca049111972f3cb64e7b4e5c18e71275b4dd3"; # v0.35.0
+    hash = "sha256-JUddMFMHoCHRcADCbGKNLz5FdfNpNVm8B9vx1UgNJaI=";
+  };
+  yomiyasuSrc = pkgs.fetchFromGitHub {
+    owner = "nanaism";
+    repo = "yomiyasu";
+    rev = "c49d5f1bee91258e33e1febc3569c6c87be7669e"; # v3.2.3
+    hash = "sha256-R/dPOsYefAw39uvr+jUcnfk2myUryOrh4PBwKlWBPXg=";
+  };
+  pinnedSkills = {
+    gh-stack = ghStackSkill;
+    quint-lang = "${quintSkillsSrc}/skills/quint-lang";
+    quint-modeling = "${quintSkillsSrc}/skills/quint-modeling";
+    quint-verification = "${quintSkillsSrc}/skills/quint-verification";
+    yomiyasu = "${yomiyasuSrc}/skills/yomiyasu";
+  };
+  linkPinnedSkills =
+    skillsDir:
+    lib.concatStrings (
+      lib.mapAttrsToList (name: src: ''
+        link="${skillsDir}/${name}"
+        # A real directory is a manual install; replacing it would delete local files.
+        if [ -L "$link" ] || [ ! -e "$link" ]; then
+          $DRY_RUN_CMD ln -sfn "${src}" "$link"
+        else
+          echo "warning: $link is not a symlink; remove it to use the pinned ${name} skill" >&2
+        fi
+      '') pinnedSkills
+    );
   claudeMcpConfig =
     (pkgs.formats.json { }).generate "claude-mcp-config.json"
       config.shared.claudeMcpServers;
@@ -363,7 +397,7 @@ in
         elif [ -L "$AB_LINK" ]; then
           $DRY_RUN_CMD rm -f "$AB_LINK"
         fi
-        $DRY_RUN_CMD ln -sfn "${ghStackSkill}" "$REPO_ROOT/config/claude/skills/gh-stack"
+        ${linkPinnedSkills "$REPO_ROOT/config/claude/skills"}
 
         # agents - global and host-specific definitions merged per file. Either
         # source directory may be absent; an unmatched glob would otherwise
@@ -442,7 +476,7 @@ in
         for f in "$REPO_ROOT/config/codex/rules"/*.rules; do
           $DRY_RUN_CMD ln -sfn "$f" "$CODEX_DIR/rules/$(basename "$f")"
         done
-        $DRY_RUN_CMD ln -sfn "${ghStackSkill}" "$REPO_ROOT/config/codex/skills/gh-stack"
+        ${linkPinnedSkills "$REPO_ROOT/config/codex/skills"}
         for f in "$REPO_ROOT/config/codex/skills"/*; do
           $DRY_RUN_CMD ln -sfn "$f" "$CODEX_DIR/skills/$(basename "$f")"
         done
