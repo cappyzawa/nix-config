@@ -347,6 +347,7 @@ in
         "typst"
         "marp-cli"
         "terraform-ls" # Terraform language server
+        "quint" # Quint specification CLI
         "hashicorp/tap/terraform" # Terraform (BSL: prebuilt binary instead of slow Nix source build)
       ];
 
