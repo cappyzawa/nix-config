@@ -15,46 +15,46 @@
   "permissions": {
     "defaultMode": "auto",
     "allow": [
-      "Bash(cargo check:*)",
-      "Bash(cargo clippy:*)",
-      "Bash(cargo fmt:*)",
-      "Bash(cargo test:*)",
-      "Bash(cat:*)",
-      "Bash(codex exec -s read-only:*)",
-      "Bash(docker compose:*)",
-      "Bash(find:*)",
-      "Bash(gh pr create:*)",
-      "Bash(gh pr view:*)",
-      "Bash(git add:*)",
-      "Bash(git branch:*)",
-      "Bash(git commit:*)",
-      "Bash(git diff:*)",
-      "Bash(git log:*)",
-      "Bash(git push:*)",
-      "Bash(git show:*)",
+      "Bash(cargo check *)",
+      "Bash(cargo clippy *)",
+      "Bash(cargo fmt *)",
+      "Bash(cargo test *)",
+      "Bash(cat *)",
+      "Bash(codex exec -s read-only *)",
+      "Bash(docker compose *)",
+      "Bash(find *)",
+      "Bash(gh pr create *)",
+      "Bash(gh pr view *)",
+      "Bash(git add *)",
+      "Bash(git branch *)",
+      "Bash(git commit *)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git push *)",
+      "Bash(git show *)",
       "Bash(git status)",
-      "Bash(go build:*)",
-      "Bash(go fmt:*)",
-      "Bash(go mod:*)",
-      "Bash(go test:*)",
-      "Bash(go vet:*)",
-      "Bash(golangci-lint:*)",
-      "Bash(grep:*)",
-      "Bash(head:*)",
-      "Bash(ls:*)",
-      "Bash(markdownlint:*)",
-      "Bash(npm run format:*)",
-      "Bash(npm run lint:*)",
-      "Bash(npm run test:*)",
-      "Bash(make test:*)",
-      "Bash(prettier:*)",
-      "Bash(rg:*)",
-      "Bash(shellcheck:*)",
-      "Bash(shfmt:*)",
-      "Bash(tail:*)",
-      "Bash(yarn format:*)",
-      "Bash(yarn lint:*)",
-      "Bash(yarn test:*)",
+      "Bash(go build *)",
+      "Bash(go fmt *)",
+      "Bash(go mod *)",
+      "Bash(go test *)",
+      "Bash(go vet *)",
+      "Bash(golangci-lint *)",
+      "Bash(grep *)",
+      "Bash(head *)",
+      "Bash(ls *)",
+      "Bash(markdownlint *)",
+      "Bash(npm run format *)",
+      "Bash(npm run lint *)",
+      "Bash(npm run test *)",
+      "Bash(make test *)",
+      "Bash(prettier *)",
+      "Bash(rg *)",
+      "Bash(shellcheck *)",
+      "Bash(shfmt *)",
+      "Bash(tail *)",
+      "Bash(yarn format *)",
+      "Bash(yarn lint *)",
+      "Bash(yarn test *)",
       "Bash(aws acm describe-*)",
       "Bash(aws acm get-*)",
       "Bash(aws acm list-*)",
@@ -67,7 +67,7 @@
       "Bash(aws dynamodb describe-*)",
       "Bash(aws dynamodb get-*)",
       "Bash(aws dynamodb list-*)",
-      "Bash(aws dynamodb scan:*)",
+      "Bash(aws dynamodb scan *)",
       "Bash(aws ec2 describe-*)",
       "Bash(aws ecr describe-*)",
       "Bash(aws ecr list-*)",
@@ -86,7 +86,7 @@
       "Bash(aws rds describe-*)",
       "Bash(aws route53 get-*)",
       "Bash(aws route53 list-*)",
-      "Bash(aws s3 ls:*)",
+      "Bash(aws s3 ls *)",
       "Bash(aws s3api get-*)",
       "Bash(aws s3api head-*)",
       "Bash(aws s3api list-*)",
@@ -103,12 +103,9 @@
       "Bash(aws ssm describe-*)",
       "Bash(aws ssm get-*)",
       "Bash(aws ssm list-*)",
-      "Bash(aws sts get-caller-identity:*)",
+      "Bash(aws sts get-caller-identity *)",
       "Bash(aws timestream-influxdb get-*)",
       "Bash(aws timestream-influxdb list-*)",
-      "Glob",
-      "Grep",
-      "LS",
       "Read",
       "WebFetch(domain:doc.rust-lang.org)",
       "WebFetch(domain:docs.anthropic.com)",
@@ -127,7 +124,6 @@
   "hooks": {
     "UserPromptSubmit": [
       {
-        "matcher": "",
         "hooks": [
           {
             "type": "command",
@@ -138,7 +134,6 @@
     ],
     "PreToolUse": [
       {
-        "matcher": "",
         "hooks": [
           {
             "type": "command",
@@ -149,7 +144,6 @@
     ],
     "PostToolUse": [
       {
-        "matcher": "",
         "hooks": [
           {
             "type": "command",
@@ -171,7 +165,6 @@
     ],
     "Stop": [
       {
-        "matcher": "",
         "hooks": [
           {
             "type": "command",
@@ -182,7 +175,6 @@
     ],
     "StopFailure": [
       {
-        "matcher": "",
         "hooks": [
           {
             "type": "command",
@@ -193,7 +185,6 @@
     ],
     "SessionEnd": [
       {
-        "matcher": "",
         "hooks": [
           {
             "type": "command",
