@@ -40,6 +40,32 @@ let
       platforms = lib.platforms.darwin;
     };
   };
+  # Helix's built-in quint config expects this binary, but nixpkgs only ships the CLI.
+  # Pinned to 0.19.0 because 0.21.0 is younger than the npm min-release-age policy.
+  quint-language-server = pkgs.buildNpmPackage {
+    pname = "quint-language-server";
+    version = "0.19.0";
+    src = pkgs.fetchFromGitHub {
+      owner = "quint-co";
+      repo = "quint";
+      rev = "cd48c45ab17f524415f9d72df60d8c3c59c5e4cb"; # gitHead of the npm 0.19.0 release
+      hash = "sha256-62A3Q+4xAq0c7sXtpWIOgLO+Y6DdGMKGHKyLVDD3oDY=";
+    };
+    sourceRoot = "source/vscode/quint-vscode/server";
+    npmDepsHash = "sha256-BT5KN9E5aRUIJQR0zGlT00tDmRpS2oFF/yOdQOPIGgQ=";
+    npmBuildScript = "compile";
+    # Upstream resolves this type-only import through the monorepo's hoisted
+    # vscode-languageclient, which the server's own lockfile does not include.
+    postPatch = ''
+      substituteInPlace src/complete.ts \
+        --replace-fail "from 'vscode-languageclient'" "from 'vscode-languageserver'"
+    '';
+    meta = {
+      description = "Language server for the Quint specification language";
+      homepage = "https://github.com/quint-co/quint";
+      mainProgram = "quint-language-server";
+    };
+  };
   # The skill ships in the extension's source tree, so taking it from the same
   # derivation keeps it version-matched with the installed `gh stack`.
   ghStackSkill = "${pkgs.gh-stack.src}/skills/gh-stack";
@@ -145,6 +171,7 @@ in
       vscode-langservers-extracted # JSON, HTML, CSS
       lua-language-server # Lua
       zls # Zig
+      quint-language-server # Quint
 
       # Formatters and linters (for Helix)
       (lib.lowPrio gotools) # goimports (lowPrio to avoid bundle conflict with Ruby)
