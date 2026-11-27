@@ -420,7 +420,9 @@ in
         CODEX_DIR="$HOME/.codex"
         HOST="${configName}"
 
-        $DRY_RUN_CMD mkdir -p "$CODEX_DIR" "$CODEX_DIR/rules" "$CODEX_DIR/skills"
+        AGENT_SKILLS_DIR="$HOME/.agents/skills"
+
+        $DRY_RUN_CMD mkdir -p "$CODEX_DIR" "$CODEX_DIR/rules" "$AGENT_SKILLS_DIR"
 
         runtime_json=$(mktemp)
         base_json=$(mktemp)
@@ -477,8 +479,22 @@ in
           $DRY_RUN_CMD ln -sfn "$f" "$CODEX_DIR/rules/$(basename "$f")"
         done
         ${linkPinnedSkills "$REPO_ROOT/config/codex/skills"}
+        # Codex reads user skills from ~/.agents/skills; $CODEX_HOME/skills is
+        # its deprecated location. Other tools install real directories here too.
         for f in "$REPO_ROOT/config/codex/skills"/*; do
-          $DRY_RUN_CMD ln -sfn "$f" "$CODEX_DIR/skills/$(basename "$f")"
+          link="$AGENT_SKILLS_DIR/$(basename "$f")"
+          if [ -L "$link" ] || [ ! -e "$link" ]; then
+            $DRY_RUN_CMD ln -sfn "$f" "$link"
+          else
+            echo "warning: $link is not a symlink; remove it to use the repository skill" >&2
+          fi
+        done
+        # Earlier activations linked the same skills into the deprecated location.
+        for link in "$CODEX_DIR/skills"/*; do
+          [ -L "$link" ] || continue
+          case "$(readlink "$link")" in
+            "$REPO_ROOT/config/codex/skills/"*) $DRY_RUN_CMD rm -f "$link" ;;
+          esac
         done
         # Entries removed from this repository leave their links dangling. The
         # agents directory link predates dropping the Codex roles and matches no
@@ -486,11 +502,11 @@ in
         if [ -L "$CODEX_DIR/agents/nix-config" ]; then
           $DRY_RUN_CMD rm -f "$CODEX_DIR/agents/nix-config"
         fi
-        for d in agents rules skills; do
-          for link in "$CODEX_DIR/$d"/*; do
+        for dir in "$CODEX_DIR/agents" "$CODEX_DIR/rules" "$AGENT_SKILLS_DIR"; do
+          for link in "$dir"/*; do
             [ -L "$link" ] && [ ! -e "$link" ] || continue
             case "$(readlink "$link")" in
-              "$REPO_ROOT/config/codex/$d/"*) $DRY_RUN_CMD rm -f "$link" ;;
+              "$REPO_ROOT/config/codex/"*) $DRY_RUN_CMD rm -f "$link" ;;
             esac
           done
         done

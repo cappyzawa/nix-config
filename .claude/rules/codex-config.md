@@ -21,14 +21,14 @@ paths:
 
 ## Home Manager deployment
 
-`setupCodex` in `nix/home/default.nix` deploys the managed configuration to `~/.codex/`.
+`setupCodex` in `nix/home/default.nix` deploys the managed configuration to `~/.codex/`, and skills to `~/.agents/skills/`.
 
 | Target | Source | Behavior |
 |---|---|---|
 | `~/.codex/config.toml` | `config/codex/config.toml`, host override, generated MCP config | Deep-merged into the existing writable file so runtime-managed projects and plugin state survive |
 | `~/.codex/AGENTS.md` | `config/codex/AGENTS.md` and `hosts/<host>/agent-instructions.md` | Copied into one global instruction file |
 | `~/.codex/rules/*.rules` | `config/codex/rules/*.rules` | Individually symlinked without replacing runtime rules |
-| `~/.codex/skills/<name>` | `config/codex/skills/<name>` | Compatible skills only, individually symlinked |
+| `~/.agents/skills/<name>` | `config/codex/skills/<name>` | Compatible skills only, individually symlinked; a real directory installed by another tool is left in place. `~/.codex/skills` is Codex's deprecated user location |
 
 MCP servers continue to use `shared.claudeMcpServers` as their Nix source for compatibility, but activation renders that source into both Claude JSON and Codex TOML.
 

@@ -17,8 +17,8 @@ config/claude/skills/*
 !config/claude/skills/pull-request
 !config/claude/skills/verify
 
-# Codex system/plugin-managed skills are linked into ~/.codex at activation;
-# only repository-managed Codex configuration belongs here.
+# Activation links pinned third-party skills (Nix store paths) here;
+# only repository-managed Codex skills are tracked.
 config/codex/skills/*
 !config/codex/skills/issue
 !config/codex/skills/ponchi
