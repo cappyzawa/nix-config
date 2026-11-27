@@ -95,7 +95,7 @@
       "Bash(aws timestream-influxdb list-*)",
       "Read",
       "WebFetch(domain:doc.rust-lang.org)",
-      "WebFetch(domain:docs.anthropic.com)",
+      "WebFetch(domain:code.claude.com)",
       "WebFetch(domain:fluxcd.io)",
       "WebFetch(domain:raw.githubusercontent.com)",
       "mcp__Claude_Browser__browser_batch",
